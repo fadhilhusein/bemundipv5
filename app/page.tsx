@@ -74,7 +74,7 @@ export default function Home() {
       <main className="w-full max-w-full overflow-x-hidden">
         <section
           id="beranda"
-          className="hero-glow hero-stage relative isolate flex overflow-hidden pb-20 pt-24 text-white lg:pt-28"
+          className="hero-glow hero-stage h-screen relative isolate flex overflow-hidden pb-20 pt-24 text-white lg:pt-28"
         >
           <Image
             src="/assets/UNDIPOfficial-removebg-preview.png"
@@ -82,7 +82,7 @@ export default function Home() {
             width={720}
             height={1080}
             priority
-            className="stamp-watermark absolute -left-[34%] top-[10%] h-[72%] w-auto object-contain md:-left-[12%] lg:-left-[7%]"
+            className="stamp-watermark absolute -left-[54%] top-[10%] h-[72%] w-auto object-contain md:-left-[12%] lg:-left-[7%]"
           />
           <Image
             src="/assets/UNDIPOfficial-removebg-preview.png"
@@ -90,7 +90,7 @@ export default function Home() {
             width={720}
             height={1080}
             priority
-            className="stamp-watermark absolute -right-[34%] top-[10%] h-[72%] w-auto object-contain md:-right-[12%] lg:-right-[7%]"
+            className="stamp-watermark absolute -right-[54%] top-[10%] h-[72%] w-auto object-contain md:-right-[12%] lg:-right-[7%]"
           />
           {/* <DecorativeImage
             src="/assets/hand.png"
@@ -102,7 +102,7 @@ export default function Home() {
             /> */}
 
           <Container className="relative z-10 flex flex-1 flex-col items-center text-center">
-            <Reveal className="flex min-h-full w-full flex-1 flex-col items-center justify-start">
+            <Reveal className="flex min-h-full w-full flex-1 flex-col items-center md:justify-start">
               <div className="relative mt-[clamp(1.5rem,4.5vh,3rem)] hidden md:block">
                 <DecorativeImage
                   src="/assets/maskot soda.png"
@@ -147,7 +147,8 @@ export default function Home() {
                     NDIP
                   </span>
                 </h1>
-                <div className="absolute right-[2%] top-[4%] rotate-2 bg-red px-3 py-1.5 font-script text-[clamp(2.1rem,6vw,4.6rem)] leading-none text-white shadow-[0_10px_22px_rgba(64,35,18,0.2)] sm:right-[7%] md:right-[10%]">
+                {/* <div className="absolute right-[2%] top-[4%] rotate-2 bg-red px-3 py-1.5 font-script text-[clamp(2.1rem,6vw,4.6rem)] leading-none text-white shadow-[0_10px_22px_rgba(64,35,18,0.2)] sm:right-[7%] md:right-[10%]"> */}
+                <div className="absolute -bottom-[100%] md:right-[2%] md:top-[4%] md:bottom-[6.5rem] rotate-2 bg-red px-3 py-1.5 font-script text-[clamp(2.1rem,18vw,4.6rem)] md:text-[clamp(2.1rem,6vw,4.6rem)] leading-none text-white shadow-[0_10px_22px_rgba(64,35,18,0.2)] sm:right-[7%] md:right-[10%]">
                   2026
                 </div>
               </div>
