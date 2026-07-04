@@ -102,7 +102,7 @@ export default function Home() {
             /> */}
 
           <Container className="relative z-10 flex flex-1 flex-col items-center text-center">
-            <Reveal className="flex min-h-full w-full flex-1 flex-col items-center md:justify-start">
+            <Reveal className="flex min-h-full w-full flex-1 flex-col justify-center items-center md:justify-start">
               <div className="relative mt-[clamp(1.5rem,4.5vh,3rem)] hidden md:block">
                 <DecorativeImage
                   src="/assets/maskot soda.png"
