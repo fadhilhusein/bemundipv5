@@ -102,7 +102,7 @@ export default function Home() {
             /> */}
 
           <Container className="relative z-10 flex flex-1 flex-col items-center text-center">
-            <Reveal className="flex min-h-full w-full flex-1 flex-col items-center md:justify-start">
+            <Reveal className="flex pt-5 min-h-full w-full flex-1 flex-col items-center md:justify-start">
               <div className="relative mt-[clamp(1.5rem,4.5vh,3rem)] hidden md:block">
                 <DecorativeImage
                   src="/assets/maskot soda.png"
@@ -124,11 +124,11 @@ export default function Home() {
                 />
                 <div className="flex items-end justify-center gap-2 sm:gap-4 z-20">
                   <span className="font-display hero-title-shadow text-[clamp(2.55rem,10vw,6.2rem)] font-medium leading-[0.76] text-white">
-                    Kabinet
+                    Kabinet 
                   </span>
                 </div>
                 <p className="font-display mt-1 text-[clamp(1rem,3.6vw,2rem)] leading-none text-white z-20">
-                  Universitas Diponegoro
+                    Dipanegara
                 </p>
               </div>
 
@@ -140,7 +140,7 @@ export default function Home() {
                   <span className="font-display -ml-[0.02em] text-[clamp(3.15rem,10.7vw,7rem)] font-medium leading-none">
                     EM
                   </span>
-                  <span className="font-script -mx-[0.07em] text-[clamp(5.8rem,19vw,12.5rem)] font-normal leading-none">
+                  <span className="font-script ml-3 -mx-[0.07em] text-[clamp(5.8rem,19vw,12.5rem)] font-normal leading-none">
                     U
                   </span>
                   <span className="font-display text-[clamp(3.15rem,10.7vw,7rem)] font-medium leading-none">
@@ -148,7 +148,7 @@ export default function Home() {
                   </span>
                 </h1>
                 {/* <div className="absolute right-[2%] top-[4%] rotate-2 bg-red px-3 py-1.5 font-script text-[clamp(2.1rem,6vw,4.6rem)] leading-none text-white shadow-[0_10px_22px_rgba(64,35,18,0.2)] sm:right-[7%] md:right-[10%]"> */}
-                <div className="absolute -bottom-[100%] md:right-[2%] md:top-[4%] md:bottom-[6.5rem] rotate-2 bg-red px-3 py-1.5 font-script text-[clamp(2.1rem,18vw,4.6rem)] md:text-[clamp(2.1rem,6vw,4.6rem)] leading-none text-white shadow-[0_10px_22px_rgba(64,35,18,0.2)] sm:right-[7%] md:right-[10%]">
+                <div className="absolute -bottom-[100%] md:right-[10%] md:top-[5%] md:bottom-[8.5rem] rotate-2 bg-red px-3 py-1.5 font-script text-[clamp(2.1rem,18vw,4.6rem)] md:text-[clamp(2.1rem,3vw,4.6rem)] leading-none text-white shadow-[0_10px_22px_rgba(64,35,18,0.2)] sm:right-[7%] md:right-[10%]">
                   2026
                 </div>
               </div>
@@ -176,8 +176,8 @@ export default function Home() {
             </Reveal>
           </Container>
 
-          <div className="absolute inset-x-0 bottom-0 z-20 border-y-2 border-white/70 bg-orange/95 px-4 py-4 text-center font-display text-[clamp(2rem,8vw,4rem)] italic leading-none tracking-wide text-white">
-            FEB - FKM - FK - VOKASI
+          <div className="absolute inset-x-0 bottom-0 z-20 border-y-2 border-white/70 bg-orange/95 px-4 py-4 text-center font-display text-[clamp(1.5rem,2vw,1rem)] md:text-[clamp(2rem,2vw,4rem)] italic leading-none tracking-wide text-white">
+            HIDUP MAHASISWA, HIDUP RAKYAT INDONESIA, HIDUP PEREMPUAN YANG MELAWAN
           </div>
         </section>
 
@@ -244,17 +244,17 @@ export default function Home() {
         </section>
 
         <section className="relative min-h-[720px] overflow-hidden bg-white section-pad">
-          <div className="pointer-events-none absolute blur-md opacity-30 -top-3 left-1/2 -translate-x-1/2 text-[20vw] font-black leading-none tracking-normal text-[#ebb04a] opacity-95">
+          {/* <div className="pointer-events-none absolute blur-md opacity-30 -top-3 left-1/2 -translate-x-1/2 text-[20vw] font-black leading-none tracking-normal text-[#ebb04a] opacity-95">
             BEMUNDIP
-          </div>
+          </div> */}
           <DecorativeImage
             src="/assets/cam.png"
             width={300}
             height={375}
-            rotate={-8}
+            rotate={65}
             data-gsap-image
-            className="float-c absolute -left-20 bottom-16 z-10 hidden w-72 lg:block"
-          />
+            className="float-c absolute -left-20 -bottom-2 0 z-10 hidden w-[40rem] lg:block"
+          />          
           <DecorativeImage
             src="/assets/cucumbah.png"
             width={150}
