@@ -74,7 +74,7 @@ export default function Home() {
       <main className="w-full max-w-full overflow-x-hidden">
         <section
           id="beranda"
-          className="hero-glow hero-stage h-screen relative isolate flex overflow-hidden pb-20 pt-24 text-white lg:pt-28"
+          className="hero-glow hero-stage h-[100svh] relative isolate flex overflow-hidden pb-20 pt-24 text-white lg:pt-28"
         >
           <Image
             src="/assets/UNDIPOfficial-removebg-preview.png"
