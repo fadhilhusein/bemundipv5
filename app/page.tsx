@@ -92,24 +92,6 @@ export default function Home() {
             priority
             className="stamp-watermark absolute -right-[34%] top-[-4%] h-[72%] w-auto object-contain md:-right-[12%] lg:-right-[7%]"
           />
-          <DecorativeImage
-            src="/assets/maskot soda.png"
-            width={180}
-            height={135}
-            priority
-            rotate={-5}
-            data-gsap-image
-            className="float-a absolute left-4 top-[19%] z-20 w-16 drop-shadow-xl sm:left-[13%] sm:top-[13%] sm:w-28 md:w-32 lg:left-[20%] lg:w-36"
-          />
-          <DecorativeImage
-            src="/assets/maskot kerupuk.png"
-            width={180}
-            height={135}
-            priority
-            rotate={5}
-            data-gsap-image
-            className="float-b absolute right-4 top-[19%] z-20 w-16 drop-shadow-xl sm:right-[13%] sm:top-[13%] sm:w-28 md:w-32 lg:right-[20%] lg:w-36"
-          />
           {/* <DecorativeImage
             src="/assets/hand.png"
             width={190}
@@ -117,17 +99,35 @@ export default function Home() {
             rotate={-20}
             data-gsap-image
             className="float-c absolute right-20 top-[39%] z-30 w-32 opacity-90 sm:right-16 sm:w-40 md:w-48 lg:left-20 lg:top-[36%] lg:w-56"
-          /> */}
+            /> */}
 
           <Container className="relative z-10 flex flex-1 flex-col items-center text-center">
             <Reveal className="flex min-h-full w-full flex-1 flex-col items-center justify-start">
-              <div className="mt-[clamp(1.5rem,4.5vh,3rem)]">
-                <div className="flex items-end justify-center gap-2 sm:gap-4">
+              <div className="relative mt-[clamp(1.5rem,4.5vh,3rem)] hidden md:block">
+                <DecorativeImage
+                  src="/assets/maskot soda.png"
+                  width={180}
+                  height={135}
+                  priority
+                  rotate={-5}
+                  data-gsap-image
+                  className="float-a -left-[35%] w-24 absolute drop-shadow-xl md:w-32 lg:w-44"
+                />
+                <DecorativeImage
+                  src="/assets/maskot kerupuk.png"
+                  width={180}
+                  height={135}
+                  priority
+                  rotate={5}
+                  data-gsap-image
+                  className="float-b absolute -top-[25%] -right-[35%] w-24 drop-shadow-xl md:w-32 lg:-top-[30%] lg:-right-[35%] lg:w-44"
+                />
+                <div className="flex items-end justify-center gap-2 sm:gap-4 z-20">
                   <span className="font-display hero-title-shadow text-[clamp(2.55rem,10vw,6.2rem)] font-medium leading-[0.76] text-white">
                     Kabinet
                   </span>
                 </div>
-                <p className="font-display mt-1 text-[clamp(1rem,3.6vw,2rem)] leading-none text-white">
+                <p className="font-display mt-1 text-[clamp(1rem,3.6vw,2rem)] leading-none text-white z-20">
                   Universitas Diponegoro
                 </p>
               </div>
@@ -151,6 +151,27 @@ export default function Home() {
                   2026
                 </div>
               </div>
+
+            <div className="mascot_mobile block lg:hidden">
+              <DecorativeImage
+                  src="/assets/maskot soda.png"
+                  width={180}
+                  height={135}
+                  priority
+                  rotate={-5}
+                  data-gsap-image
+                  className="float-a -bottom-3 -left-[20%] w-72 absolute drop-shadow-xl md:w-32 lg:w-44"
+                />
+                <DecorativeImage
+                  src="/assets/maskot kerupuk.png"
+                  width={180}
+                  height={135}
+                  priority
+                  rotate={5}
+                  data-gsap-image
+                  className="float-b absolute -bottom-3 -right-[20%] w-72 drop-shadow-xl md:w-32 lg:-top-[30%] lg:-right-[35%] lg:w-44"
+                />
+            </div>
             </Reveal>
           </Container>
 
