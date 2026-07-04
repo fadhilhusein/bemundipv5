@@ -1,0 +1,213 @@
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #FAF5EF;
+  --orange: #D96A1C;
+  --peach: #F4D2A5;
+  --brown: #402312;
+  --clay: #8D6543;
+  --red: #B83935;
+  --divider: #EFE4D6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--cream);
+  color: var(--brown);
+  font-family: "Poppins", sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: var(--brown);
+  color: #fff;
+}
+
+.font-display {
+  font-family: "Playfair Display", serif;
+}
+
+.font-script {
+  font-family: "Great Vibes", cursive;
+}
+
+.container-shell {
+  width: min(100% - 40px, 1200px);
+  margin-inline: auto;
+}
+
+@media (min-width: 1024px) {
+  .container-shell {
+    width: min(100% - 64px, 1200px);
+  }
+}
+
+.section-pad {
+  padding-block: 64px;
+}
+
+@media (min-width: 768px) {
+  .section-pad {
+    padding-block: 80px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-pad {
+    padding-block: 120px;
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 767px) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-glow {
+  background:
+    radial-gradient(circle at 50% 54%, rgba(255, 198, 128, 0.94) 0%, rgba(244, 210, 165, 0.76) 35%, rgba(217, 106, 28, 0.08) 62%, transparent 68%),
+    linear-gradient(180deg, var(--orange) 10%, #f3c18b 34%, #faead4 53%, #f3c18b 73%, #df6f21 100%);
+}
+
+.hero-stage {
+  min-height: clamp(560px, 100svh, 760px);
+}
+
+.hero-cream-band {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 246, 231, 0.98) 0 27%, rgba(246, 199, 136, 0.9) 56%, rgba(225, 116, 38, 0.15) 82%, transparent 100%);
+}
+
+.hero-title-shadow {
+  text-shadow: 0 8px 16px rgba(64, 35, 18, 0.14);
+}
+
+.hero-bem-lockup {
+  transform: scaleX(0.5);
+}
+
+@media (min-width: 390px) {
+  .hero-bem-lockup {
+    transform: scaleX(0.62);
+  }
+}
+
+@media (min-width: 640px) {
+  .hero-bem-lockup {
+    transform: scaleX(0.9);
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-bem-lockup {
+    transform: scaleX(1);
+  }
+}
+
+.warm-band {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(244, 210, 165, 0.75), transparent 22rem),
+    radial-gradient(circle at 88% 8%, rgba(217, 106, 28, 0.18), transparent 24rem),
+    linear-gradient(180deg, #faf5ef 0%, #fff8f1 55%, #f4d2a5 100%);
+}
+
+.stamp-watermark {
+  filter: sepia(1) saturate(1.2) hue-rotate(345deg);
+  opacity: 0.12;
+}
+
+.text-emboss {
+  text-shadow: 0 4px 0 rgba(184, 57, 53, 0.42), 0 11px 22px rgba(64, 35, 18, 0.25);
+}
+
+.float-a {
+  animation: float-a 10s ease-in-out infinite;
+}
+
+.float-b {
+  animation: float-b 12s ease-in-out infinite;
+}
+
+.float-c {
+  animation: float-c 9s ease-in-out infinite;
+}
+
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--rotate, 0deg));
+  }
+  50% {
+    transform: translate3d(0, -18px, 0) rotate(calc(var(--rotate, 0deg) + 5deg));
+  }
+}
+
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--rotate, 0deg));
+  }
+  50% {
+    transform: translate3d(12px, 14px, 0) rotate(calc(var(--rotate, 0deg) - 6deg));
+  }
+}
+
+@keyframes float-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--rotate, 0deg));
+  }
+  50% {
+    transform: translate3d(-10px, -12px, 0) rotate(calc(var(--rotate, 0deg) + 4deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
