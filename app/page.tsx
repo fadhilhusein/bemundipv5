@@ -82,7 +82,7 @@ export default function Home() {
             width={720}
             height={1080}
             priority
-            className="stamp-watermark absolute -left-[34%] top-[-4%] h-[72%] w-auto object-contain md:-left-[12%] lg:-left-[7%]"
+            className="stamp-watermark absolute -left-[34%] top-[10%] h-[72%] w-auto object-contain md:-left-[12%] lg:-left-[7%]"
           />
           <Image
             src="/assets/UNDIPOfficial-removebg-preview.png"
@@ -90,7 +90,7 @@ export default function Home() {
             width={720}
             height={1080}
             priority
-            className="stamp-watermark absolute -right-[34%] top-[-4%] h-[72%] w-auto object-contain md:-right-[12%] lg:-right-[7%]"
+            className="stamp-watermark absolute -right-[34%] top-[10%] h-[72%] w-auto object-contain md:-right-[12%] lg:-right-[7%]"
           />
           {/* <DecorativeImage
             src="/assets/hand.png"
@@ -216,7 +216,7 @@ export default function Home() {
 
           <Container>
             <Reveal className="mx-auto max-w-4xl text-center">
-              <h2 className="font-display text-[clamp(4.4rem,18vw,9rem)] font-medium leading-[0.82] text-white drop-shadow-[0_5px_14px_rgba(64,35,18,0.22)]">
+              <h2 className="font-display text-[clamp(4.4rem,18vw,9rem)] font-medium leading-[0.82] text-[#a5592a] drop-shadow-[0_5px_14px_rgba(64,35,18,0.22)]">
                 Selamat
                 <br />
                 datang!
@@ -243,7 +243,7 @@ export default function Home() {
         </section>
 
         <section className="relative min-h-[720px] overflow-hidden bg-white section-pad">
-          <div className="pointer-events-none absolute -top-3 left-1/2 -translate-x-1/2 text-[24vw] font-black leading-none tracking-normal text-[#ebb04a] opacity-95">
+          <div className="pointer-events-none absolute blur-md opacity-30 -top-3 left-1/2 -translate-x-1/2 text-[20vw] font-black leading-none tracking-normal text-[#ebb04a] opacity-95">
             BEMUNDIP
           </div>
           <DecorativeImage
