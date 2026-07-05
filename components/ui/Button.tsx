@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-type ButtonProps = {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
   href?: string;
   variant?: "primary" | "secondary" | "dark";
@@ -17,9 +17,10 @@ export function Button({
   children,
   href,
   variant = "primary",
-  className = ""
+  className = "",
+  ...buttonProps
 }: ButtonProps) {
-  const classes = `inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition duration-[250ms] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brown ${variants[variant]} ${className}`;
+  const classes = `inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition duration-[250ms] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brown disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 ${variants[variant]} ${className}`;
 
   if (href) {
     return (
@@ -29,5 +30,9 @@ export function Button({
     );
   }
 
-  return <button className={classes}>{children}</button>;
+  return (
+    <button className={classes} {...buttonProps}>
+      {children}
+    </button>
+  );
 }

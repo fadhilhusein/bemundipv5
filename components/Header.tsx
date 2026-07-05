@@ -10,7 +10,7 @@ const navItems = [
   { label: "Departemen", href: "#ruang-gerak" },
   { label: "Publikasi", href: "#berita" },
   { label: "Layanan", href: "#kontak" },
-  { label: "Log in", href: "#kontak" }
+  { label: "Log in", href: "/login" }
 ];
 
 export function Header() {
