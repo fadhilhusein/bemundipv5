@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   devIndicators: false,
+  serverExternalPackages: ["firebase-admin"],
   images: {
     remotePatterns: [
       {
