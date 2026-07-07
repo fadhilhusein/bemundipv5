@@ -52,10 +52,10 @@ export function DashboardShell({ userEmail, children }: DashboardShellProps) {
         </div>
       </div>
 
-      <div className="flex min-h-screen flex-1 flex-col">
+      <div className="flex min-h-screen flex-1 flex-col max-w-full">
         <Topbar title="Input Data Bidang" onOpenSidebar={() => setIsSidebarOpen(true)} />
         <main className="flex-1 px-5 py-8 sm:px-8 sm:py-10">
-          <div className="mx-auto max-w-5xl">{children}</div>
+          <div className="mx-auto max-w-full">{children}</div>
         </main>
       </div>
     </div>
