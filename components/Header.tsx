@@ -76,7 +76,7 @@ export function Header() {
           </label>
           <input
             id="site-search"
-            placeholder="Cari apa?"
+            placeholder="Cari Apa?"
             className="w-28 bg-transparent text-white placeholder:text-white/85 outline-none"
           />
           <Search aria-hidden="true" size={20} strokeWidth={1.8} />
