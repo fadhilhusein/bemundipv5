@@ -36,7 +36,8 @@ export async function POST(request: NextRequest) {
       path: "/"
     });
     return response;
-  } catch {
+  } catch (err) {
+    console.error("[/api/auth/session] Gagal membuat sesi:", err);
     return NextResponse.json({ error: "Gagal membuat sesi" }, { status: 401 });
   }
 }
