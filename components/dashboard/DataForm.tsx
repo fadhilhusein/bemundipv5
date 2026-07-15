@@ -1,0 +1,316 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import type { FieldConfig, TableConfig } from "@/lib/data/types";
+
+type Option = { value: number; label: string };
+type UploadStatus = "idle" | "uploading" | "error";
+
+function defaultsFor(config: TableConfig): Record<string, string> {
+  const values: Record<string, string> = {};
+  for (const field of config.fields) {
+    values[field.name] = field.defaultValue !== undefined ? String(field.defaultValue) : "";
+  }
+  return values;
+}
+
+function resolveFkLabel(fkOptions: Record<string, Option[]>, field: FieldConfig, rawValue: unknown) {
+  if (!field.fkTable) return String(rawValue ?? "-");
+  const options = fkOptions[field.fkTable] ?? [];
+  const match = options.find((opt) => String(opt.value) === String(rawValue));
+  return match?.label ?? String(rawValue ?? "-");
+}
+
+const inputClass =
+  "mt-2 h-12 w-full rounded-full border border-divider bg-white px-5 text-sm text-brown outline-none focus:border-orange focus:ring-2 focus:ring-orange/20";
+const textareaClass =
+  "mt-2 w-full rounded-2xl border border-divider bg-white px-5 py-3 text-sm text-brown outline-none focus:border-orange focus:ring-2 focus:ring-orange/20";
+
+export function DataForm({ config }: { config: TableConfig }) {
+  const [formValues, setFormValues] = useState<Record<string, string>>(() => defaultsFor(config));
+  const [entries, setEntries] = useState<Record<string, unknown>[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fkOptions, setFkOptions] = useState<Record<string, Option[]>>({});
+  const [uploadState, setUploadState] = useState<Record<string, UploadStatus>>({});
+
+  const fkFields = useMemo(
+    () => config.fields.filter((f) => f.type === "fk-select" && f.fkTable),
+    [config]
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadEntries = async () => {
+      setIsLoading(true);
+      const res = await fetch(`/api/data/${config.slug}`);
+      const json = await res.json();
+      if (!cancelled) {
+        setEntries(json.data ?? []);
+        setIsLoading(false);
+      }
+    };
+
+    loadEntries();
+
+    fkFields.forEach(async (field) => {
+      const res = await fetch(`/api/data/${field.fkTable}/options`);
+      const json = await res.json();
+      if (!cancelled) {
+        setFkOptions((prev) => ({ ...prev, [field.fkTable as string]: json.data ?? [] }));
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config.slug]);
+
+  const handleChange = (name: string, value: string) => {
+    setFormValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = async (field: FieldConfig, file: File | null) => {
+    if (!file) return;
+    setUploadState((prev) => ({ ...prev, [field.name]: "uploading" }));
+
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      body.append("folder", config.slug);
+      const res = await fetch("/api/upload", { method: "POST", body });
+      if (!res.ok) throw new Error("Upload gagal");
+      const json = await res.json();
+      handleChange(field.name, json.url);
+      setUploadState((prev) => ({ ...prev, [field.name]: "idle" }));
+    } catch {
+      setUploadState((prev) => ({ ...prev, [field.name]: "error" }));
+    }
+  };
+
+  const isUploading = Object.values(uploadState).some((status) => status === "uploading");
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch(`/api/data/${config.slug}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues)
+      });
+
+      if (!res.ok) {
+        const json = await res.json();
+        throw new Error(json.error ?? "Gagal menyimpan data");
+      }
+
+      setFormValues(defaultsFor(config));
+      setUploadState({});
+      const refreshed = await fetch(`/api/data/${config.slug}`);
+      const refreshedJson = await refreshed.json();
+      setEntries(refreshedJson.data ?? []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal menyimpan data");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const renderField = (field: FieldConfig) => {
+    const colSpanClass = field.colSpan === 2 ? "sm:col-span-2" : "sm:col-span-1";
+    const value = formValues[field.name] ?? "";
+
+    if (field.type === "textarea") {
+      return (
+        <div key={field.name} className={colSpanClass}>
+          <label htmlFor={field.name} className="text-sm font-semibold text-brown">
+            {field.label}
+          </label>
+          <textarea
+            id={field.name}
+            required={field.required}
+            rows={3}
+            value={value}
+            onChange={(e) => handleChange(field.name, e.target.value)}
+            className={textareaClass}
+            placeholder={field.placeholder}
+          />
+        </div>
+      );
+    }
+
+    if (field.type === "select-enum") {
+      return (
+        <div key={field.name} className={colSpanClass}>
+          <label htmlFor={field.name} className="text-sm font-semibold text-brown">
+            {field.label}
+          </label>
+          <select
+            id={field.name}
+            required={field.required}
+            value={value}
+            onChange={(e) => handleChange(field.name, e.target.value)}
+            className={inputClass}
+          >
+            {field.enumOptions?.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    }
+
+    if (field.type === "fk-select") {
+      const options = (field.fkTable && fkOptions[field.fkTable]) || [];
+      return (
+        <div key={field.name} className={colSpanClass}>
+          <label htmlFor={field.name} className="text-sm font-semibold text-brown">
+            {field.label}
+          </label>
+          <select
+            id={field.name}
+            required={field.required}
+            value={value}
+            onChange={(e) => handleChange(field.name, e.target.value)}
+            className={inputClass}
+          >
+            <option value="">Pilih {field.label}</option>
+            {options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    }
+
+    if (field.type === "file") {
+      const status = uploadState[field.name];
+      return (
+        <div key={field.name} className={colSpanClass}>
+          <label htmlFor={field.name} className="text-sm font-semibold text-brown">
+            {field.label}
+          </label>
+          <input
+            id={field.name}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            onChange={(e) => handleFileChange(field, e.target.files?.[0] ?? null)}
+            className="mt-2 block w-full text-sm text-brown file:mr-4 file:rounded-full file:border-0 file:bg-orange file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+          />
+          {status === "uploading" && <p className="mt-1 text-xs text-clay">Mengunggah…</p>}
+          {status === "error" && <p className="mt-1 text-xs text-red">Gagal mengunggah file</p>}
+          {value && status !== "uploading" ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={value} alt="" className="mt-2 h-20 w-20 rounded-xl object-cover" />
+          ) : null}
+        </div>
+      );
+    }
+
+    const inputType =
+      field.type === "number" ? "number" : field.type === "date" ? "date" : field.type === "datetime" ? "datetime-local" : "text";
+
+    return (
+      <div key={field.name} className={colSpanClass}>
+        <label htmlFor={field.name} className="text-sm font-semibold text-brown">
+          {field.label}
+        </label>
+        <input
+          id={field.name}
+          type={inputType}
+          required={field.required}
+          value={value}
+          onChange={(e) => handleChange(field.name, e.target.value)}
+          className={inputClass}
+          placeholder={field.placeholder}
+        />
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8">
+        <h2 className="font-display text-2xl font-medium text-brown">Tambah {config.label}</h2>
+        {config.description ? <p className="mt-1 text-sm text-clay">{config.description}</p> : null}
+
+        <form onSubmit={handleSubmit} className="mt-6 grid gap-5 sm:grid-cols-2">
+          {config.fields.map(renderField)}
+
+          {error ? (
+            <p role="alert" className="text-sm text-red sm:col-span-2">
+              {error}
+            </p>
+          ) : null}
+
+          <div className="sm:col-span-2">
+            <Button className="px-8" disabled={isSubmitting || isUploading}>
+              {isSubmitting ? "Menyimpan…" : `Simpan ${config.label}`}
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      <div className="rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8">
+        <h2 className="font-display text-2xl font-medium text-brown">Daftar {config.label}</h2>
+
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-divider text-xs font-semibold uppercase tracking-wide text-clay">
+                {config.fields.map((field) => (
+                  <th key={field.name} className="py-3 pr-4">
+                    {field.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={config.fields.length} className="py-6 text-center text-clay">
+                    Memuat data…
+                  </td>
+                </tr>
+              ) : entries.length === 0 ? (
+                <tr>
+                  <td colSpan={config.fields.length} className="py-6 text-center text-clay">
+                    Belum ada data.
+                  </td>
+                </tr>
+              ) : (
+                entries.map((entry) => (
+                  <tr key={String(entry[config.idColumn])} className="border-b border-divider last:border-0">
+                    {config.fields.map((field) => (
+                      <td key={field.name} className="py-3 pr-4 max-w-sm text-brown/90">
+                        {field.type === "file" && entry[field.name] ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={String(entry[field.name])} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                        ) : field.type === "fk-select" ? (
+                          resolveFkLabel(fkOptions, field, entry[field.name])
+                        ) : (
+                          String(entry[field.name] ?? "-")
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,22 +1,7 @@
-import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import client from "@/lib/db";
-import { isAdminEmail } from "@/lib/admins";
+import { requireSession } from "@/lib/auth";
 import { ensureBidangTable } from "@/lib/bidang";
-import { getAdminAuth } from "@/lib/firebase/admin";
-
-async function requireSession() {
-  const sessionCookie = (await cookies()).get("session")?.value;
-  if (!sessionCookie) return null;
-
-  try {
-    const decoded = await getAdminAuth().verifySessionCookie(sessionCookie);
-    if (!(await isAdminEmail(decoded.email))) return null;
-    return decoded;
-  } catch {
-    return null;
-  }
-}
 
 export async function GET() {
   if (!(await requireSession())) {

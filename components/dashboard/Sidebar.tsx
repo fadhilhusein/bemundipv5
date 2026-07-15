@@ -1,13 +1,12 @@
 "use client";
 
 import { signOut } from "firebase/auth";
-import { LayoutGrid, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { getFirebaseAuth } from "@/lib/firebase/client";
-
-const navItems = [{ label: "Input Data Bidang", href: "/dashboard", icon: LayoutGrid }];
+import { navGroups } from "@/lib/dashboard-nav";
 
 type SidebarProps = {
   userEmail: string | null;
@@ -37,32 +36,36 @@ export function Sidebar({ userEmail, onNavigate }: SidebarProps) {
         <span className="text-sm font-semibold tracking-wide">BEM UNDIP</span>
       </div>
 
-      <nav className="flex-1 px-4 py-6">
-        <p className="px-2 text-xs font-semibold uppercase tracking-wider text-white/40">
-          Menu
-        </p>
-        <ul className="mt-3 flex flex-col gap-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={onNavigate}
-                  className={`flex items-center gap-3 rounded-full px-4 py-3 text-sm font-medium transition ${
-                    isActive
-                      ? "bg-orange text-white"
-                      : "text-white/75 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  <Icon size={18} />
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      <nav className="flex-1 overflow-y-auto px-4 py-6">
+        {navGroups.map((group) => (
+          <div key={group.label} className="mb-5 last:mb-0">
+            <p className="px-2 text-xs font-semibold uppercase tracking-wider text-white/40">
+              {group.label}
+            </p>
+            <ul className="mt-3 flex flex-col gap-1">
+              {group.items.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={onNavigate}
+                      className={`flex items-center gap-3 rounded-full px-4 py-3 text-sm font-medium transition ${
+                        isActive
+                          ? "bg-orange text-white"
+                          : "text-white/75 hover:bg-white/10 hover:text-white"
+                      }`}
+                    >
+                      <Icon size={18} />
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
       <div className="mt-auto border-t border-white/10 px-6 py-5">

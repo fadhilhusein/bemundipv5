@@ -1,9 +1,11 @@
 "use client";
 
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Topbar } from "@/components/dashboard/Topbar";
+import { navItems } from "@/lib/dashboard-nav";
 
 type DashboardShellProps = {
   userEmail: string | null;
@@ -12,6 +14,8 @@ type DashboardShellProps = {
 
 export function DashboardShell({ userEmail, children }: DashboardShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  const title = navItems.find((item) => item.href === pathname)?.label ?? "Dashboard";
 
   return (
     <div className="flex min-h-screen bg-cream">
@@ -53,7 +57,7 @@ export function DashboardShell({ userEmail, children }: DashboardShellProps) {
       </div>
 
       <div className="flex min-h-screen flex-1 flex-col max-w-full">
-        <Topbar title="Input Data Bidang" onOpenSidebar={() => setIsSidebarOpen(true)} />
+        <Topbar title={title} onOpenSidebar={() => setIsSidebarOpen(true)} />
         <main className="flex-1 px-5 py-8 sm:px-8 sm:py-10">
           <div className="mx-auto max-w-full">{children}</div>
         </main>
