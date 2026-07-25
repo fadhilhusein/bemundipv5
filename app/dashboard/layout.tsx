@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { isAdminEmail } from "@/lib/admins";
+import { getAdminRole } from "@/lib/admins";
 import { getAdminAuth } from "@/lib/firebase/admin";
 
 export default async function DashboardLayout({
@@ -24,9 +24,14 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  if (!(await isAdminEmail(userEmail))) {
+  const role = await getAdminRole(userEmail);
+  if (!role) {
     redirect("/login?error=forbidden");
   }
 
-  return <DashboardShell userEmail={userEmail}>{children}</DashboardShell>;
+  return (
+    <DashboardShell userEmail={userEmail} role={role}>
+      {children}
+    </DashboardShell>
+  );
 }

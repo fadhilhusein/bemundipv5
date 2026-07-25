@@ -93,12 +93,27 @@ export const programUnggulan: TableConfig = {
   ]
 };
 
+export const bidang: TableConfig = {
+  slug: "bidang",
+  table: "bidang",
+  label: "Bidang",
+  description: "Data bidang/departemen kabinet BEM UNDIP.",
+  idColumn: "id",
+  fields: [
+    { name: "nama_bidang", label: "Nama Bidang", type: "text", required: true },
+    { name: "penanggung_jawab", label: "Penanggung Jawab", type: "text", required: true },
+    { name: "jumlah_anggota", label: "Jumlah Anggota", type: "number", required: true, defaultValue: 0 },
+    { name: "deskripsi", label: "Deskripsi", type: "textarea", required: false, colSpan: 2 }
+  ]
+};
+
 export const TABLES: Record<string, TableConfig> = {
   [masterKabinet.slug]: masterKabinet,
   [mediaSosial.slug]: mediaSosial,
   [layanan.slug]: layanan,
   [agenda.slug]: agenda,
   [programUnggulan.slug]: programUnggulan,
+  [bidang.slug]: bidang,
   ...Object.fromEntries(STATISTIK_TABLES.map((config) => [config.slug, config]))
 };
 

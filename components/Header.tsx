@@ -6,10 +6,10 @@ import { Menu, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const navItems = [
-  { label: "Beranda", href: "#beranda" },
-  { label: "Departemen", href: "#ruang-gerak" },
-  { label: "Publikasi", href: "#berita" },
-  { label: "Layanan", href: "#kontak" },
+  { label: "Beranda", href: "/#beranda" },
+  { label: "Departemen", href: "/#bidang" },
+  { label: "Publikasi", href: "/#berita" },
+  { label: "Layanan", href: "/#kontak" },
   { label: "Log in", href: "/login" }
 ];
 
@@ -41,7 +41,7 @@ export function Header() {
     >
       <div className="container-shell flex h-16 items-center justify-between border-b border-white/70 text-white lg:h-20">
         <Link
-          href="#beranda"
+          href="/#beranda"
           className="flex items-center gap-3 focus-visible:rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           aria-label="BEM UNDIP beranda"
         >

@@ -1,4 +1,5 @@
-import { LayoutGrid, Image, Wrench, CalendarDays, Sparkles, BarChart3, type LucideIcon } from "lucide-react";
+import { LayoutGrid, Image, Wrench, CalendarDays, Sparkles, BarChart3, ShieldCheck, type LucideIcon } from "lucide-react";
+import type { AdminRole } from "@/lib/admins";
 
 export type NavItem = {
   label: string;
@@ -37,4 +38,13 @@ export const navGroups: NavGroup[] = [
   }
 ];
 
-export const navItems: NavItem[] = navGroups.flatMap((group) => group.items);
+export const masterNavGroup: NavGroup = {
+  label: "Master Admin",
+  items: [{ label: "Menu Master", href: "/dashboard/master", icon: ShieldCheck }]
+};
+
+export function getNavGroups(role: AdminRole | null): NavGroup[] {
+  return role === "master" ? [...navGroups, masterNavGroup] : navGroups;
+}
+
+export const navItems: NavItem[] = [...navGroups, masterNavGroup].flatMap((group) => group.items);

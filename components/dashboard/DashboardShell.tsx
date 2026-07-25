@@ -5,14 +5,16 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Topbar } from "@/components/dashboard/Topbar";
+import type { AdminRole } from "@/lib/admins";
 import { navItems } from "@/lib/dashboard-nav";
 
 type DashboardShellProps = {
   userEmail: string | null;
+  role: AdminRole;
   children: React.ReactNode;
 };
 
-export function DashboardShell({ userEmail, children }: DashboardShellProps) {
+export function DashboardShell({ userEmail, role, children }: DashboardShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
   const title = navItems.find((item) => item.href === pathname)?.label ?? "Dashboard";
@@ -21,7 +23,7 @@ export function DashboardShell({ userEmail, children }: DashboardShellProps) {
     <div className="flex min-h-screen bg-cream">
       <aside className="hidden w-72 shrink-0 lg:block">
         <div className="fixed h-screen w-72">
-          <Sidebar userEmail={userEmail} />
+          <Sidebar userEmail={userEmail} role={role} />
         </div>
       </aside>
 
@@ -51,7 +53,7 @@ export function DashboardShell({ userEmail, children }: DashboardShellProps) {
             >
               <X size={18} />
             </button>
-            <Sidebar userEmail={userEmail} onNavigate={() => setIsSidebarOpen(false)} />
+            <Sidebar userEmail={userEmail} role={role} onNavigate={() => setIsSidebarOpen(false)} />
           </div>
         </div>
       </div>

@@ -40,6 +40,11 @@ input {
   color: #fff;
 }
 
+.hidden-scroll {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 .font-display {
   font-family: "Playfair Display", serif;
 }

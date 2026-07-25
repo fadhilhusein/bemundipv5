@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { FieldConfig, TableConfig } from "@/lib/data/types";
 
@@ -11,6 +12,23 @@ function defaultsFor(config: TableConfig): Record<string, string> {
   const values: Record<string, string> = {};
   for (const field of config.fields) {
     values[field.name] = field.defaultValue !== undefined ? String(field.defaultValue) : "";
+  }
+  return values;
+}
+
+function valuesFromEntry(config: TableConfig, entry: Record<string, unknown>): Record<string, string> {
+  const values: Record<string, string> = {};
+  for (const field of config.fields) {
+    const raw = entry[field.name];
+    if (raw === null || raw === undefined) {
+      values[field.name] = "";
+    } else if (field.type === "date") {
+      values[field.name] = String(raw).slice(0, 10);
+    } else if (field.type === "datetime") {
+      values[field.name] = String(raw).slice(0, 16);
+    } else {
+      values[field.name] = String(raw);
+    }
   }
   return values;
 }
@@ -27,14 +45,16 @@ const inputClass =
 const textareaClass =
   "mt-2 w-full rounded-2xl border border-divider bg-white px-5 py-3 text-sm text-brown outline-none focus:border-orange focus:ring-2 focus:ring-orange/20";
 
-export function DataForm({ config }: { config: TableConfig }) {
+export function DataForm({ config, canManage = false }: { config: TableConfig; canManage?: boolean }) {
   const [formValues, setFormValues] = useState<Record<string, string>>(() => defaultsFor(config));
   const [entries, setEntries] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fkOptions, setFkOptions] = useState<Record<string, Option[]>>({});
   const [uploadState, setUploadState] = useState<Record<string, UploadStatus>>({});
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const fkFields = useMemo(
     () => config.fields.filter((f) => f.type === "fk-select" && f.fkTable),
@@ -100,8 +120,9 @@ export function DataForm({ config }: { config: TableConfig }) {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch(`/api/data/${config.slug}`, {
-        method: "POST",
+      const url = editingId ? `/api/data/${config.slug}/${editingId}` : `/api/data/${config.slug}`;
+      const res = await fetch(url, {
+        method: editingId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formValues)
       });
@@ -113,6 +134,7 @@ export function DataForm({ config }: { config: TableConfig }) {
 
       setFormValues(defaultsFor(config));
       setUploadState({});
+      setEditingId(null);
       const refreshed = await fetch(`/api/data/${config.slug}`);
       const refreshedJson = await refreshed.json();
       setEntries(refreshedJson.data ?? []);
@@ -120,6 +142,45 @@ export function DataForm({ config }: { config: TableConfig }) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan data");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleEditClick = (entry: Record<string, unknown>) => {
+    setError(null);
+    setEditingId(String(entry[config.idColumn]));
+    setFormValues(valuesFromEntry(config, entry));
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setFormValues(defaultsFor(config));
+    setError(null);
+  };
+
+  const handleDelete = async (entry: Record<string, unknown>) => {
+    const id = String(entry[config.idColumn]);
+    if (!window.confirm(`Hapus ${config.label} ini?`)) return;
+
+    setIsDeletingId(id);
+    setError(null);
+
+    try {
+      const res = await fetch(`/api/data/${config.slug}/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const json = await res.json();
+        throw new Error(json.error ?? "Gagal menghapus data");
+      }
+
+      if (editingId === id) {
+        handleCancelEdit();
+      }
+      const refreshed = await fetch(`/api/data/${config.slug}`);
+      const refreshedJson = await refreshed.json();
+      setEntries(refreshedJson.data ?? []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal menghapus data");
+    } finally {
+      setIsDeletingId(null);
     }
   };
 
@@ -242,7 +303,9 @@ export function DataForm({ config }: { config: TableConfig }) {
   return (
     <div className="flex flex-col gap-8">
       <div className="rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8">
-        <h2 className="font-display text-2xl font-medium text-brown">Tambah {config.label}</h2>
+        <h2 className="font-display text-2xl font-medium text-brown">
+          {editingId ? `Edit ${config.label}` : `Tambah ${config.label}`}
+        </h2>
         {config.description ? <p className="mt-1 text-sm text-clay">{config.description}</p> : null}
 
         <form onSubmit={handleSubmit} className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -254,10 +317,20 @@ export function DataForm({ config }: { config: TableConfig }) {
             </p>
           ) : null}
 
-          <div className="sm:col-span-2">
+          <div className="flex items-center gap-3 sm:col-span-2">
             <Button className="px-8" disabled={isSubmitting || isUploading}>
-              {isSubmitting ? "Menyimpan…" : `Simpan ${config.label}`}
+              {isSubmitting ? "Menyimpan…" : editingId ? "Simpan Perubahan" : `Simpan ${config.label}`}
             </Button>
+            {editingId ? (
+              <button
+                type="button"
+                onClick={handleCancelEdit}
+                disabled={isSubmitting}
+                className="text-sm font-semibold text-clay hover:text-brown"
+              >
+                Batal
+              </button>
+            ) : null}
           </div>
         </form>
       </div>
@@ -274,18 +347,19 @@ export function DataForm({ config }: { config: TableConfig }) {
                     {field.label}
                   </th>
                 ))}
+                {canManage ? <th className="py-3 pr-4">Aksi</th> : null}
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={config.fields.length} className="py-6 text-center text-clay">
+                  <td colSpan={config.fields.length + (canManage ? 1 : 0)} className="py-6 text-center text-clay">
                     Memuat data…
                   </td>
                 </tr>
               ) : entries.length === 0 ? (
                 <tr>
-                  <td colSpan={config.fields.length} className="py-6 text-center text-clay">
+                  <td colSpan={config.fields.length + (canManage ? 1 : 0)} className="py-6 text-center text-clay">
                     Belum ada data.
                   </td>
                 </tr>
@@ -304,6 +378,29 @@ export function DataForm({ config }: { config: TableConfig }) {
                         )}
                       </td>
                     ))}
+                    {canManage ? (
+                      <td className="py-3 pr-4">
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => handleEditClick(entry)}
+                            aria-label={`Edit ${config.label}`}
+                            className="text-clay hover:text-orange"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(entry)}
+                            disabled={isDeletingId === String(entry[config.idColumn])}
+                            aria-label={`Hapus ${config.label}`}
+                            className="text-clay hover:text-red disabled:opacity-50"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    ) : null}
                   </tr>
                 ))
               )}

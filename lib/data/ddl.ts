@@ -334,6 +334,14 @@ export const SCHEMA_STATEMENTS: string[] = [
       CONSTRAINT fk_statkesejahteraan_kabinet FOREIGN KEY (id_kabinet) REFERENCES master_kabinet(id_kabinet)
           ON UPDATE CASCADE ON DELETE CASCADE
   );`,
+  `CREATE TABLE IF NOT EXISTS bidang (
+      id                SERIAL PRIMARY KEY,
+      nama_bidang       TEXT NOT NULL,
+      deskripsi         TEXT NOT NULL,
+      penanggung_jawab  TEXT NOT NULL,
+      jumlah_anggota    INTEGER NOT NULL,
+      created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+  );`,
   `CREATE INDEX IF NOT EXISTS idx_users_kabinet ON users(id_kabinet);`,
   `CREATE INDEX IF NOT EXISTS idx_sosmed_kabinet ON media_sosial(id_kabinet);`,
   `CREATE INDEX IF NOT EXISTS idx_layanan_kabinet ON layanan(id_kabinet);`,

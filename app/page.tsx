@@ -6,13 +6,18 @@ import {
   Send,
   Youtube
 } from "lucide-react";
+import { BidangCard } from "@/components/BidangCard";
 import { DecorativeImage } from "@/components/DecorativeImage";
+import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { MotionScene } from "@/components/MotionScene";
 import { ProgramCard } from "@/components/ProgramCard";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { getBidangList } from "@/lib/bidang-public";
+
+export const dynamic = "force-dynamic";
 
 const programs = [
   {
@@ -66,7 +71,9 @@ const mottoItems = [
   }
 ];
 
-export default function Home() {
+export default async function Home() {
+  const bidangList = await getBidangList();
+
   return (
     <>
       <Header />
@@ -377,6 +384,35 @@ export default function Home() {
           </Container>
         </section>
 
+        {bidangList.length > 0 && (
+          <section id="bidang" className="relative overflow-hidden bg-[#fffaf4] section-pad">
+            <Container>
+              <Reveal>
+                <h2 className="font-display text-center text-[clamp(4.6rem,17vw,8rem)] font-medium leading-none text-brown">
+                  Bidang & Biro
+                </h2>
+                <p className="mx-auto mt-5 max-w-2xl text-center text-sm font-medium leading-relaxed tracking-wide text-brown/80 sm:text-base">
+                  Unit kerja yang menggerakkan program dan pelayanan Kabinet BEM UNDIP 2026.
+                </p>
+              </Reveal>
+
+              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {bidangList.map((bidang, index) => (
+                  <Reveal key={bidang.id} delay={index * 100}>
+                    <BidangCard
+                      id={bidang.id}
+                      namaBidang={bidang.nama_bidang}
+                      deskripsi={bidang.deskripsi}
+                      penanggungJawab={bidang.penanggung_jawab}
+                      jumlahAnggota={bidang.jumlah_anggota}
+                    />
+                  </Reveal>
+                ))}
+              </div>
+            </Container>
+          </section>
+        )}
+
         <section
           id="kontak"
           className="relative overflow-hidden border-t-2 border-white bg-[#dc7027] py-16 text-white sm:py-20"
@@ -434,22 +470,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="bg-brown py-8 text-white">
-        <Container className="flex flex-col items-center justify-between gap-5 text-center text-sm sm:flex-row sm:text-left">
-          <p>© 2026 BEM Universitas Diponegoro.</p>
-          <nav className="flex flex-wrap justify-center gap-5 font-medium">
-            <a href="#beranda" className="hover:text-peach">
-              Beranda
-            </a>
-            <a href="#berita" className="hover:text-peach">
-              Publikasi
-            </a>
-            <a href="#ruang-gerak" className="hover:text-peach">
-              Ruang Gerak
-            </a>
-          </nav>
-        </Container>
-      </footer>
+      <Footer />
     </>
   );
 }
