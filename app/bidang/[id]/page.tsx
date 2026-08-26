@@ -52,14 +52,6 @@ export default async function BidangDetailPage({ params }: PageProps) {
             {bidang.nama_bidang}
           </h1>
 
-          {bidang.gambar ? (
-            <img
-              src={bidang.gambar}
-              alt={`Logo ${bidang.nama_bidang}`}
-              className="mt-5 h-20 w-20 rounded-full object-contain"
-            />
-          ) : null}
-
           <div className="mt-5 flex items-center gap-2 text-sm font-semibold tracking-wide text-clay">
             <Users size={16} strokeWidth={2} />
             <span>

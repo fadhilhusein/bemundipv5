@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { FieldConfig, TableConfig } from "@/lib/data/types";
 
@@ -55,18 +55,11 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
   const [fkOptions, setFkOptions] = useState<Record<string, Option[]>>({});
   const [uploadState, setUploadState] = useState<Record<string, UploadStatus>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
 
   const fkFields = useMemo(
     () => config.fields.filter((f) => f.type === "fk-select" && f.fkTable),
     [config]
   );
-
-  const showToast = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(null), 3000);
-  };
 
   useEffect(() => {
     let cancelled = false;
@@ -97,16 +90,6 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config.slug]);
 
-  useEffect(() => {
-    if (!isModalOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeModal();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isModalOpen]);
-
   const handleChange = (name: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
@@ -131,30 +114,6 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
 
   const isUploading = Object.values(uploadState).some((status) => status === "uploading");
 
-  const openCreate = () => {
-    setEditingId(null);
-    setFormValues(defaultsFor(config));
-    setUploadState({});
-    setError(null);
-    setIsModalOpen(true);
-  };
-
-  const openEdit = (entry: Record<string, unknown>) => {
-    setEditingId(String(entry[config.idColumn]));
-    setFormValues(valuesFromEntry(config, entry));
-    setUploadState({});
-    setError(null);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingId(null);
-    setFormValues(defaultsFor(config));
-    setUploadState({});
-    setError(null);
-  };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
@@ -173,17 +132,29 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
         throw new Error(json.error ?? "Gagal menyimpan data");
       }
 
-      const actionLabel = editingId ? "diperbarui" : "ditambahkan";
-      closeModal();
+      setFormValues(defaultsFor(config));
+      setUploadState({});
+      setEditingId(null);
       const refreshed = await fetch(`/api/data/${config.slug}`);
       const refreshedJson = await refreshed.json();
       setEntries(refreshedJson.data ?? []);
-      showToast(`${config.label} berhasil ${actionLabel}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menyimpan data");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleEditClick = (entry: Record<string, unknown>) => {
+    setError(null);
+    setEditingId(String(entry[config.idColumn]));
+    setFormValues(valuesFromEntry(config, entry));
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setFormValues(defaultsFor(config));
+    setError(null);
   };
 
   const handleDelete = async (entry: Record<string, unknown>) => {
@@ -201,12 +172,11 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
       }
 
       if (editingId === id) {
-        closeModal();
+        handleCancelEdit();
       }
       const refreshed = await fetch(`/api/data/${config.slug}`);
       const refreshedJson = await refreshed.json();
       setEntries(refreshedJson.data ?? []);
-      showToast(`${config.label} berhasil dihapus`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menghapus data");
     } finally {
@@ -333,18 +303,40 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
   return (
     <div className="flex flex-col gap-8">
       <div className="rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 className="font-display text-2xl font-medium text-brown">Daftar {config.label}</h2>
-            {config.description ? <p className="mt-1 text-sm text-clay">{config.description}</p> : null}
-          </div>
-          {canManage ? (
-            <Button type="button" onClick={openCreate} className="px-5">
-              <Plus size={16} />
-              Tambah {config.label}
-            </Button>
+        <h2 className="font-display text-2xl font-medium text-brown">
+          {editingId ? `Edit ${config.label}` : `Tambah ${config.label}`}
+        </h2>
+        {config.description ? <p className="mt-1 text-sm text-clay">{config.description}</p> : null}
+
+        <form onSubmit={handleSubmit} className="mt-6 grid gap-5 sm:grid-cols-2">
+          {config.fields.map(renderField)}
+
+          {error ? (
+            <p role="alert" className="text-sm text-red sm:col-span-2">
+              {error}
+            </p>
           ) : null}
-        </div>
+
+          <div className="flex items-center gap-3 sm:col-span-2">
+            <Button className="px-8" disabled={isSubmitting || isUploading}>
+              {isSubmitting ? "Menyimpan…" : editingId ? "Simpan Perubahan" : `Simpan ${config.label}`}
+            </Button>
+            {editingId ? (
+              <button
+                type="button"
+                onClick={handleCancelEdit}
+                disabled={isSubmitting}
+                className="text-sm font-semibold text-clay hover:text-brown"
+              >
+                Batal
+              </button>
+            ) : null}
+          </div>
+        </form>
+      </div>
+
+      <div className="rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8">
+        <h2 className="font-display text-2xl font-medium text-brown">Daftar {config.label}</h2>
 
         <div className="mt-6 overflow-x-auto">
           <table className="w-full min-w-[640px] border-collapse text-left text-sm">
@@ -391,7 +383,7 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
                         <div className="flex items-center gap-3">
                           <button
                             type="button"
-                            onClick={() => openEdit(entry)}
+                            onClick={() => handleEditClick(entry)}
                             aria-label={`Edit ${config.label}`}
                             className="text-clay hover:text-orange"
                           >
@@ -416,64 +408,6 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
           </table>
         </div>
       </div>
-
-      {canManage && isModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={closeModal} aria-hidden="true" />
-          <div
-            role="dialog"
-            aria-modal="true"
-            className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="font-display text-2xl font-medium text-brown">
-                  {editingId ? `Edit ${config.label}` : `Tambah ${config.label}`}
-                </h2>
-                {config.description ? <p className="mt-1 text-sm text-clay">{config.description}</p> : null}
-              </div>
-              <button
-                type="button"
-                onClick={closeModal}
-                aria-label="Tutup"
-                className="text-clay transition hover:text-brown"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="mt-6 grid gap-5 sm:grid-cols-2">
-              {config.fields.map(renderField)}
-
-              {error ? (
-                <p role="alert" className="text-sm text-red sm:col-span-2">
-                  {error}
-                </p>
-              ) : null}
-
-              <div className="flex items-center gap-3 sm:col-span-2">
-                <Button className="px-8" disabled={isSubmitting || isUploading}>
-                  {isSubmitting ? "Menyimpan…" : editingId ? "Simpan Perubahan" : `Simpan ${config.label}`}
-                </Button>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  disabled={isSubmitting}
-                  className="text-sm font-semibold text-clay hover:text-brown"
-                >
-                  Batal
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
-
-      {toast ? (
-        <div className="fixed bottom-6 right-6 z-50 rounded-full bg-brown px-5 py-3 text-sm font-semibold text-white shadow-card">
-          {toast}
-        </div>
-      ) : null}
     </div>
   );
 }

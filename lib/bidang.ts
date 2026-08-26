@@ -10,9 +10,7 @@ export async function ensureBidangTable() {
       deskripsi TEXT NOT NULL,
       penanggung_jawab TEXT NOT NULL,
       jumlah_anggota INTEGER NOT NULL,
-      gambar TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `;
-  await client`ALTER TABLE bidang ADD COLUMN IF NOT EXISTS gambar TEXT`;
 }

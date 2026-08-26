@@ -405,7 +405,6 @@ export default async function Home() {
                       deskripsi={bidang.deskripsi}
                       penanggungJawab={bidang.penanggung_jawab}
                       jumlahAnggota={bidang.jumlah_anggota}
-                      gambar={bidang.gambar}
                     />
                   </Reveal>
                 ))}
