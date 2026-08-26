@@ -6,7 +6,6 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Container } from "@/components/ui/Container";
 import { getBidangById } from "@/lib/bidang-public";
-import { BidangLogo } from "@/components/BidangLogo";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -52,8 +51,6 @@ export default async function BidangDetailPage({ params }: PageProps) {
           <h1 className="font-display mt-6 text-[clamp(3rem,9vw,5rem)] font-medium leading-[0.9] text-brown">
             {bidang.nama_bidang}
           </h1>
-
-          <BidangLogo id={bidang.id} alt={`Logo ${bidang.nama_bidang}`} className="mt-5 h-20 w-20 rounded-full object-contain" />
 
           <div className="mt-5 flex items-center gap-2 text-sm font-semibold tracking-wide text-clay">
             <Users size={16} strokeWidth={2} />
