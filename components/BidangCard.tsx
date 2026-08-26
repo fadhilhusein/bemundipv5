@@ -7,6 +7,7 @@ type BidangCardProps = {
   deskripsi: string;
   penanggungJawab: string;
   jumlahAnggota: number;
+  gambar?: string | null;
 };
 
 export function BidangCard({
@@ -14,13 +15,21 @@ export function BidangCard({
   namaBidang,
   deskripsi,
   penanggungJawab,
-  jumlahAnggota
+  jumlahAnggota,
+  gambar
 }: BidangCardProps) {
   return (
     <Link
       href={`/bidang/${id}`}
       className="group flex min-h-full flex-col rounded-xl border-2 border-clay bg-cream p-5 shadow-card transition duration-[250ms] hover:-translate-y-1.5 hover:shadow-card-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brown"
     >
+      {gambar ? (
+        <img
+          src={gambar}
+          alt={`Logo ${namaBidang}`}
+          className="mx-auto mb-4 h-16 w-16 rounded-full object-contain"
+        />
+      ) : null}
       <h3 className="text-center text-2xl font-bold leading-[1.05] text-orange sm:text-3xl">
         {namaBidang}
       </h3>
