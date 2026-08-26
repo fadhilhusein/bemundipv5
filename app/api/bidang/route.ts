@@ -19,17 +19,72 @@ export async function POST(request: NextRequest) {
   }
 
   await ensureBidangTable();
-  const { namaBidang, deskripsi, penanggungJawab, jumlahAnggota } = await request.json();
+  const { namaBidang, deskripsi, penanggungJawab, jumlahAnggota, gambar } = await request.json();
 
   if (!namaBidang || !deskripsi || !penanggungJawab || !jumlahAnggota) {
     return NextResponse.json({ error: "Semua field wajib diisi" }, { status: 400 });
   }
 
   const [row] = await client`
-    INSERT INTO bidang (nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota)
-    VALUES (${namaBidang}, ${deskripsi}, ${penanggungJawab}, ${Number(jumlahAnggota)})
+    INSERT INTO bidang (nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar)
+    VALUES (${namaBidang}, ${deskripsi}, ${penanggungJawab}, ${Number(jumlahAnggota)}, ${gambar ?? null})
     RETURNING *
   `;
 
   return NextResponse.json({ data: row }, { status: 201 });
+}
+
+export async function PUT(request: NextRequest) {
+  if (!(await requireSession())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  await ensureBidangTable();
+  const { id, namaBidang, deskripsi, penanggungJawab, jumlahAnggota, gambar } = await request.json();
+
+  const numericId = Number(id);
+  if (!Number.isFinite(numericId)) {
+    return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+  }
+  if (!namaBidang || !deskripsi || !penanggungJawab || !jumlahAnggota) {
+    return NextResponse.json({ error: "Semua field wajib diisi" }, { status: 400 });
+  }
+
+  const [row] = await client`
+    UPDATE bidang
+    SET nama_bidang = ${namaBidang},
+        deskripsi = ${deskripsi},
+        penanggung_jawab = ${penanggungJawab},
+        jumlah_anggota = ${Number(jumlahAnggota)},
+        gambar = ${gambar ?? null}
+    WHERE id = ${numericId}
+    RETURNING *
+  `;
+
+  if (!row) {
+    return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
+  }
+
+  return NextResponse.json({ data: row });
+}
+
+export async function DELETE(request: NextRequest) {
+  if (!(await requireSession())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  await ensureBidangTable();
+  const { searchParams } = new URL(request.url);
+  const id = Number(searchParams.get("id"));
+  if (!Number.isFinite(id)) {
+    return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+  }
+
+  const [row] = await client`DELETE FROM bidang WHERE id = ${id} RETURNING *`;
+
+  if (!row) {
+    return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
+  }
+
+  return NextResponse.json({ data: row });
 }

@@ -101,6 +101,7 @@ export const bidang: TableConfig = {
   idColumn: "id",
   fields: [
     { name: "nama_bidang", label: "Nama Bidang", type: "text", required: true },
+    { name: "gambar", label: "Logo Bidang", type: "file", required: false },
     { name: "penanggung_jawab", label: "Penanggung Jawab", type: "text", required: true },
     { name: "jumlah_anggota", label: "Jumlah Anggota", type: "number", required: true, defaultValue: 0 },
     { name: "deskripsi", label: "Deskripsi", type: "textarea", required: false, colSpan: 2 }

@@ -340,8 +340,10 @@ export const SCHEMA_STATEMENTS: string[] = [
       deskripsi         TEXT NOT NULL,
       penanggung_jawab  TEXT NOT NULL,
       jumlah_anggota    INTEGER NOT NULL,
+      gambar            TEXT,
       created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
   );`,
+  `ALTER TABLE bidang ADD COLUMN IF NOT EXISTS gambar TEXT;`,
   `CREATE INDEX IF NOT EXISTS idx_users_kabinet ON users(id_kabinet);`,
   `CREATE INDEX IF NOT EXISTS idx_sosmed_kabinet ON media_sosial(id_kabinet);`,
   `CREATE INDEX IF NOT EXISTS idx_layanan_kabinet ON layanan(id_kabinet);`,

@@ -9,13 +9,14 @@ export type BidangRecord = {
   deskripsi: string;
   penanggung_jawab: string;
   jumlah_anggota: number;
+  gambar: string | null;
   created_at: string;
 };
 
 export async function getBidangList(): Promise<BidangRecord[]> {
   await ensureSchema();
   return client`
-    SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, created_at
+    SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar, created_at
     FROM bidang
     ORDER BY nama_bidang ASC
   ` as unknown as BidangRecord[];
@@ -24,7 +25,7 @@ export async function getBidangList(): Promise<BidangRecord[]> {
 export async function getBidangById(id: number): Promise<BidangRecord | null> {
   await ensureSchema();
   const rows = (await client`
-    SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, created_at
+    SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar, created_at
     FROM bidang
     WHERE id = ${id}
     LIMIT 1
