@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Users } from "lucide-react";
 
@@ -24,9 +25,12 @@ export function BidangCard({
       className="group flex min-h-full flex-col rounded-xl border-2 border-clay bg-cream p-5 shadow-card transition duration-[250ms] hover:-translate-y-1.5 hover:shadow-card-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brown"
     >
       {gambar ? (
-        <img
+        <Image
           src={gambar}
           alt={`Logo ${namaBidang}`}
+          width={64}
+          height={64}
+          sizes="64px"
           className="mx-auto mb-4 h-16 w-16 rounded-full object-contain"
         />
       ) : null}

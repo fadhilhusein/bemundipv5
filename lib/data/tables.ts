@@ -108,6 +108,21 @@ export const bidang: TableConfig = {
   ]
 };
 
+export const publikasi: TableConfig = {
+  slug: "publikasi",
+  table: "publikasi_terkini",
+  label: "Publikasi",
+  description: "Berita dan publikasi kabinet — tampil di halaman depan (max 6 terbaru).",
+  idColumn: "id_publikasi",
+  fields: [
+    { name: "judul_publikasi", label: "Judul", type: "text", required: true, colSpan: 2 },
+    { name: "kategori_publikasi", label: "Kategori", type: "text", required: false, placeholder: "mis. Berita, Pengumuman, Event" },
+    { name: "gambar_publikasi", label: "Gambar", type: "file", required: false },
+    { name: "tanggal_publikasi", label: "Tanggal", type: "datetime", required: false },
+    { name: "isi_publikasi", label: "Isi Berita", type: "textarea", required: true, colSpan: 2 }
+  ]
+};
+
 export const TABLES: Record<string, TableConfig> = {
   [masterKabinet.slug]: masterKabinet,
   [mediaSosial.slug]: mediaSosial,
@@ -115,6 +130,7 @@ export const TABLES: Record<string, TableConfig> = {
   [agenda.slug]: agenda,
   [programUnggulan.slug]: programUnggulan,
   [bidang.slug]: bidang,
+  [publikasi.slug]: publikasi,
   ...Object.fromEntries(STATISTIK_TABLES.map((config) => [config.slug, config]))
 };
 

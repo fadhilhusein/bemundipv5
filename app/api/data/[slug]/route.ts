@@ -4,6 +4,7 @@ import { requireSession } from "@/lib/auth";
 import { ensureSchema } from "@/lib/data/schema";
 import { TABLES } from "@/lib/data/tables";
 import { validateFields } from "@/lib/data/validate";
+import { ensurePenulis } from "@/lib/publikasi";
 
 type RouteContext = { params: Promise<{ slug: string }> };
 
@@ -26,7 +27,8 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
 }
 
 export async function POST(request: NextRequest, { params }: RouteContext) {
-  if (!(await requireSession())) {
+  const session = await requireSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -40,6 +42,18 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
   const body = await request.json().catch(() => ({}));
 
   const { columns, values, errors } = validateFields(config, body);
+
+  // publikasi_terkini needs id_penulis from current admin
+  if (config.table === "publikasi_terkini") {
+    const penulisId = await ensurePenulis(session.email ?? "");
+    columns.push("id_penulis");
+    values.push(penulisId);
+    const tanggalIdx = columns.indexOf("tanggal_publikasi");
+    if (tanggalIdx !== -1 && values[tanggalIdx] === null) {
+      columns.splice(tanggalIdx, 1);
+      values.splice(tanggalIdx, 1);
+    }
+  }
 
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ error: "Ada field yang belum valid", fields: errors }, { status: 400 });

@@ -7,29 +7,40 @@ const SEED_MASTER_EMAIL = "admin@gmail.com";
 
 export type AdminRole = "admin" | "master";
 
-export async function ensureAdminsTable() {
-  await client`
-    CREATE TABLE IF NOT EXISTS admins (
-      id SERIAL PRIMARY KEY,
-      email TEXT UNIQUE NOT NULL,
-      role TEXT NOT NULL DEFAULT 'admin',
-      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-    )
-  `;
+let adminsReady: Promise<void> | null = null;
 
-  await client`ALTER TABLE admins ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'admin'`;
+export async function ensureAdminsTable(): Promise<void> {
+  if (adminsReady) return adminsReady;
 
-  await client`
-    INSERT INTO admins (email, role)
-    VALUES (${SEED_ADMIN_EMAIL}, 'admin')
-    ON CONFLICT (email) DO NOTHING
-  `;
+  adminsReady = (async () => {
+    await client`
+      CREATE TABLE IF NOT EXISTS admins (
+        id SERIAL PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        role TEXT NOT NULL DEFAULT 'admin',
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )
+    `;
 
-  await client`
-    INSERT INTO admins (email, role)
-    VALUES (${SEED_MASTER_EMAIL}, 'master')
-    ON CONFLICT (email) DO UPDATE SET role = 'master'
-  `;
+    await client`ALTER TABLE admins ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'admin'`;
+
+    await client`
+      INSERT INTO admins (email, role)
+      VALUES (${SEED_ADMIN_EMAIL}, 'admin')
+      ON CONFLICT (email) DO NOTHING
+    `;
+
+    await client`
+      INSERT INTO admins (email, role)
+      VALUES (${SEED_MASTER_EMAIL}, 'master')
+      ON CONFLICT (email) DO UPDATE SET role = 'master'
+    `;
+  })().catch((err) => {
+    adminsReady = null;
+    throw err;
+  });
+
+  return adminsReady;
 }
 
 export async function getAdminRole(email: string | null | undefined): Promise<AdminRole | null> {

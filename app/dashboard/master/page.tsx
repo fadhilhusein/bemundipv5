@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { agenda, bidang, layanan, masterKabinet, mediaSosial, programUnggulan, STATISTIK_TABLES } from "@/lib/data/tables";
+import { agenda, bidang, layanan, masterKabinet, mediaSosial, programUnggulan, publikasi, STATISTIK_TABLES } from "@/lib/data/tables";
 import type { TableConfig } from "@/lib/data/types";
 
-const MAIN_TABLES: TableConfig[] = [masterKabinet, mediaSosial, layanan, agenda, programUnggulan, bidang];
+const MAIN_TABLES: TableConfig[] = [masterKabinet, mediaSosial, layanan, agenda, programUnggulan, bidang, publikasi];
 
 function Section({ title, tables }: { title: string; tables: TableConfig[] }) {
   return (

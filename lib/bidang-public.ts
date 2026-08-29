@@ -1,7 +1,6 @@
 import "server-only";
 
 import client from "@/lib/db";
-import { ensureSchema } from "@/lib/data/schema";
 
 export type BidangRecord = {
   id: number;
@@ -14,7 +13,6 @@ export type BidangRecord = {
 };
 
 export async function getBidangList(): Promise<BidangRecord[]> {
-  await ensureSchema();
   return client`
     SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar, created_at
     FROM bidang
@@ -23,7 +21,6 @@ export async function getBidangList(): Promise<BidangRecord[]> {
 }
 
 export async function getBidangById(id: number): Promise<BidangRecord | null> {
-  await ensureSchema();
   const rows = (await client`
     SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar, created_at
     FROM bidang

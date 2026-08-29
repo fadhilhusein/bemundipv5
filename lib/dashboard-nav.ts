@@ -1,4 +1,4 @@
-import { LayoutGrid, Image, Wrench, CalendarDays, Sparkles, BarChart3, ShieldCheck, type LucideIcon } from "lucide-react";
+import { LayoutGrid, Image, Wrench, CalendarDays, Sparkles, BarChart3, ShieldCheck, Newspaper, type LucideIcon } from "lucide-react";
 import type { AdminRole } from "@/lib/admins";
 
 export type NavItem = {
@@ -28,6 +28,7 @@ export const navGroups: NavGroup[] = [
   {
     label: "Konten",
     items: [
+      { label: "Publikasi", href: "/dashboard/publikasi", icon: Newspaper },
       { label: "Agenda", href: "/dashboard/agenda", icon: CalendarDays },
       { label: "Program Unggulan", href: "/dashboard/program-unggulan", icon: Sparkles }
     ]

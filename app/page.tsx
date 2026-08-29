@@ -11,31 +11,18 @@ import { DecorativeImage } from "@/components/DecorativeImage";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { MotionScene } from "@/components/MotionScene";
-import { ProgramCard } from "@/components/ProgramCard";
+import { EmptyPublikasi } from "@/components/EmptyPublikasi";
+import { PublikasiCard } from "@/components/PublikasiCard";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { getBidangList } from "@/lib/bidang-public";
+import { getPublikasiCount, getPublikasiPaginated } from "@/lib/publikasi-public";
+import { Pagination } from "@/components/ui/Pagination";
 
 export const dynamic = "force-dynamic";
 
-const programs = [
-  {
-    title: "Festival Karya",
-    description:
-      "Panggung publikasi, apresiasi, dan inovasi mahasiswa dalam satu agenda kampus."
-  },
-  {
-    title: "Diponegoro Mengabdi",
-    description:
-      "Gerak kolaboratif lintas bidang untuk memperluas dampak sosial mahasiswa Undip."
-  },
-  {
-    title: "Ruang Aspirasi",
-    description:
-      "Kanal pengawalan kampus agar suara mahasiswa tersambung ke kebijakan."
-  }
-];
+const BERITA_PER_PAGE = 6;
 
 const movementSpaces = [
   {
@@ -71,8 +58,26 @@ const mottoItems = [
   }
 ];
 
-export default async function Home() {
-  const bidangList = await getBidangList();
+type HomeProps = {
+  searchParams: Promise<{ page?: string }>;
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const { page: pageParam } = await searchParams;
+  const currentPage = Math.max(1, Number(pageParam) || 1);
+
+  const [bidangList, publikasiCount, publikasiList] = await Promise.all([
+    getBidangList(),
+    getPublikasiCount(),
+    getPublikasiPaginated(currentPage, BERITA_PER_PAGE)
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(publikasiCount / BERITA_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const finalPublikasiList =
+    currentPage !== safePage && publikasiCount > 0
+      ? await getPublikasiPaginated(safePage, BERITA_PER_PAGE)
+      : publikasiList;
 
   return (
     <>
@@ -86,17 +91,20 @@ export default async function Home() {
           <Image
             src="/assets/UNDIPOfficial-removebg-preview.png"
             alt=""
-            width={720}
-            height={1080}
+            width={480}
+            height={720}
             priority
+            quality={60}
+            sizes="(max-width: 768px) 50vw, 480px"
             className="stamp-watermark absolute -left-[54%] top-[10%] h-[72%] w-auto object-contain md:-left-[12%] lg:-left-[7%]"
           />
           <Image
             src="/assets/UNDIPOfficial-removebg-preview.png"
             alt=""
-            width={720}
-            height={1080}
-            priority
+            width={480}
+            height={720}
+            quality={60}
+            sizes="(max-width: 768px) 50vw, 480px"
             className="stamp-watermark absolute -right-[54%] top-[10%] h-[72%] w-auto object-contain md:-right-[12%] lg:-right-[7%]"
           />
           {/* <DecorativeImage
@@ -325,13 +333,42 @@ export default async function Home() {
               </h2>
             </Reveal>
 
-            <div className="mt-12 grid grid-flow-dense gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {programs.map((program, index) => (
-                <Reveal key={program.title} delay={index * 100}>
-                  <ProgramCard {...program} />
-                </Reveal>
-              ))}
-            </div>
+            {finalPublikasiList.length > 0 ? (
+              <>
+                <div className="mt-12 grid grid-flow-dense gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {finalPublikasiList.map((publikasi, index) => (
+                    <Reveal key={publikasi.id_publikasi} delay={index * 100}>
+                      <PublikasiCard
+                        id={publikasi.id_publikasi}
+                        judul={publikasi.judul_publikasi}
+                        isi={publikasi.isi_publikasi}
+                        gambar={publikasi.gambar_publikasi}
+                        kategori={publikasi.kategori_publikasi}
+                        tanggal={publikasi.tanggal_publikasi}
+                      />
+                    </Reveal>
+                  ))}
+                </div>
+
+                <Pagination currentPage={safePage} totalPages={totalPages} baseHref="/" anchor="#berita" />
+
+                <p className="mt-4 text-center text-xs font-medium tracking-wide text-clay">
+                  Menampilkan {finalPublikasiList.length} dari {publikasiCount} publikasi
+                </p>
+
+                {totalPages > 1 && (
+                  <div className="mt-6 text-center">
+                    <Button href="/publikasi" variant="secondary">
+                      Lihat semua publikasi →
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="mt-12">
+                <EmptyPublikasi variant="homepage" />
+              </div>
+            )}
           </Container>
         </section>
 

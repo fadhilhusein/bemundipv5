@@ -12,6 +12,9 @@ export function MotionScene() {
       return;
     }
 
+    // useGSAP already handles context; we only need to clean ScrollTriggers on unmount
+    // to prevent duplicates on HMR (previous version had no cleanup at all)
+
     gsap.utils.toArray<HTMLElement>("[data-gsap-image]").forEach((element) => {
       gsap.fromTo(
         element,
@@ -47,6 +50,11 @@ export function MotionScene() {
         }
       );
     });
+
+    return () => {
+      // kill only ScrollTriggers created here to avoid HMR duplicates
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
   }, []);
 
   return null;

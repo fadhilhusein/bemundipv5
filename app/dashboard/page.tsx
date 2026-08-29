@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -204,7 +205,7 @@ export default function DashboardPage() {
                   <tr key={entry.id} className="border-b border-divider last:border-0">
                     <td className="py-3 pr-4">
                       {entry.gambar ? (
-                        <img src={entry.gambar} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                        <Image src={entry.gambar} alt="" width={40} height={40} className="h-10 w-10 rounded-lg object-cover" />
                       ) : (
                         <span className="text-brown/40">—</span>
                       )}
@@ -326,7 +327,7 @@ export default function DashboardPage() {
                 />
                 {isUploading ? <p className="mt-1 text-xs text-clay">Mengunggah…</p> : null}
                 {form.gambar ? (
-                  <img src={form.gambar} alt="" className="mt-2 h-20 w-20 rounded-xl object-cover" />
+                  <Image src={form.gambar} alt="" width={80} height={80} className="mt-2 h-20 w-20 rounded-xl object-cover" />
                 ) : null}
               </div>
 

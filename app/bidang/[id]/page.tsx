@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Users } from "lucide-react";
@@ -53,9 +54,12 @@ export default async function BidangDetailPage({ params }: PageProps) {
           </h1>
 
           {bidang.gambar ? (
-            <img
+            <Image
               src={bidang.gambar}
               alt={`Logo ${bidang.nama_bidang}`}
+              width={80}
+              height={80}
+              sizes="80px"
               className="mt-5 h-20 w-20 rounded-full object-contain"
             />
           ) : null}
