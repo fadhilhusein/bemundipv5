@@ -1,14 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { revalidatePath, revalidateTag } from "next/cache";
 import client from "@/lib/db";
 import { requireSession } from "@/lib/auth";
-import { ensureBidangTable } from "@/lib/bidang";
 
 export async function GET() {
   if (!(await requireSession())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await ensureBidangTable();
   const rows = await client`SELECT * FROM bidang ORDER BY created_at DESC`;
   return NextResponse.json({ data: rows });
 }
@@ -18,7 +17,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await ensureBidangTable();
   const { namaBidang, deskripsi, penanggungJawab, jumlahAnggota, gambar } = await request.json();
 
   if (!namaBidang || !deskripsi || !penanggungJawab || !jumlahAnggota) {
@@ -31,6 +29,9 @@ export async function POST(request: NextRequest) {
     RETURNING *
   `;
 
+  revalidateTag("bidang");
+  revalidatePath("/");
+
   return NextResponse.json({ data: row }, { status: 201 });
 }
 
@@ -39,7 +40,6 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await ensureBidangTable();
   const { id, namaBidang, deskripsi, penanggungJawab, jumlahAnggota, gambar } = await request.json();
 
   const numericId = Number(id);
@@ -65,6 +65,10 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
   }
 
+  revalidateTag("bidang");
+  revalidatePath("/");
+  revalidatePath(`/bidang/${numericId}`);
+
   return NextResponse.json({ data: row });
 }
 
@@ -73,7 +77,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await ensureBidangTable();
   const { searchParams } = new URL(request.url);
   const id = Number(searchParams.get("id"));
   if (!Number.isFinite(id)) {
@@ -85,6 +88,9 @@ export async function DELETE(request: NextRequest) {
   if (!row) {
     return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
   }
+
+  revalidateTag("bidang");
+  revalidatePath("/");
 
   return NextResponse.json({ data: row });
 }

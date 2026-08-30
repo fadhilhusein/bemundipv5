@@ -10,8 +10,11 @@ export function Footer() {
           <Link href="/#beranda" className="hover:text-peach">
             Beranda
           </Link>
-          <Link href="/#berita" className="hover:text-peach">
+          <Link href="/publikasi" className="hover:text-peach">
             Publikasi
+          </Link>
+          <Link href="/agenda" className="hover:text-peach">
+            Agenda
           </Link>
           <Link href="/#ruang-gerak" className="hover:text-peach">
             Ruang Gerak

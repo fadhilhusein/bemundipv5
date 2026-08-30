@@ -51,15 +51,16 @@ export const agenda: TableConfig = {
   slug: "agenda",
   table: "agenda",
   label: "Agenda",
+  description: "Kelola jadwal program kerja, lokakarya, dan agenda kegiatan mahasiswa BEM UNDIP.",
   idColumn: "id_agenda",
   fields: [
-    { name: "id_kabinet", label: "Kabinet", type: "fk-select", required: true, fkTable: "master-kabinet" },
+    { name: "id_bidang", label: "Bidang Pelaksana", type: "fk-select", required: true, fkTable: "bidang" },
     { name: "judul_agenda", label: "Judul Agenda", type: "text", required: true, colSpan: 2 },
     { name: "deskripsi_program", label: "Deskripsi", type: "textarea", required: false, colSpan: 2 },
     { name: "timeline_agenda", label: "Timeline", type: "text", required: false, placeholder: "mis. 12-15 Agustus 2026" },
     { name: "lokasi", label: "Lokasi", type: "text", required: false },
     { name: "poster_agenda", label: "Poster Agenda", type: "file", required: false },
-    { name: "link_pendaftaran", label: "Link Pendaftaran", type: "text", required: false },
+    { name: "link_pendaftaran", label: "Link Pendaftaran", type: "text", required: false, placeholder: "https://forms.gle/..." },
     {
       name: "status_agenda",
       label: "Status",
@@ -99,6 +100,7 @@ export const bidang: TableConfig = {
   label: "Bidang",
   description: "Data bidang/departemen kabinet BEM UNDIP.",
   idColumn: "id",
+  optionLabelColumn: "nama_bidang",
   fields: [
     { name: "nama_bidang", label: "Nama Bidang", type: "text", required: true },
     { name: "gambar", label: "Logo Bidang", type: "file", required: false },

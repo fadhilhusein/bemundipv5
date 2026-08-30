@@ -9,6 +9,7 @@ const navItems = [
   { label: "Beranda", href: "/#beranda" },
   { label: "Departemen", href: "/#bidang" },
   { label: "Publikasi", href: "/#berita" },
+  { label: "Agenda", href: "/#agenda" },
   { label: "Layanan", href: "/#kontak" },
   { label: "Log in", href: "/login" }
 ];

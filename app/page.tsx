@@ -6,40 +6,46 @@ import {
   Send,
   Youtube
 } from "lucide-react";
+import { AgendaCard } from "@/components/AgendaCard";
 import { BidangCard } from "@/components/BidangCard";
 import { DecorativeImage } from "@/components/DecorativeImage";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { MotionScene } from "@/components/MotionScene";
+import { EmptyAgenda } from "@/components/EmptyAgenda";
 import { EmptyPublikasi } from "@/components/EmptyPublikasi";
 import { PublikasiCard } from "@/components/PublikasiCard";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { getAgendaPaginated } from "@/lib/agenda-public";
 import { getBidangList } from "@/lib/bidang-public";
 import { getPublikasiCount, getPublikasiPaginated } from "@/lib/publikasi-public";
 import { Pagination } from "@/components/ui/Pagination";
 
-export const dynamic = "force-dynamic";
-
 const BERITA_PER_PAGE = 6;
+const AGENDA_LIMIT = 3;
 
 const movementSpaces = [
   {
     title: "Departemen",
-    description: "Kenali bidang kerja, agenda, dan ruang kolaborasi di dalam kabinet."
+    description: "Kenali bidang kerja, agenda, dan ruang kolaborasi di dalam kabinet.",
+    href: "#bidang"
   },
   {
     title: "Layanan",
-    description: "Akses kanal aspirasi, advokasi, informasi beasiswa, dan bantuan kampus."
+    description: "Akses kanal aspirasi, advokasi, informasi beasiswa, dan bantuan kampus.",
+    href: "#kontak"
   },
   {
     title: "Publikasi",
-    description: "Baca rilis kebijakan, kabar program, dan dokumentasi kegiatan."
+    description: "Baca rilis kebijakan, kabar program, dan dokumentasi kegiatan.",
+    href: "#berita"
   },
   {
     title: "Agenda",
-    description: "Pantau forum, kelas publik, panggung karya, dan kegiatan mahasiswa."
+    description: "Pantau forum, kelas publik, panggung karya, dan kegiatan mahasiswa.",
+    href: "#agenda"
   }
 ];
 
@@ -66,10 +72,11 @@ export default async function Home({ searchParams }: HomeProps) {
   const { page: pageParam } = await searchParams;
   const currentPage = Math.max(1, Number(pageParam) || 1);
 
-  const [bidangList, publikasiCount, publikasiList] = await Promise.all([
+  const [bidangList, publikasiCount, publikasiList, agendaList] = await Promise.all([
     getBidangList(),
     getPublikasiCount(),
-    getPublikasiPaginated(currentPage, BERITA_PER_PAGE)
+    getPublikasiPaginated(currentPage, BERITA_PER_PAGE),
+    getAgendaPaginated(1, AGENDA_LIMIT)
   ]);
 
   const totalPages = Math.max(1, Math.ceil(publikasiCount / BERITA_PER_PAGE));
@@ -356,13 +363,11 @@ export default async function Home({ searchParams }: HomeProps) {
                   Menampilkan {finalPublikasiList.length} dari {publikasiCount} publikasi
                 </p>
 
-                {totalPages > 1 && (
-                  <div className="mt-6 text-center">
-                    <Button href="/publikasi" variant="secondary">
-                      Lihat semua publikasi →
-                    </Button>
-                  </div>
-                )}
+                <div className="mt-6 text-center">
+                  <Button href="/publikasi" variant="secondary">
+                    Lihat semua publikasi →
+                  </Button>
+                </div>
               </>
             ) : (
               <div className="mt-12">
@@ -405,7 +410,7 @@ export default async function Home({ searchParams }: HomeProps) {
               {movementSpaces.map((item, index) => (
                 <Reveal key={item.title} delay={index * 90}>
                   <a
-                    href="#kontak"
+                    href={item.href}
                     className="group block min-h-[126px] border-t-4 border-white/85 pt-5 transition hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
                     <h3 className="font-display text-4xl leading-none sm:text-5xl">
@@ -450,6 +455,51 @@ export default async function Home({ searchParams }: HomeProps) {
             </Container>
           </section>
         )}
+
+        <section id="agenda" className="relative overflow-hidden bg-cream section-pad border-t border-divider">
+          <Container>
+            <Reveal>
+              <h2 className="font-display text-center text-[clamp(4.6rem,17vw,8rem)] font-medium leading-none text-brown">
+                Agenda
+              </h2>
+              <p className="mx-auto mt-5 max-w-2xl text-center text-sm font-medium leading-relaxed tracking-wide text-brown/80 sm:text-base">
+                Jadwal kegiatan terdekat, forum mahasiswa, dan program kerja Kabinet BEM UNDIP 2026.
+              </p>
+            </Reveal>
+
+            {agendaList.length > 0 ? (
+              <>
+                <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {agendaList.map((agenda, index) => (
+                    <Reveal key={agenda.id_agenda} delay={index * 100}>
+                      <AgendaCard
+                        id={agenda.id_agenda}
+                        judul={agenda.judul_agenda}
+                        namaBidang={agenda.nama_bidang}
+                        deskripsi={agenda.deskripsi_program}
+                        timeline={agenda.timeline_agenda}
+                        lokasi={agenda.lokasi}
+                        poster={agenda.poster_agenda}
+                        linkPendaftaran={agenda.link_pendaftaran}
+                        status={agenda.status_agenda}
+                      />
+                    </Reveal>
+                  ))}
+                </div>
+
+                <div className="mt-10 text-center">
+                  <Button href="/agenda" variant="secondary">
+                    Lihat semua agenda →
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="mt-12">
+                <EmptyAgenda />
+              </div>
+            )}
+          </Container>
+        </section>
 
         <section
           id="kontak"

@@ -71,25 +71,44 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
   useEffect(() => {
     let cancelled = false;
 
-    const loadEntries = async () => {
+    const loadData = async () => {
       setIsLoading(true);
-      const res = await fetch(`/api/data/${config.slug}`);
-      const json = await res.json();
-      if (!cancelled) {
-        setEntries(json.data ?? []);
-        setIsLoading(false);
+      try {
+        const fetchEntries = fetch(`/api/data/${config.slug}`).then(async (r) => {
+          if (!r.ok) return { data: [] };
+          return r.json().catch(() => ({ data: [] }));
+        });
+
+        const fetchOptions = Promise.all(
+          fkFields.map(async (field) => {
+            const res = await fetch(`/api/data/${field.fkTable}/options`);
+            if (!res.ok) return { table: field.fkTable as string, data: [] };
+            const json = await res.json().catch(() => ({ data: [] }));
+            return { table: field.fkTable as string, data: json.data ?? [] };
+          })
+        );
+
+        const [entriesJson, optionsList] = await Promise.all([fetchEntries, fetchOptions]);
+        if (!cancelled) {
+          setEntries(entriesJson?.data ?? []);
+          const optionsMap: Record<string, Option[]> = {};
+          for (const item of optionsList) {
+            optionsMap[item.table] = item.data;
+          }
+          setFkOptions((prev) => ({ ...prev, ...optionsMap }));
+        }
+      } catch {
+        if (!cancelled) {
+          setEntries([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
-    loadEntries();
-
-    fkFields.forEach(async (field) => {
-      const res = await fetch(`/api/data/${field.fkTable}/options`);
-      const json = await res.json();
-      if (!cancelled) {
-        setFkOptions((prev) => ({ ...prev, [field.fkTable as string]: json.data ?? [] }));
-      }
-    });
+    loadData();
 
     return () => {
       cancelled = true;
@@ -381,6 +400,19 @@ export function DataForm({ config, canManage = false }: { config: TableConfig; c
                           <img src={String(entry[field.name])} alt="" className="h-10 w-10 rounded-lg object-cover" />
                         ) : field.type === "fk-select" ? (
                           resolveFkLabel(fkOptions, field, entry[field.name])
+                        ) : field.type === "select-enum" && typeof entry[field.name] === "string" ? (
+                          <span className="inline-flex rounded-full bg-peach/30 px-2.5 py-0.5 text-xs font-semibold capitalize text-brown">
+                            {String(entry[field.name]).replace(/_/g, " ")}
+                          </span>
+                        ) : field.name.startsWith("link") && entry[field.name] ? (
+                          <a
+                            href={String(entry[field.name])}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="max-w-[200px] truncate block text-orange hover:underline"
+                          >
+                            {String(entry[field.name])}
+                          </a>
                         ) : (
                           String(entry[field.name] ?? "-")
                         )}

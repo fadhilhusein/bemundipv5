@@ -1,12 +1,29 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { revalidatePath, revalidateTag } from "next/cache";
 import client from "@/lib/db";
 import { requireSession } from "@/lib/auth";
-import { ensureSchema } from "@/lib/data/schema";
 import { TABLES } from "@/lib/data/tables";
 import { validateFields } from "@/lib/data/validate";
 import { ensurePenulis } from "@/lib/publikasi";
 
 type RouteContext = { params: Promise<{ slug: string; id: string }> };
+
+function revalidatePublicCache(slug: string, id?: string | number) {
+  if (slug === "agenda") {
+    revalidateTag("agenda");
+    revalidatePath("/");
+    revalidatePath("/agenda");
+  } else if (slug === "publikasi") {
+    revalidateTag("publikasi");
+    revalidatePath("/");
+    revalidatePath("/publikasi");
+    if (id) revalidatePath(`/publikasi/${id}`);
+  } else if (slug === "bidang") {
+    revalidateTag("bidang");
+    revalidatePath("/");
+    if (id) revalidatePath(`/bidang/${id}`);
+  }
+}
 
 async function guardMaster() {
   const session = await requireSession();
@@ -17,9 +34,9 @@ async function guardMaster() {
 
 async function guardForSlug(slug: string) {
   const config = TABLES[slug];
-  // publikasi can be managed by any admin (like bidang), others need master for edit/delete
-  const isPublicKonten = config?.table === "publikasi_terkini";
-  if (isPublicKonten) {
+  // publikasi & agenda can be managed by any authenticated admin
+  const isKonten = config?.table === "publikasi_terkini" || config?.table === "agenda";
+  if (isKonten) {
     const session = await requireSession();
     if (!session) return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
     return { session };
@@ -42,7 +59,6 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
   }
 
-  await ensureSchema();
   const body = await request.json().catch(() => ({}));
   const { columns, values, errors } = validateFields(config, body);
 
@@ -69,6 +85,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
   }
 
+  revalidatePublicCache(slug, numericId);
+
   return NextResponse.json({ data: result[0] });
 }
 
@@ -87,7 +105,6 @@ export async function DELETE(_request: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
   }
 
-  await ensureSchema();
   const result = await client.query(
     `DELETE FROM ${config.table} WHERE ${config.idColumn} = $1 RETURNING *`,
     [numericId]
@@ -96,6 +113,8 @@ export async function DELETE(_request: NextRequest, { params }: RouteContext) {
   if (result.length === 0) {
     return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
   }
+
+  revalidatePublicCache(slug, numericId);
 
   return NextResponse.json({ data: result[0] });
 }

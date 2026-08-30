@@ -1,12 +1,27 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { revalidatePath, revalidateTag } from "next/cache";
 import client from "@/lib/db";
 import { requireSession } from "@/lib/auth";
-import { ensureSchema } from "@/lib/data/schema";
 import { TABLES } from "@/lib/data/tables";
 import { validateFields } from "@/lib/data/validate";
 import { ensurePenulis } from "@/lib/publikasi";
 
 type RouteContext = { params: Promise<{ slug: string }> };
+
+function revalidatePublicCache(slug: string) {
+  if (slug === "agenda") {
+    revalidateTag("agenda");
+    revalidatePath("/");
+    revalidatePath("/agenda");
+  } else if (slug === "publikasi") {
+    revalidateTag("publikasi");
+    revalidatePath("/");
+    revalidatePath("/publikasi");
+  } else if (slug === "bidang") {
+    revalidateTag("bidang");
+    revalidatePath("/");
+  }
+}
 
 export async function GET(_request: NextRequest, { params }: RouteContext) {
   if (!(await requireSession())) {
@@ -19,7 +34,6 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: "Tabel tidak ditemukan" }, { status: 404 });
   }
 
-  await ensureSchema();
   const rows = await client.query(
     `SELECT * FROM ${config.table} ORDER BY ${config.idColumn} DESC`
   );
@@ -38,7 +52,6 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: "Tabel tidak ditemukan" }, { status: 404 });
   }
 
-  await ensureSchema();
   const body = await request.json().catch(() => ({}));
 
   const { columns, values, errors } = validateFields(config, body);
@@ -63,6 +76,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
   const sql = `INSERT INTO ${config.table} (${columns.join(", ")}) VALUES (${placeholders}) RETURNING *`;
   const result = await client.query(sql, values);
   const row = result[0];
+
+  revalidatePublicCache(slug);
 
   return NextResponse.json({ data: row }, { status: 201 });
 }

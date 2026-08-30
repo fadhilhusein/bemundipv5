@@ -30,8 +30,8 @@ export function EmptyPublikasi({ variant = "homepage", className = "" }: EmptyPu
 
         <div className="mt-8 flex flex-row flex-wrap items-center justify-center gap-3.5">
           <Button href={isHomepage ? "/#beranda" : "/"}>Kembali ke Beranda</Button>
-          <Button href="/#bidang" variant="secondary">
-            Kenali Departemen
+          <Button href="/publikasi" variant="secondary">
+            Buka Halaman Publikasi
           </Button>
         </div>
 

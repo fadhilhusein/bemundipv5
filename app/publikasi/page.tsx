@@ -6,8 +6,6 @@ import { Container } from "@/components/ui/Container";
 import { Pagination } from "@/components/ui/Pagination";
 import { getPublikasiCount, getPublikasiPaginated } from "@/lib/publikasi-public";
 
-export const dynamic = "force-dynamic";
-
 const PER_PAGE = 9;
 
 type PageProps = {

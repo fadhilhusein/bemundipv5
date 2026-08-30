@@ -1,5 +1,6 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import client from "@/lib/db";
 
 export type PublikasiRecord = {
@@ -12,35 +13,53 @@ export type PublikasiRecord = {
   kategori_publikasi: string | null;
 };
 
-export async function getPublikasiList(): Promise<PublikasiRecord[]> {
-  return client`
-    SELECT id_publikasi, id_penulis, judul_publikasi, isi_publikasi, gambar_publikasi, tanggal_publikasi, kategori_publikasi
-    FROM publikasi_terkini
-    ORDER BY tanggal_publikasi DESC
-  ` as unknown as PublikasiRecord[];
-}
+export const getPublikasiList = unstable_cache(
+  async (): Promise<PublikasiRecord[]> => {
+    return client`
+      SELECT id_publikasi, id_penulis, judul_publikasi, isi_publikasi, gambar_publikasi, tanggal_publikasi, kategori_publikasi
+      FROM publikasi_terkini
+      ORDER BY tanggal_publikasi DESC
+    ` as unknown as PublikasiRecord[];
+  },
+  ["publikasi-list"],
+  { tags: ["publikasi"], revalidate: 60 }
+);
 
-export async function getPublikasiCount(): Promise<number> {
-  const rows = (await client`SELECT COUNT(*)::int AS count FROM publikasi_terkini`) as unknown as { count: number }[];
-  return rows[0]?.count ?? 0;
-}
+export const getPublikasiCount = unstable_cache(
+  async (): Promise<number> => {
+    const rows = (await client`SELECT COUNT(*)::int AS count FROM publikasi_terkini`) as unknown as { count: number }[];
+    return rows[0]?.count ?? 0;
+  },
+  ["publikasi-count"],
+  { tags: ["publikasi"], revalidate: 60 }
+);
 
-export async function getPublikasiPaginated(page: number, limit: number): Promise<PublikasiRecord[]> {
-  const offset = (page - 1) * limit;
-  return client`
-    SELECT id_publikasi, id_penulis, judul_publikasi, isi_publikasi, gambar_publikasi, tanggal_publikasi, kategori_publikasi
-    FROM publikasi_terkini
-    ORDER BY tanggal_publikasi DESC
-    LIMIT ${limit} OFFSET ${offset}
-  ` as unknown as PublikasiRecord[];
-}
+export const getPublikasiPaginated = (page: number, limit: number) =>
+  unstable_cache(
+    async (): Promise<PublikasiRecord[]> => {
+      const offset = (page - 1) * limit;
+      return client`
+        SELECT id_publikasi, id_penulis, judul_publikasi, isi_publikasi, gambar_publikasi, tanggal_publikasi, kategori_publikasi
+        FROM publikasi_terkini
+        ORDER BY tanggal_publikasi DESC
+        LIMIT ${limit} OFFSET ${offset}
+      ` as unknown as PublikasiRecord[];
+    },
+    [`publikasi-paginated-${page}-${limit}`],
+    { tags: ["publikasi"], revalidate: 60 }
+  )();
 
-export async function getPublikasiById(id: number): Promise<PublikasiRecord | null> {
-  const rows = (await client`
-    SELECT id_publikasi, id_penulis, judul_publikasi, isi_publikasi, gambar_publikasi, tanggal_publikasi, kategori_publikasi
-    FROM publikasi_terkini
-    WHERE id_publikasi = ${id}
-    LIMIT 1
-  `) as unknown as PublikasiRecord[];
-  return rows[0] ?? null;
-}
+export const getPublikasiById = (id: number) =>
+  unstable_cache(
+    async (): Promise<PublikasiRecord | null> => {
+      const rows = (await client`
+        SELECT id_publikasi, id_penulis, judul_publikasi, isi_publikasi, gambar_publikasi, tanggal_publikasi, kategori_publikasi
+        FROM publikasi_terkini
+        WHERE id_publikasi = ${id}
+        LIMIT 1
+      `) as unknown as PublikasiRecord[];
+      return rows[0] ?? null;
+    },
+    [`publikasi-detail-${id}`],
+    { tags: ["publikasi"], revalidate: 60 }
+  )();

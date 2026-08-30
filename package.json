@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "db:migrate": "node --env-file=.env scripts/migrate.mjs",
     "create-master-admin": "node --env-file=.env scripts/create-master-admin.mjs"
   },
   "dependencies": {
