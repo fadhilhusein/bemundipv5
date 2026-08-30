@@ -1,13 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
 import client from "@/lib/db";
-import { requireSession } from "@/lib/auth";
+import { requireStaffSession } from "@/lib/auth";
 import { ensureSchema } from "@/lib/data/schema";
 import { TABLES } from "@/lib/data/tables";
 
 type RouteContext = { params: Promise<{ slug: string }> };
 
 export async function GET(_request: NextRequest, { params }: RouteContext) {
-  if (!(await requireSession())) {
+  if (!(await requireStaffSession())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

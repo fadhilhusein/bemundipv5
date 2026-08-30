@@ -4,18 +4,29 @@ import { requireSession } from "@/lib/auth";
 import { ensureBidangTable } from "@/lib/bidang";
 
 export async function GET() {
-  if (!(await requireSession())) {
+  const session = await requireSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   await ensureBidangTable();
+
+  if (session.role === "bidang") {
+    const rows = await client`SELECT * FROM bidang WHERE id = ${session.bidangId} ORDER BY created_at DESC`;
+    return NextResponse.json({ data: rows });
+  }
+
   const rows = await client`SELECT * FROM bidang ORDER BY created_at DESC`;
   return NextResponse.json({ data: rows });
 }
 
 export async function POST(request: NextRequest) {
-  if (!(await requireSession())) {
+  const session = await requireSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (session.role === "bidang") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   await ensureBidangTable();
@@ -35,7 +46,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  if (!(await requireSession())) {
+  const session = await requireSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -45,6 +57,9 @@ export async function PUT(request: NextRequest) {
   const numericId = Number(id);
   if (!Number.isFinite(numericId)) {
     return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+  }
+  if (session.role === "bidang" && numericId !== session.bidangId) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   if (!namaBidang || !deskripsi || !penanggungJawab || !jumlahAnggota) {
     return NextResponse.json({ error: "Semua field wajib diisi" }, { status: 400 });
@@ -69,8 +84,12 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!(await requireSession())) {
+  const session = await requireSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (session.role === "bidang") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   await ensureBidangTable();

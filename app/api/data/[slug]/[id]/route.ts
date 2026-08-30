@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import client from "@/lib/db";
-import { requireSession } from "@/lib/auth";
+import { requireSession, requireStaffSession } from "@/lib/auth";
 import { ensureSchema } from "@/lib/data/schema";
 import { TABLES } from "@/lib/data/tables";
 import { validateFields } from "@/lib/data/validate";
@@ -20,7 +20,7 @@ async function guardForSlug(slug: string) {
   // publikasi can be managed by any admin (like bidang), others need master for edit/delete
   const isPublicKonten = config?.table === "publikasi_terkini";
   if (isPublicKonten) {
-    const session = await requireSession();
+    const session = await requireStaffSession();
     if (!session) return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
     return { session };
   }

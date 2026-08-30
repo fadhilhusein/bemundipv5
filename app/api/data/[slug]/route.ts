@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import client from "@/lib/db";
-import { requireSession } from "@/lib/auth";
+import { requireStaffSession } from "@/lib/auth";
 import { ensureSchema } from "@/lib/data/schema";
 import { TABLES } from "@/lib/data/tables";
 import { validateFields } from "@/lib/data/validate";
@@ -9,7 +9,7 @@ import { ensurePenulis } from "@/lib/publikasi";
 type RouteContext = { params: Promise<{ slug: string }> };
 
 export async function GET(_request: NextRequest, { params }: RouteContext) {
-  if (!(await requireSession())) {
+  if (!(await requireStaffSession())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -27,7 +27,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
 }
 
 export async function POST(request: NextRequest, { params }: RouteContext) {
-  const session = await requireSession();
+  const session = await requireStaffSession();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
