@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import client from "@/lib/db";
-import { requireSession } from "@/lib/auth";
+import { requireSession, requireStaffSession } from "@/lib/auth";
 import { TABLES } from "@/lib/data/tables";
 import { validateFields } from "@/lib/data/validate";
 import { ensurePenulis } from "@/lib/publikasi";
@@ -34,10 +34,10 @@ async function guardMaster() {
 
 async function guardForSlug(slug: string) {
   const config = TABLES[slug];
-  // publikasi & agenda can be managed by any authenticated admin
+  // publikasi & agenda can be managed by any authenticated staff (admin/master, not bidang-scoped)
   const isKonten = config?.table === "publikasi_terkini" || config?.table === "agenda";
   if (isKonten) {
-    const session = await requireSession();
+    const session = await requireStaffSession();
     if (!session) return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
     return { session };
   }

@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "eslint .",
     "db:migrate": "node --env-file=.env scripts/migrate.mjs",
-    "create-master-admin": "node --env-file=.env scripts/create-master-admin.mjs"
+    "create-master-admin": "node --env-file=.env scripts/create-master-admin.mjs",
+    "create-bidang-admins": "node --env-file=.env scripts/create-bidang-admins.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

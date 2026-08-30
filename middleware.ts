@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 // Lightweight edge checks — real verification is in app/dashboard/layout.tsx
-// via getAdminAuth().verifySessionCookie() + getAdminRole().
+// via getAdminAuth().verifySessionCookie() + getAdminSession().
 // Middleware here only does cheap structural filtering to avoid hitting
 // server components with obviously invalid cookies.
 function hasValidJwtStructure(value: string): boolean {

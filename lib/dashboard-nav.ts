@@ -44,7 +44,15 @@ export const masterNavGroup: NavGroup = {
   items: [{ label: "Menu Master", href: "/dashboard/master", icon: ShieldCheck }]
 };
 
+export const bidangNavGroups: NavGroup[] = [
+  {
+    label: "Umum",
+    items: [{ label: "Profil Bidang Saya", href: "/dashboard", icon: LayoutGrid }]
+  }
+];
+
 export function getNavGroups(role: AdminRole | null): NavGroup[] {
+  if (role === "bidang") return bidangNavGroups;
   return role === "master" ? [...navGroups, masterNavGroup] : navGroups;
 }
 
