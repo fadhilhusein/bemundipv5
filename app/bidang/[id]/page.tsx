@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Shield, User, Users } from "lucide-react";
+import { ArrowLeft, Sparkles, Shield, User, Users } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { ProgramCard } from "@/components/ProgramCard";
 import { Container } from "@/components/ui/Container";
-import { getBidangById } from "@/lib/bidang-public";
+import { getBidangById, getProgramUnggulanByBidang } from "@/lib/bidang-public";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -37,7 +38,10 @@ export default async function BidangDetailPage({ params }: PageProps) {
   const numericId = parseId(id);
   if (numericId === null) notFound();
 
-  const bidang = await getBidangById(numericId);
+  const [bidang, programList] = await Promise.all([
+    getBidangById(numericId),
+    getProgramUnggulanByBidang(numericId)
+  ]);
   if (!bidang) notFound();
 
   return (
@@ -113,6 +117,37 @@ export default async function BidangDetailPage({ params }: PageProps) {
             <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-brown/90 sm:text-lg">
               {bidang.deskripsi}
             </p>
+          </div>
+
+          {/* Program Unggulan Section */}
+          <div className="mt-10 rounded-3xl border-2 border-clay/20 bg-white/60 p-8 shadow-sm sm:p-10">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-peach/40 text-orange">
+                <Sparkles size={20} strokeWidth={2.2} />
+              </div>
+              <h2 className="font-display text-xl font-bold text-brown sm:text-2xl">
+                Program Unggulan
+              </h2>
+            </div>
+            <div className="mt-4 h-0.5 w-12 bg-orange" />
+
+            {programList.length === 0 ? (
+              <p className="mt-6 text-sm text-clay sm:text-base">
+                Belum ada program unggulan yang ditambahkan untuk bidang ini.
+              </p>
+            ) : (
+              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {programList.map((program) => (
+                  <ProgramCard
+                    key={program.id_program}
+                    nama={program.nama_program}
+                    deskripsi={program.deskripsi_program}
+                    gambar={program.gambar_program}
+                    tanggalWaktu={program.tanggal_waktu_program}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </Container>
       </main>

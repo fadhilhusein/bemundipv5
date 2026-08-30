@@ -20,6 +20,9 @@ function revalidatePublicCache(slug: string) {
   } else if (slug === "bidang") {
     revalidateTag("bidang");
     revalidatePath("/");
+  } else if (slug === "program-unggulan") {
+    revalidateTag("bidang");
+    revalidatePath("/");
   }
 }
 

@@ -89,15 +89,16 @@ export const SCHEMA_STATEMENTS: string[] = [
   `ALTER TABLE agenda ALTER COLUMN id_kabinet DROP NOT NULL;`,
   `CREATE TABLE IF NOT EXISTS program_unggulan (
       id_program            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      id_kabinet            INTEGER NOT NULL,
+      id_bidang             INTEGER NOT NULL,
       nama_program          VARCHAR(200) NOT NULL,
       deskripsi_program     TEXT,
       gambar_program        VARCHAR(255),
       tanggal_waktu_program TIMESTAMP,
-      status_program        status_kegiatan NOT NULL DEFAULT 'akan_datang',
-      CONSTRAINT fk_program_kabinet FOREIGN KEY (id_kabinet) REFERENCES master_kabinet(id_kabinet)
+      CONSTRAINT fk_program_bidang FOREIGN KEY (id_bidang) REFERENCES bidang(id)
           ON UPDATE CASCADE ON DELETE CASCADE
   );`,
+  `ALTER TABLE program_unggulan ADD COLUMN IF NOT EXISTS id_bidang INTEGER REFERENCES bidang(id) ON UPDATE CASCADE ON DELETE CASCADE;`,
+  `ALTER TABLE program_unggulan ALTER COLUMN id_kabinet DROP NOT NULL;`,
   `CREATE TABLE IF NOT EXISTS statistik_kabinet (
       id_statistik              INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
       id_kabinet                INTEGER NOT NULL,
@@ -354,5 +355,5 @@ export const SCHEMA_STATEMENTS: string[] = [
   `CREATE INDEX IF NOT EXISTS idx_publikasi_tanggal ON publikasi_terkini(tanggal_publikasi);`,
   `CREATE INDEX IF NOT EXISTS idx_agenda_kabinet ON agenda(id_kabinet);`,
   `CREATE INDEX IF NOT EXISTS idx_agenda_bidang ON agenda(id_bidang);`,
-  `CREATE INDEX IF NOT EXISTS idx_program_kabinet ON program_unggulan(id_kabinet);`
+  `CREATE INDEX IF NOT EXISTS idx_program_bidang ON program_unggulan(id_bidang);`
 ];

@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 type Bidang = {
@@ -226,6 +227,14 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                     <td className="py-3 pr-4 max-w-sm text-brown/70">{entry.deskripsi}</td>
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-3">
+                        <Link
+                          href="/dashboard/program-unggulan"
+                          aria-label={`Program Unggulan ${entry.nama_bidang}`}
+                          title="Kelola Program Unggulan"
+                          className="text-clay hover:text-orange"
+                        >
+                          <Sparkles size={16} />
+                        </Link>
                         <button
                           type="button"
                           onClick={() => openEdit(entry)}

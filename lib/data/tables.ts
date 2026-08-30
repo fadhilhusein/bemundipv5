@@ -76,21 +76,14 @@ export const programUnggulan: TableConfig = {
   slug: "program-unggulan",
   table: "program_unggulan",
   label: "Program Unggulan",
+  description: "Kelola program unggulan yang dinaungi oleh masing-masing departemen/bidang.",
   idColumn: "id_program",
   fields: [
-    { name: "id_kabinet", label: "Kabinet", type: "fk-select", required: true, fkTable: "master-kabinet" },
-    { name: "nama_program", label: "Nama Program", type: "text", required: true, colSpan: 2 },
-    { name: "deskripsi_program", label: "Deskripsi", type: "textarea", required: false, colSpan: 2 },
-    { name: "gambar_program", label: "Gambar Program", type: "file", required: false },
-    { name: "tanggal_waktu_program", label: "Tanggal & Waktu", type: "datetime", required: false },
-    {
-      name: "status_program",
-      label: "Status",
-      type: "select-enum",
-      required: true,
-      enumOptions: STATUS_KEGIATAN_OPTIONS,
-      defaultValue: "akan_datang"
-    }
+    { name: "id_bidang", label: "Bidang / Departemen", type: "fk-select", required: true, fkTable: "bidang" },
+    { name: "nama_program", label: "Nama Program", type: "text", required: true },
+    { name: "gambar_program", label: "Gambar / Thumbnail", type: "file", required: false },
+    { name: "tanggal_waktu_program", label: "Tanggal & Waktu Pelaksanaan", type: "datetime", required: false },
+    { name: "deskripsi_program", label: "Deskripsi", type: "textarea", required: false, colSpan: 2 }
   ]
 };
 

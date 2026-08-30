@@ -22,6 +22,9 @@ function revalidatePublicCache(slug: string, id?: string | number) {
     revalidateTag("bidang");
     revalidatePath("/");
     if (id) revalidatePath(`/bidang/${id}`);
+  } else if (slug === "program-unggulan") {
+    revalidateTag("bidang");
+    revalidatePath("/");
   }
 }
 
@@ -34,8 +37,11 @@ async function guardMaster() {
 
 async function guardForSlug(slug: string) {
   const config = TABLES[slug];
-  // publikasi & agenda can be managed by any authenticated staff (admin/master, not bidang-scoped)
-  const isKonten = config?.table === "publikasi_terkini" || config?.table === "agenda";
+  // publikasi, agenda, & program_unggulan can be managed by any authenticated staff (admin/master, not bidang-scoped)
+  const isKonten =
+    config?.table === "publikasi_terkini" ||
+    config?.table === "agenda" ||
+    config?.table === "program_unggulan";
   if (isKonten) {
     const session = await requireStaffSession();
     if (!session) return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };

@@ -13,6 +13,15 @@ export type BidangRecord = {
   created_at: string;
 };
 
+export type ProgramUnggulanRecord = {
+  id_program: number;
+  id_bidang: number;
+  nama_program: string;
+  deskripsi_program: string | null;
+  gambar_program: string | null;
+  tanggal_waktu_program: string | null;
+};
+
 export const getBidangList = unstable_cache(
   async (): Promise<BidangRecord[]> => {
     return client`
@@ -37,5 +46,19 @@ export const getBidangById = (id: number) =>
       return rows[0] ?? null;
     },
     [`bidang-detail-${id}`],
+    { tags: ["bidang"], revalidate: 60 }
+  )();
+
+export const getProgramUnggulanByBidang = (bidangId: number) =>
+  unstable_cache(
+    async (): Promise<ProgramUnggulanRecord[]> => {
+      return (await client`
+        SELECT id_program, id_bidang, nama_program, deskripsi_program, gambar_program, tanggal_waktu_program
+        FROM program_unggulan
+        WHERE id_bidang = ${bidangId}
+        ORDER BY id_program ASC
+      `) as unknown as ProgramUnggulanRecord[];
+    },
+    [`bidang-program-unggulan-${bidangId}`],
     { tags: ["bidang"], revalidate: 60 }
   )();
