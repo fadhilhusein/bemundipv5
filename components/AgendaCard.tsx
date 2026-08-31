@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { Calendar, MapPin, ExternalLink, Sparkles } from "lucide-react";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 
 type AgendaCardProps = {
   id: number;
@@ -40,13 +40,14 @@ export function AgendaCard({
     <article className="group flex min-h-full flex-col justify-between overflow-hidden rounded-2xl border border-divider bg-white/90 p-6 shadow-card backdrop-blur-sm transition-all duration-300 motion-reduce:transition-none hover:-translate-y-1 hover:border-orange/50 hover:shadow-card-hover">
       <div>
         {poster ? (
-          <div className="relative mb-5 aspect-[16/9] w-full overflow-hidden rounded-xl border border-divider bg-cream shadow-inner">
-            <Image
+          <div className="mb-5">
+            <ImageLightbox
               src={poster}
               alt={`Poster ${judul}`}
-              fill
+              wrapperClassName="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-divider bg-cream shadow-inner"
+              imageClassName="object-contain p-1"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              roundedClass="rounded-xl"
             />
           </div>
         ) : null}

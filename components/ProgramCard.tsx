@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { Calendar, Sparkles } from "lucide-react";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 
 type ProgramCardProps = {
   nama: string;
@@ -26,21 +26,20 @@ export function ProgramCard({ nama, deskripsi, gambar, tanggalWaktu }: ProgramCa
   return (
     <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border-2 border-clay/35 bg-white p-6 shadow-card transition-all duration-300 motion-reduce:transition-none hover:-translate-y-1 hover:border-orange hover:shadow-card-hover">
       <div>
-        <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-divider bg-cream">
-          {gambar ? (
-            <Image
-              src={gambar}
-              alt={`Foto ${nama}`}
-              fill
-              sizes="(max-width: 768px) 100vw, 400px"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          ) : (
-            <div className="grid h-full w-full place-items-center text-clay/60">
-              <Sparkles className="h-10 w-10 stroke-[1.5]" />
-            </div>
-          )}
-        </div>
+        {gambar ? (
+          <ImageLightbox
+            src={gambar}
+            alt={`Foto ${nama}`}
+            wrapperClassName="relative aspect-video w-full overflow-hidden rounded-xl border border-divider bg-cream"
+            imageClassName="object-contain p-1"
+            sizes="(max-width: 768px) 100vw, 400px"
+            roundedClass="rounded-xl"
+          />
+        ) : (
+          <div className="relative grid aspect-video w-full place-items-center overflow-hidden rounded-xl border border-divider bg-cream text-clay/60">
+            <Sparkles className="h-10 w-10 stroke-[1.5]" />
+          </div>
+        )}
 
         <h3 className="mt-5 font-display text-xl font-bold leading-snug text-brown transition-colors duration-200 group-hover:text-orange sm:text-2xl">
           {nama}

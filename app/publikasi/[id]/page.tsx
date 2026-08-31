@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -67,14 +67,16 @@ export default async function PublikasiDetailPage({ params }: PageProps) {
           <p className="mt-4 text-sm font-semibold text-clay">{formatTanggal(publikasi.tanggal_publikasi)}</p>
 
           {publikasi.gambar_publikasi ? (
-            <Image
-              src={publikasi.gambar_publikasi}
-              alt={publikasi.judul_publikasi}
-              width={1024}
-              height={576}
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="mt-8 aspect-video w-full rounded-2xl border border-clay/40 object-cover"
-            />
+            <div className="mt-8">
+              <ImageLightbox
+                src={publikasi.gambar_publikasi}
+                alt={publikasi.judul_publikasi}
+                wrapperClassName="relative aspect-video w-full overflow-hidden rounded-2xl border border-clay/40 bg-cream shadow-sm"
+                imageClassName="object-contain p-1"
+                sizes="(max-width: 768px) 100vw, 768px"
+                roundedClass="rounded-2xl"
+              />
+            </div>
           ) : null}
 
           <p className="mt-8 whitespace-pre-line text-base leading-relaxed tracking-wide text-brown/90">
