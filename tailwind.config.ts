@@ -11,6 +11,8 @@ const config: Config = {
       colors: {
         cream: "#FAF5EF",
         orange: "#D96A1C",
+        "orange-ink": "#AD4F0F",
+        "orange-soft": "#FDF0E0",
         peach: "#F4D2A5",
         brown: "#402312",
         clay: "#8D6543",

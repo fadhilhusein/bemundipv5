@@ -239,7 +239,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <Container>
             <Reveal className="mx-auto max-w-4xl text-center">
-              <h2 className="font-display text-[clamp(4.4rem,18vw,9rem)] font-medium leading-[0.82] text-[#a5592a] drop-shadow-[0_5px_14px_rgba(64,35,18,0.22)]">
+              <h2 className="font-display text-[clamp(4.4rem,18vw,9rem)] font-medium leading-[0.82] text-brown drop-shadow-[0_5px_14px_rgba(64,35,18,0.22)]">
                 Selamat
                 <br />
                 datang!
@@ -316,7 +316,7 @@ export default async function Home({ searchParams }: HomeProps) {
           </Container>
         </section>
 
-        <section id="berita" className="relative overflow-hidden bg-[#fffaf4] section-pad">
+        <section id="berita" className="relative overflow-hidden bg-cream section-pad">
           <DecorativeImage
             src="/assets/sate.png"
             width={160}
@@ -352,6 +352,7 @@ export default async function Home({ searchParams }: HomeProps) {
                         gambar={publikasi.gambar_publikasi}
                         kategori={publikasi.kategori_publikasi}
                         tanggal={publikasi.tanggal_publikasi}
+                        priority={index === 0}
                       />
                     </Reveal>
                   ))}
@@ -427,7 +428,7 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
 
         {bidangList.length > 0 && (
-          <section id="bidang" className="relative overflow-hidden bg-[#fffaf4] section-pad">
+          <section id="bidang" className="relative overflow-hidden bg-cream section-pad">
             <Container>
               <Reveal>
                 <h2 className="font-display text-center text-[clamp(4.6rem,17vw,8rem)] font-medium leading-none text-brown">
@@ -469,7 +470,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
             {agendaList.length > 0 ? (
               <>
-                <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-12 grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {agendaList.map((agenda, index) => (
                     <Reveal key={agenda.id_agenda} delay={index * 100}>
                       <AgendaCard
@@ -482,6 +483,7 @@ export default async function Home({ searchParams }: HomeProps) {
                         poster={agenda.poster_agenda}
                         linkPendaftaran={agenda.link_pendaftaran}
                         status={agenda.status_agenda}
+                        priority={index === 0}
                       />
                     </Reveal>
                   ))}
@@ -503,7 +505,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
         <section
           id="kontak"
-          className="relative overflow-hidden border-t-2 border-white bg-[#dc7027] py-16 text-white sm:py-20"
+          className="relative overflow-hidden border-t-2 border-white bg-orange py-16 text-white sm:py-20"
         >
           <Container className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
             <Reveal>

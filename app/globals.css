@@ -5,6 +5,8 @@
 :root {
   --cream: #FAF5EF;
   --orange: #D96A1C;
+  --orange-ink: #AD4F0F;
+  --orange-soft: #FDF0E0;
   --peach: #F4D2A5;
   --brown: #402312;
   --clay: #8D6543;
@@ -29,13 +31,34 @@ body {
 }
 
 button,
-input {
+input,
+textarea,
+select {
   font: inherit;
+}
+
+a {
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+}
+
+input,
+textarea {
+  caret-color: var(--brown);
+}
+
+html {
+  scrollbar-color: var(--clay) var(--cream);
+  scrollbar-width: thin;
 }
 
 ::selection {
   background: var(--brown);
   color: #fff;
+}
+
+:focus-visible {
+  outline-color: var(--brown);
 }
 
 .hidden-scroll {

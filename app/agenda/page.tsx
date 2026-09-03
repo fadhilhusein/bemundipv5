@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { AlertCircle } from "lucide-react";
 import { AgendaCard } from "@/components/AgendaCard";
 import { EmptyAgenda } from "@/components/EmptyAgenda";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Pagination } from "@/components/ui/Pagination";
 import { getAgendaCount, getAgendaPaginated } from "@/lib/agenda-public";
@@ -22,17 +24,30 @@ export default async function AgendaListingPage({ searchParams }: PageProps) {
   const { page: pageParam } = await searchParams;
   const currentPage = Math.max(1, Number(pageParam) || 1);
 
-  const [totalCount, list] = await Promise.all([
-    getAgendaCount(),
-    getAgendaPaginated(currentPage, PER_PAGE),
-  ]);
+  let totalCount = 0;
+  let list: Awaited<ReturnType<typeof getAgendaPaginated>> = [];
+  let loadError: string | null = null;
+
+  try {
+    [totalCount, list] = await Promise.all([
+      getAgendaCount(),
+      getAgendaPaginated(currentPage, PER_PAGE),
+    ]);
+  } catch (e) {
+    loadError = e instanceof Error ? e.message : "Gagal memuat agenda";
+  }
 
   const totalPages = Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const safePage = Math.min(currentPage, totalPages);
-  const finalList =
-    currentPage !== safePage && totalCount > 0
-      ? await getAgendaPaginated(safePage, PER_PAGE)
-      : list;
+  let finalList = list;
+  if (!loadError && currentPage !== safePage && totalCount > 0) {
+    try {
+      finalList = await getAgendaPaginated(safePage, PER_PAGE);
+    } catch (e) {
+      loadError = e instanceof Error ? e.message : "Gagal memuat agenda";
+      finalList = [];
+    }
+  }
 
   return (
     <>
@@ -51,10 +66,27 @@ export default async function AgendaListingPage({ searchParams }: PageProps) {
             </p>
           </div>
 
-          {finalList.length > 0 ? (
+          {loadError ? (
+            <div className="mt-12 rounded-3xl border-2 border-red/20 bg-white px-6 py-12 text-center shadow-card sm:px-10">
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-red/10 text-red">
+                <AlertCircle size={28} aria-hidden="true" />
+              </div>
+              <h3 className="font-display mt-4 text-xl font-bold text-brown">Gagal memuat agenda</h3>
+              <p className="mx-auto mt-2 max-w-md break-words text-sm leading-relaxed text-clay [overflow-wrap:anywhere]">
+                {loadError}. Periksa koneksi atau coba lagi.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <Button href="/agenda">Coba lagi</Button>
+                <Button href="/" variant="secondary">
+                  Kembali ke Beranda
+                </Button>
+              </div>
+            </div>
+          ) : finalList.length > 0 ? (
             <>
-              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {finalList.map((agenda) => (
+              <h2 className="sr-only">Daftar agenda</h2>
+              <div className="mt-12 grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {finalList.map((agenda, index) => (
                   <AgendaCard
                     key={agenda.id_agenda}
                     id={agenda.id_agenda}
@@ -66,6 +98,7 @@ export default async function AgendaListingPage({ searchParams }: PageProps) {
                     poster={agenda.poster_agenda}
                     linkPendaftaran={agenda.link_pendaftaran}
                     status={agenda.status_agenda}
+                    priority={index === 0}
                   />
                 ))}
               </div>
@@ -75,9 +108,12 @@ export default async function AgendaListingPage({ searchParams }: PageProps) {
               </p>
             </>
           ) : (
-            <div className="mt-12">
-              <EmptyAgenda />
-            </div>
+            <>
+              <h2 className="sr-only">Daftar agenda</h2>
+              <div className="mt-12">
+                <EmptyAgenda />
+              </div>
+            </>
           )}
         </Container>
       </main>
