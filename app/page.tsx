@@ -1,565 +1,353 @@
 import Image from "next/image";
-import {
-  Instagram,
-  Mail,
-  MessageCircle,
-  Send,
-  Youtube
-} from "lucide-react";
-import { AgendaCard } from "@/components/AgendaCard";
-import { BidangCard } from "@/components/BidangCard";
-import { DecorativeImage } from "@/components/DecorativeImage";
+import Link from "next/link";
+import { ArrowUpRight, CalendarDays, Landmark, Newspaper, Play, UsersRound } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { LandingNewsCarousel } from "@/components/LandingNewsCarousel";
 import { MotionScene } from "@/components/MotionScene";
-import { EmptyAgenda } from "@/components/EmptyAgenda";
-import { EmptyPublikasi } from "@/components/EmptyPublikasi";
-import { PublikasiCard } from "@/components/PublikasiCard";
 import { Reveal } from "@/components/Reveal";
-import { Button } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
-import { getAgendaPaginated } from "@/lib/agenda-public";
-import { getBidangList } from "@/lib/bidang-public";
-import { getPublikasiCount, getPublikasiPaginated } from "@/lib/publikasi-public";
-import { Pagination } from "@/components/ui/Pagination";
+import { getBidangList, getProgramUnggulanCount } from "@/lib/bidang-public";
+import { getPublikasiPaginated } from "@/lib/publikasi-public";
 
-const BERITA_PER_PAGE = 6;
-const AGENDA_LIMIT = 3;
-
-const movementSpaces = [
+const serviceItems = [
   {
-    title: "Departemen",
-    description: "Kenali bidang kerja, agenda, dan ruang kolaborasi di dalam kabinet.",
-    href: "#bidang"
-  },
-  {
-    title: "Layanan",
-    description: "Akses kanal aspirasi, advokasi, informasi beasiswa, dan bantuan kampus.",
-    href: "#kontak"
+    title: "Direktori bidang",
+    description: "Kenali unit kerja, fokus gerak, serta orang-orang di balik Kabinet Dipanegara.",
+    href: "#bidang",
+    label: "Organisasi",
+    icon: Landmark
   },
   {
     title: "Publikasi",
-    description: "Baca rilis kebijakan, kabar program, dan dokumentasi kegiatan.",
-    href: "#berita"
+    description: "Ikuti rilis kebijakan, kabar program, dan catatan gerakan mahasiswa UNDIP.",
+    href: "/publikasi",
+    label: "Informasi",
+    icon: Newspaper
   },
   {
     title: "Agenda",
-    description: "Pantau forum, kelas publik, panggung karya, dan kegiatan mahasiswa.",
-    href: "#agenda"
+    description: "Temukan forum, kelas publik, dan kegiatan yang dapat kamu ikuti.",
+    href: "/agenda",
+    label: "Kegiatan",
+    icon: CalendarDays
   }
 ];
 
-const mottoItems = [
-  {
-    title: "Hidup Mahasiswa.",
-    description: "Ruang tumbuh yang merawat nalar, karya, dan keberanian."
-  },
-  {
-    title: "Hidup Rakyat Indonesia.",
-    description: "Gerak pengabdian yang berpihak pada kemaslahatan bersama."
-  },
-  {
-    title: "Hidup Perempuan yang Melawan.",
-    description: "Suara keberanian untuk kampus yang aman dan setara."
-  }
-];
-
-type HomeProps = {
-  searchParams: Promise<{ page?: string }>;
-};
-
-export default async function Home({ searchParams }: HomeProps) {
-  const { page: pageParam } = await searchParams;
-  const currentPage = Math.max(1, Number(pageParam) || 1);
-
-  const [bidangList, publikasiCount, publikasiList, agendaList] = await Promise.all([
+export default async function Home() {
+  const [bidangList, publicationList, programCount] = await Promise.all([
     getBidangList(),
-    getPublikasiCount(),
-    getPublikasiPaginated(currentPage, BERITA_PER_PAGE),
-    getAgendaPaginated(1, AGENDA_LIMIT)
+    getPublikasiPaginated(1, 6),
+    getProgramUnggulanCount()
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(publikasiCount / BERITA_PER_PAGE));
-  const safePage = Math.min(currentPage, totalPages);
-  const finalPublikasiList =
-    currentPage !== safePage && publikasiCount > 0
-      ? await getPublikasiPaginated(safePage, BERITA_PER_PAGE)
-      : publikasiList;
+  const memberCount = bidangList.reduce(
+    (total, bidang) => total + (Number.isFinite(Number(bidang.jumlah_anggota)) ? Number(bidang.jumlah_anggota) : 0),
+    0
+  );
+  const organizationColumns = [
+    bidangList.slice(0, Math.ceil(bidangList.length / 2)),
+    bidangList.slice(Math.ceil(bidangList.length / 2))
+  ];
+  const newsItems = publicationList.map((item) => ({
+    id: item.id_publikasi,
+    title: item.judul_publikasi,
+    excerpt: item.isi_publikasi,
+    image: item.gambar_publikasi,
+    category: item.kategori_publikasi,
+    date: String(item.tanggal_publikasi)
+  }));
 
   return (
     <>
       <Header />
       <MotionScene />
-      <main className="w-full max-w-full overflow-x-hidden">
+      <main id="main-content" className="landing-page overflow-hidden">
         <section
           id="beranda"
-          className="hero-glow hero-stage h-[100svh] relative isolate flex overflow-hidden pb-20 pt-24 text-white lg:pt-28"
+          className="landing-grain relative flex min-h-[620px] items-center overflow-hidden pb-12 pt-28 sm:min-h-[700px] sm:pb-16 sm:pt-32 lg:min-h-[800px] lg:pt-32"
         >
-          <Image
-            src="/assets/UNDIPOfficial-removebg-preview.png"
-            alt=""
-            width={480}
-            height={720}
-            priority
-            quality={60}
-            sizes="(max-width: 768px) 50vw, 480px"
-            className="stamp-watermark absolute -left-[54%] top-[10%] h-[72%] w-auto object-contain md:-left-[12%] lg:-left-[7%]"
-          />
-          <Image
-            src="/assets/UNDIPOfficial-removebg-preview.png"
-            alt=""
-            width={480}
-            height={720}
-            quality={60}
-            sizes="(max-width: 768px) 50vw, 480px"
-            className="stamp-watermark absolute -right-[54%] top-[10%] h-[72%] w-auto object-contain md:-right-[12%] lg:-right-[7%]"
-          />
-          {/* <DecorativeImage
-            src="/assets/hand.png"
-            width={190}
-            height={190}
-            rotate={-20}
-            data-gsap-image
-            className="float-c absolute right-20 top-[39%] z-30 w-32 opacity-90 sm:right-16 sm:w-40 md:w-48 lg:left-20 lg:top-[36%] lg:w-56"
-            /> */}
-
-          <Container className="relative z-10 flex flex-1 flex-col items-center text-center">
-            <Reveal className="flex pt-5 min-h-full w-full flex-1 flex-col items-center md:justify-start">
-              <div className="relative mt-[clamp(1.5rem,4.5vh,3rem)] hidden md:block">
-                <DecorativeImage
-                  src="/assets/maskot soda.png"
-                  width={180}
-                  height={135}
+          <div className="landing-container relative flex flex-col items-center text-center">
+            <Reveal className="is-visible w-full">
+              <p className="font-sans text-xs font-semibold uppercase tracking-[0.32em] text-ink/55 sm:text-sm">
+                Badan Eksekutif Mahasiswa Universitas Diponegoro
+              </p>
+              <div className="relative mx-auto mt-5 w-full max-w-[520px] sm:mt-6 sm:max-w-[650px] lg:max-w-[760px]">
+                <Image
+                  src="/assets/landing/hero-composite.png"
+                  alt="Ilustrasi warung makan sebagai identitas visual Kabinet Dipanegara"
+                  width={1095}
+                  height={824}
                   priority
-                  rotate={-5}
-                  data-gsap-image
-                  className="float-a -left-[35%] w-24 absolute drop-shadow-xl md:w-32 lg:w-44"
+                  sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) 650px, 760px"
+                  className="h-auto w-full object-contain"
                 />
-                <DecorativeImage
-                  src="/assets/maskot kerupuk.png"
-                  width={180}
-                  height={135}
-                  priority
-                  rotate={5}
-                  data-gsap-image
-                  className="float-b absolute -top-[25%] -right-[35%] w-24 drop-shadow-xl md:w-32 lg:-top-[30%] lg:-right-[35%] lg:w-44"
-                />
-                <div className="flex items-end justify-center gap-2 sm:gap-4 z-20">
-                  <span className="font-display hero-title-shadow text-[clamp(2.55rem,10vw,6.2rem)] font-medium leading-[0.76] text-white">
-                    Kabinet 
+                <div className="absolute inset-x-[16%] top-[28%] rotate-[-1deg] sm:top-[27%]">
+                  <span className="block font-landing-display text-[clamp(1.45rem,5.4vw,4rem)] leading-[0.84] tracking-[0.02em] text-[#BE1518] [text-shadow:-2px_3px_0_#171717]">
+                    KABINET
+                  </span>
+                  <span className="mt-1 block font-landing-display text-[clamp(1.25rem,4.7vw,3.5rem)] leading-none tracking-[0.01em] text-[#BE1518] [text-shadow:-2px_3px_0_#171717]">
+                    DIPANEGARA
                   </span>
                 </div>
-                <p className="font-display mt-1 text-[clamp(1rem,3.6vw,2rem)] leading-none text-white z-20">
-                    Dipanegara
-                </p>
               </div>
-
-              <div className="relative mt-[clamp(4.1rem,12vh,7.1rem)] flex w-full max-w-6xl items-center justify-center px-1 sm:px-8">
-                <h1 className="hero-title-shadow flex max-w-full origin-center transform-gpu items-baseline justify-center whitespace-nowrap text-brown">
-                  <span className="font-script -mr-[0.08em] text-[clamp(5.7rem,19vw,12rem)] font-normal leading-none">
-                    B
-                  </span>
-                  <span className="font-display -ml-[0.02em] text-[clamp(3.15rem,10.7vw,7rem)] font-medium leading-none">
-                    EM
-                  </span>
-                  <span className="font-script ml-3 -mx-[0.07em] text-[clamp(5.8rem,19vw,12.5rem)] font-normal leading-none">
-                    U
-                  </span>
-                  <span className="font-display text-[clamp(3.15rem,10.7vw,7rem)] font-medium leading-none">
-                    NDIP
-                  </span>
-                </h1>
-                {/* <div className="absolute right-[2%] top-[4%] rotate-2 bg-red px-3 py-1.5 font-script text-[clamp(2.1rem,6vw,4.6rem)] leading-none text-white shadow-[0_10px_22px_rgba(64,35,18,0.2)] sm:right-[7%] md:right-[10%]"> */}
-                <div className="absolute -bottom-[100%] md:right-[10%] md:top-[5%] md:bottom-[8.5rem] rotate-2 bg-red px-3 py-1.5 font-script text-[clamp(2.1rem,18vw,4.6rem)] md:text-[clamp(2.1rem,3vw,4.6rem)] leading-none text-white shadow-[0_10px_22px_rgba(64,35,18,0.2)] sm:right-[7%] md:right-[10%]">
-                  2026
-                </div>
+              <div className="relative z-10 -mt-7 flex flex-wrap items-center justify-center gap-3 sm:-mt-11">
+                <Link
+                  href="#sambutan"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-charcoal active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                >
+                  Kenali kabinet
+                  <ArrowUpRight size={18} />
+                </Link>
+                <span className="rounded-full border border-line bg-white/80 px-5 py-3 font-sans text-sm text-ink/70 backdrop-blur">
+                  BEM UNDIP 2026
+                </span>
               </div>
-
-            <div className="mascot_mobile block lg:hidden">
-              <DecorativeImage
-                  src="/assets/maskot soda.png"
-                  width={180}
-                  height={135}
-                  priority
-                  rotate={-5}
-                  data-gsap-image
-                  className="float-a -bottom-3 -left-[20%] w-72 absolute drop-shadow-xl md:w-32 lg:w-44"
-                />
-                <DecorativeImage
-                  src="/assets/maskot kerupuk.png"
-                  width={180}
-                  height={135}
-                  priority
-                  rotate={5}
-                  data-gsap-image
-                  className="float-b absolute -bottom-3 -right-[20%] w-72 drop-shadow-xl md:w-32 lg:-top-[30%] lg:-right-[35%] lg:w-44"
-                />
-            </div>
             </Reveal>
-          </Container>
-
-          <div className="absolute inset-x-0 bottom-0 z-20 border-y-2 border-white/70 bg-orange/95 px-4 py-4 text-center font-display text-[clamp(1.5rem,2vw,1rem)] md:text-[clamp(2rem,2vw,4rem)] italic leading-none tracking-wide text-white">
-            HIDUP MAHASISWA, HIDUP RAKYAT INDONESIA, HIDUP PEREMPUAN YANG MELAWAN
           </div>
         </section>
 
-        <section className="warm-band relative min-h-[760px] overflow-hidden section-pad">
-          <DecorativeImage
-            src="/assets/batagor.png"
-            width={170}
-            height={170}
-            rotate={-12}
-            data-gsap-image
-            className="float-a absolute -left-12 top-14 w-28 md:w-36 lg:left-4 lg:w-44"
-          />
-          <DecorativeImage
-            src="/assets/mie.png"
-            width={220}
-            height={217}
-            rotate={14}
-            data-gsap-image
-            className="float-b absolute -right-16 top-8 w-36 md:w-44 lg:right-10 lg:w-56"
-          />
-          <DecorativeImage
-            src="/assets/kerupuk.png"
-            width={220}
-            height={220}
-            rotate={-10}
-            data-gsap-image
-            className="float-c absolute -bottom-20 -left-20 w-48 md:w-56 lg:w-64"
-          />
-          <DecorativeImage
-            src="/assets/batagor.png"
-            width={150}
-            height={150}
-            rotate={18}
-            data-gsap-image
-            className="float-b absolute bottom-4 right-0 w-28 md:right-8 md:w-36 lg:right-20 lg:w-40"
-          />
-
-          <Container>
-            <Reveal className="mx-auto max-w-4xl text-center">
-              <h2 className="font-display text-[clamp(4.4rem,18vw,9rem)] font-medium leading-[0.82] text-brown drop-shadow-[0_5px_14px_rgba(64,35,18,0.22)]">
-                Selamat
-                <br />
-                datang!
-              </h2>
-              <p data-scrub-copy className="mx-auto mt-10 max-w-[700px] text-[15px] font-medium leading-relaxed tracking-wide text-brown/85 sm:text-lg">
-                BEM UNDIP 2026 berkomitmen penuh untuk dapat merawat gerak
-                perjuangan mahasiswa Diponegoro dengan menjadi katalisator dan
-                penggerak bagi adanya pencerdasan, pelayanan, serta kebermanfaatan
-                yang dekat dengan kebutuhan mahasiswa.
-              </p>
-            </Reveal>
-
-            <div className="mt-14 grid gap-7 text-center md:mt-16 md:grid-cols-3">
-              {mottoItems.map((item, index) => (
-                <Reveal key={item.title} delay={index * 100}>
-                  <h3 className="text-base font-bold text-brown">{item.title}</h3>
-                  <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-clay">
-                    {item.description}
-                  </p>
-                </Reveal>
-              ))}
-            </div>
-          </Container>
-        </section>
-
-        <section className="relative min-h-[720px] overflow-hidden bg-white section-pad">
-          {/* <div className="pointer-events-none absolute blur-md opacity-30 -top-3 left-1/2 -translate-x-1/2 text-[20vw] font-black leading-none tracking-normal text-[#ebb04a] opacity-95">
-            BEMUNDIP
-          </div> */}
-          <DecorativeImage
-            src="/assets/cam.png"
-            width={300}
-            height={375}
-            rotate={65}
-            data-gsap-image
-            className="float-c absolute -left-20 -bottom-2 0 z-10 hidden w-[40rem] lg:block"
-          />          
-          <DecorativeImage
-            src="/assets/cucumbah.png"
-            width={150}
-            height={150}
-            rotate={12}
-            data-gsap-image
-            className="float-a absolute -left-8 top-48 w-24 md:left-8 md:w-32 lg:left-auto lg:right-10 lg:top-10 lg:w-40"
-          />
-          <DecorativeImage
-            src="/assets/kerupuk.png"
-            width={170}
-            height={170}
-            rotate={14}
-            data-gsap-image
-            className="float-b absolute -right-12 bottom-12 w-36 md:w-44 lg:right-6 lg:w-52"
-          />
-
-          <Container className="relative z-20 grid min-h-[58vh] items-center gap-10 pt-20 lg:grid-cols-[0.82fr_1.18fr] lg:pt-28">
-            <div className="hidden lg:block" />
-            <Reveal className="text-center lg:text-left">
-              <h2 className="font-display text-[clamp(4rem,15vw,7.2rem)] font-medium leading-[0.84] text-brown">
-                Menyala
-                <br />
-                Bersama
-              </h2>
-              <p data-scrub-copy className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-red sm:text-lg lg:mx-0">
-                Satu rumah gerak untuk advokasi, karya, pelayanan, dan ruang temu
-                mahasiswa Universitas Diponegoro.
-              </p>
-              <div className="mt-9 flex flex-wrap justify-center gap-4 lg:justify-start">
-                <Button href="#berita">Lihat Berita</Button>
-                <Button href="#ruang-gerak" variant="secondary">
-                  Ruang Gerak
-                </Button>
-              </div>
-            </Reveal>
-          </Container>
-        </section>
-
-        <section id="berita" className="relative overflow-hidden bg-cream section-pad">
-          <DecorativeImage
-            src="/assets/sate.png"
-            width={160}
-            height={160}
-            rotate={-24}
-            data-gsap-image
-            className="float-a absolute -left-10 top-14 w-28 md:w-36 lg:left-10 lg:w-44"
-          />
-          <DecorativeImage
-            src="/assets/tep.png"
-            width={170}
-            height={170}
-            rotate={16}
-            data-gsap-image
-            className="float-b absolute -right-12 top-20 w-32 md:w-40 lg:right-10 lg:w-48"
-          />
-          <Container>
-            <Reveal>
-              <h2 className="font-display text-center text-[clamp(4.8rem,17vw,8rem)] font-medium leading-none text-brown">
-                Berita
-              </h2>
-            </Reveal>
-
-            {finalPublikasiList.length > 0 ? (
-              <>
-                <div className="mt-12 grid grid-flow-dense gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {finalPublikasiList.map((publikasi, index) => (
-                    <Reveal key={publikasi.id_publikasi} delay={index * 100}>
-                      <PublikasiCard
-                        id={publikasi.id_publikasi}
-                        judul={publikasi.judul_publikasi}
-                        isi={publikasi.isi_publikasi}
-                        gambar={publikasi.gambar_publikasi}
-                        kategori={publikasi.kategori_publikasi}
-                        tanggal={publikasi.tanggal_publikasi}
-                        priority={index === 0}
-                      />
-                    </Reveal>
-                  ))}
-                </div>
-
-                <Pagination currentPage={safePage} totalPages={totalPages} baseHref="/" anchor="#berita" />
-
-                <p className="mt-4 text-center text-xs font-medium tracking-wide text-clay">
-                  Menampilkan {finalPublikasiList.length} dari {publikasiCount} publikasi
-                </p>
-
-                <div className="mt-6 text-center">
-                  <Button href="/publikasi" variant="secondary">
-                    Lihat semua publikasi →
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <div className="mt-12">
-                <EmptyPublikasi variant="homepage" />
-              </div>
-            )}
-          </Container>
-        </section>
-
-        <section
-          id="ruang-gerak"
-          className="relative overflow-hidden bg-orange py-20 text-white sm:py-24 lg:py-32"
-        >
-          <Image
-            src="/assets/UNDIPOfficial-removebg-preview.png"
-            alt=""
-            width={480}
-            height={720}
-            loading="lazy"
-            className="stamp-watermark absolute -left-24 top-8 h-[84%] w-auto object-contain"
-          />
-          <Image
-            src="/assets/UNDIPOfficial-removebg-preview.png"
-            alt=""
-            width={480}
-            height={720}
-            loading="lazy"
-            className="stamp-watermark absolute -right-24 top-8 h-[84%] w-auto object-contain"
-          />
-          <Container className="relative z-10">
-            <Reveal>
-              <h2 className="font-display mx-auto max-w-2xl text-center text-[clamp(4.6rem,18vw,8rem)] font-medium leading-[0.82]">
-                Ruang
-                <br />
-                gerak
-              </h2>
-            </Reveal>
-
-            <div className="mx-auto mt-14 grid max-w-5xl grid-flow-dense gap-x-16 gap-y-10 md:grid-cols-2">
-              {movementSpaces.map((item, index) => (
-                <Reveal key={item.title} delay={index * 90}>
-                  <a
-                    href={item.href}
-                    className="group block min-h-[126px] border-t-4 border-white/85 pt-5 transition hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                  >
-                    <h3 className="font-display text-4xl leading-none sm:text-5xl">
-                      {item.title}
-                    </h3>
-                    <p className="mt-3 max-w-md text-sm font-medium leading-relaxed tracking-wide text-white/90">
-                      {item.description}
-                    </p>
-                  </a>
-                </Reveal>
-              ))}
-            </div>
-          </Container>
-        </section>
-
-        {bidangList.length > 0 && (
-          <section id="bidang" className="relative overflow-hidden bg-cream section-pad">
-            <Container>
+        <section id="sambutan" className="relative bg-white pb-14 sm:pb-[72px] lg:pb-24">
+          <div className="landing-container relative overflow-hidden rounded-[24px] bg-accent px-5 py-7 text-white shadow-[0_24px_64px_rgba(187,63,23,0.14)] sm:rounded-[30px] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+            <Image
+              src="/assets/landing/welcome-art.svg"
+              alt=""
+              fill
+              sizes="100vw"
+              className="pointer-events-none select-none object-fill opacity-70"
+            />
+            <div className="relative z-10">
               <Reveal>
-                <h2 className="font-display text-center text-[clamp(4.6rem,17vw,8rem)] font-medium leading-none text-brown">
-                  Bidang & Biro
-                </h2>
-                <p className="mx-auto mt-5 max-w-2xl text-center text-sm font-medium leading-relaxed tracking-wide text-brown/80 sm:text-base">
-                  Unit kerja yang menggerakkan program dan pelayanan Kabinet BEM UNDIP 2026.
+                <p className="landing-copy mx-auto max-w-3xl break-words border-y border-white/70 px-3 py-3 text-center text-base leading-snug sm:text-xl">
+                  Selamat datang di rumah digital BEM UNDIP 2026
+                </p>
+                <p className="landing-copy mx-auto mt-7 max-w-4xl text-center font-sans text-sm leading-7 text-white/95 sm:text-base sm:leading-8">
+                  BEM UNDIP 2026 berkomitmen penuh untuk merawat spirit perjuangan Pangeran Diponegoro,
+                  menjadi katalisator bagi perbaikan dan perubahan di lingkungan kampus, regional, maupun nasional.
+                  Mari merajut kembali simpul gerakan, memperjuangkan hak yang terpinggirkan, dan membawa dampak
+                  bagi almamater serta Indonesia.
                 </p>
               </Reveal>
 
-              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {bidangList.map((bidang, index) => (
-                  <Reveal key={bidang.id} delay={index * 100}>
-                    <BidangCard
-                      id={bidang.id}
-                      namaBidang={bidang.nama_bidang}
-                      deskripsi={bidang.deskripsi}
-                      penanggungJawab={bidang.penanggung_jawab}
-                      jumlahAnggota={bidang.jumlah_anggota}
-                      gambar={bidang.gambar}
-                    />
-                  </Reveal>
-                ))}
+              <div className="mt-8 grid gap-4 md:grid-cols-2 lg:mt-10">
+                <Reveal>
+                  <article className="min-h-full rounded-[20px] border border-white/55 bg-white/12 p-5 backdrop-blur-sm sm:p-7">
+                    <p className="font-sans text-xs font-bold uppercase tracking-[0.24em] text-white/70">Visi</p>
+                    <h2 className="landing-title mt-3 text-[clamp(2rem,4.3vw,3.4rem)] leading-[0.98]">
+                      Gerak yang dekat, dampak yang terasa.
+                    </h2>
+                  </article>
+                </Reveal>
+                <Reveal delay={100}>
+                  <article className="min-h-full rounded-[20px] bg-white p-5 text-ink shadow-[0_14px_32px_rgba(187,63,23,0.14)] sm:p-7">
+                    <p className="font-sans text-xs font-bold uppercase tracking-[0.24em] text-accent-deep">Misi</p>
+                    <p className="landing-copy mt-3 font-sans text-sm leading-7 text-ink/80 sm:text-base sm:leading-8">
+                      Menguatkan pencerdasan, pelayanan, advokasi, serta ruang karya yang terbuka dan relevan bagi
+                      seluruh mahasiswa Universitas Diponegoro.
+                    </p>
+                  </article>
+                </Reveal>
               </div>
-            </Container>
-          </section>
-        )}
+            </div>
+          </div>
+        </section>
 
-        <section id="agenda" className="relative overflow-hidden bg-cream section-pad border-t border-divider">
-          <Container>
+        <section id="bidang" className="relative rounded-[28px] bg-surface py-14 sm:rounded-[36px] sm:py-[72px] lg:py-24">
+          <div className="landing-container">
             <Reveal>
-              <h2 className="font-display text-center text-[clamp(4.6rem,17vw,8rem)] font-medium leading-none text-brown">
-                Agenda
-              </h2>
-              <p className="mx-auto mt-5 max-w-2xl text-center text-sm font-medium leading-relaxed tracking-wide text-brown/80 sm:text-base">
-                Jadwal kegiatan terdekat, forum mahasiswa, dan program kerja Kabinet BEM UNDIP 2026.
-              </p>
+              <div className="flex flex-col gap-4 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-deep">Rumah gerak</p>
+                  <h2 className="landing-title mt-3 text-[clamp(2.35rem,5.8vw,4.25rem)] leading-none text-charcoal">
+                    Bidang, biro dan kantor
+                  </h2>
+                </div>
+                <p className="landing-copy max-w-sm font-sans text-sm leading-relaxed text-ink/65">
+                  Setiap unit bekerja dengan mandat berbeda, tetapi bergerak menuju tujuan yang sama.
+                </p>
+              </div>
             </Reveal>
 
-            {agendaList.length > 0 ? (
-              <>
-                <div className="mt-12 grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {agendaList.map((agenda, index) => (
-                    <Reveal key={agenda.id_agenda} delay={index * 100}>
-                      <AgendaCard
-                        id={agenda.id_agenda}
-                        judul={agenda.judul_agenda}
-                        namaBidang={agenda.nama_bidang}
-                        deskripsi={agenda.deskripsi_program}
-                        timeline={agenda.timeline_agenda}
-                        lokasi={agenda.lokasi}
-                        poster={agenda.poster_agenda}
-                        linkPendaftaran={agenda.link_pendaftaran}
-                        status={agenda.status_agenda}
-                        priority={index === 0}
-                      />
-                    </Reveal>
-                  ))}
-                </div>
-
-                <div className="mt-10 text-center">
-                  <Button href="/agenda" variant="secondary">
-                    Lihat semua agenda →
-                  </Button>
-                </div>
-              </>
+            {bidangList.length > 0 ? (
+              <div className="mt-8 grid gap-x-12 lg:grid-cols-2">
+                {organizationColumns.map((column, columnIndex) => (
+                  <div key={columnIndex}>
+                    {column.map((bidang, index) => (
+                      <Reveal key={bidang.id} delay={(index % 5) * 60}>
+                        <article className="group border-b border-line py-5 sm:py-6">
+                          <Link
+                            href={`/bidang/${bidang.id}`}
+                            className="grid gap-5 rounded-[4px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink sm:grid-cols-[1fr_auto] sm:items-center"
+                          >
+                            <div className="min-w-0">
+                              <h3 className="landing-copy font-landing-directory text-[clamp(1.3rem,2.5vw,2rem)] leading-tight text-ink transition group-hover:text-accent-deep">
+                                {bidang.nama_bidang}
+                              </h3>
+                              <p className="mt-2 line-clamp-2 font-sans text-sm leading-relaxed text-ink/60">
+                                {bidang.deskripsi || `Kenali peran dan program ${bidang.nama_bidang}.`}
+                              </p>
+                            </div>
+                            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-bold text-white transition group-hover:-translate-y-0.5 group-hover:bg-accent-deep">
+                              Lihat
+                              <ArrowUpRight size={17} />
+                            </span>
+                          </Link>
+                        </article>
+                      </Reveal>
+                    ))}
+                  </div>
+                ))}
+              </div>
             ) : (
-              <div className="mt-12">
-                <EmptyAgenda />
+              <div className="mt-12 rounded-[24px] border border-dashed border-line bg-white p-10 text-center font-sans text-ink/60">
+                Direktori bidang sedang disiapkan.
               </div>
             )}
-          </Container>
+          </div>
         </section>
 
-        <section
-          id="kontak"
-          className="relative overflow-hidden border-t-2 border-white bg-orange py-16 text-white sm:py-20"
-        >
-          <Container className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+        <section id="berita" className="bg-white py-14 sm:py-[72px] lg:py-24">
+          <div className="landing-container">
             <Reveal>
-              <h2 className="font-display text-center text-[clamp(2.8rem,10vw,4.5rem)] leading-[0.95] lg:text-left">
-                Connect With Us!
-              </h2>
-              <div className="mt-8 flex justify-center gap-3 lg:justify-start">
-                {[
-                  { icon: Instagram, label: "Instagram" },
-                  { icon: Youtube, label: "YouTube" },
-                  { icon: Mail, label: "Email" },
-                  { icon: MessageCircle, label: "Chat" },
-                  { icon: Send, label: "Telegram" }
-                ].map(({ icon: Icon, label }) => (
-                  <a
-                    key={label}
-                    href="#"
-                    aria-label={label}
-                    className="grid h-11 w-11 place-items-center rounded-full bg-white text-orange transition hover:-translate-y-1 hover:bg-brown hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                  >
-                    <Icon size={21} />
-                  </a>
-                ))}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="font-script text-4xl text-ink/70 sm:text-[2.75rem]">Berita terkini</p>
+                  <h2 className="sr-only">Berita terkini BEM UNDIP</h2>
+                </div>
+                <Link
+                  href="/publikasi"
+                  className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-accent-deep active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                >
+                  Semua publikasi
+                  <ArrowUpRight size={18} />
+                </Link>
               </div>
-              <p className="mt-5 text-center text-lg font-bold tracking-wide lg:text-left">
-                @BEMUNDIP
+            </Reveal>
+
+            {newsItems.length > 0 ? (
+              <LandingNewsCarousel items={newsItems} />
+            ) : (
+              <div className="mt-12 rounded-[28px] bg-surface p-12 text-center font-sans text-ink/60">
+                Berita terbaru sedang disiapkan.
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="relative overflow-hidden bg-white py-14 sm:py-[72px] lg:py-24">
+          <div className="absolute -left-[28%] top-[36%] h-[280px] w-[160%] -rotate-6 rounded-[50%] bg-accent sm:h-[400px]" aria-hidden="true" />
+          <Image
+            src="/assets/landing/company-accent.svg"
+            alt=""
+            width={270}
+            height={281}
+            className="absolute -right-10 bottom-5 h-32 w-32 rotate-12 sm:h-48 sm:w-48"
+          />
+          <div className="landing-container relative z-10">
+            <Reveal>
+              <h2 className="landing-title text-center text-[clamp(2.1rem,4.5vw,3.5rem)] leading-tight text-charcoal">
+                Tonton company profile kami di sini
+              </h2>
+            </Reveal>
+            <Reveal delay={100}>
+              <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-[24px] bg-[#D9D9D9] p-3 shadow-[0_22px_58px_rgba(52,64,84,0.18)] sm:rounded-[32px] sm:p-5">
+                <div className="relative grid aspect-video place-items-center overflow-hidden rounded-[18px] bg-gradient-to-br from-[#E5E7EB] to-[#BFC5CC] sm:rounded-[24px]">
+                  <Image
+                    src="/assets/bemundip.png"
+                    alt="Logo BEM UNDIP pada poster company profile"
+                    width={240}
+                    height={180}
+                    loading="lazy"
+                    className="h-auto w-24 object-contain opacity-35 sm:w-36"
+                  />
+                  <a
+                    href="https://www.youtube.com/@bemundip"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute grid h-16 w-16 place-items-center rounded-full bg-accent text-white shadow-float transition hover:scale-105 hover:bg-accent-deep active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    aria-label="Buka kanal YouTube BEM UNDIP di tab baru"
+                  >
+                    <Play size={24} fill="currentColor" className="ml-1" />
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+            <Reveal delay={150}>
+              <p className="landing-copy mx-auto mt-8 max-w-3xl text-justify font-landing-copy text-base leading-8 text-charcoal sm:text-lg">
+                Sebuah langkah, tekad, dan arah gerak kini berlabuh. Kabinet Dipanegara membawa semangat kolaborasi,
+                aksi nyata, dan kebermanfaatan ke dalam satu ruang pandang. Kenali bagaimana kami merajut asa,
+                menjawab tantangan zaman, dan menjadi wadah perjuangan yang progresif bagi mahasiswa serta masyarakat.
               </p>
             </Reveal>
+          </div>
+        </section>
 
-            <Reveal delay={120}>
-              <form className="mx-auto max-w-xl border-white/85 lg:border-l-2 lg:pl-10">
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <label htmlFor="contact-email" className="sr-only">
-                    Alamat email atau WhatsApp
-                  </label>
-                  <input
-                    id="contact-email"
-                    type="text"
-                    placeholder="alamat Email / whatsapp"
-                    className="h-[52px] min-w-0 flex-1 rounded-full bg-white px-6 text-sm font-semibold text-brown outline-none placeholder:text-clay/45 focus:ring-4 focus:ring-brown/20"
-                  />
-                  <Button variant="dark" className="px-7">
-                    Kirim
-                  </Button>
-                </div>
-                <p className="mt-5 max-w-md text-sm font-semibold leading-relaxed tracking-wide">
-                  tertarik untuk jadi bagian dari keluarga besar UNDIP?
-                </p>
-              </form>
+        <section className="bg-white py-14 sm:py-[72px] lg:py-24">
+          <div className="landing-container">
+            <Reveal>
+              <h2 className="landing-title text-center text-[clamp(2.35rem,5.8vw,4.25rem)] leading-none text-charcoal">
+                Beri Rasa, Lahir Makna.
+              </h2>
             </Reveal>
-          </Container>
+            <div className="mt-10 grid gap-7 sm:grid-cols-3 sm:gap-4">
+              {[
+                { value: bidangList.length, label: "Bidang/Biro/Kantor/Unit" },
+                { value: memberCount > 0 ? `${memberCount}+` : "450+", label: "Pengurus" },
+                { value: programCount, label: "Program kerja" }
+              ].map((stat, index) => (
+                <Reveal key={stat.label} delay={index * 100}>
+                  <div className="border-t border-line pt-5 text-center sm:border-l sm:border-t-0 sm:first:border-l-0 sm:pt-0">
+                    <p className="font-landing-stat text-[clamp(3rem,7vw,4.5rem)] tabular-nums leading-none text-charcoal">
+                      {stat.value}
+                    </p>
+                    <p className="mt-3 font-sans text-sm font-medium text-ink/70 sm:text-base">{stat.label}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="layanan" className="bg-white py-14 sm:py-[72px] lg:py-24">
+          <div className="landing-container">
+            <Reveal>
+              <div className="flex items-end justify-between gap-5">
+                <div>
+                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-deep">Akses cepat</p>
+                  <h2 className="landing-title mt-3 text-[clamp(2.35rem,5.8vw,4.25rem)] leading-none text-charcoal">Layanan kami</h2>
+                </div>
+                <UsersRound className="hidden text-accent sm:block" size={44} strokeWidth={1.4} />
+              </div>
+            </Reveal>
+            <div className="mt-9 grid gap-5 md:grid-cols-3">
+              {serviceItems.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <Reveal key={item.title} delay={index * 100}>
+                    <Link
+                      href={item.href}
+                      className="group flex min-h-[330px] flex-col rounded-[24px] bg-surface p-5 transition duration-300 hover:-translate-y-2 hover:shadow-float focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                    >
+                      <div className="relative grid h-40 place-items-center overflow-hidden rounded-[18px] bg-[#FFF3A8]">
+                        <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-accent/70" />
+                        <div className="absolute -bottom-12 -left-9 h-32 w-32 rounded-full bg-white/70" />
+                        <Icon className="relative text-ink" size={56} strokeWidth={1.35} />
+                        <span className="absolute bottom-3 right-3 grid h-11 w-11 place-items-center rounded-full bg-ink transition group-hover:-translate-y-1 group-hover:translate-x-1">
+                          <Image src="/assets/landing/arrow-up-right.svg" alt="" width={20} height={20} className="h-5 w-5" />
+                        </span>
+                      </div>
+                      <span className="mt-5 w-fit rounded-full bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-charcoal">
+                        {item.label}
+                      </span>
+                      <h3 className="mt-4 text-[1.75rem] leading-none text-ink">{item.title}</h3>
+                      <p className="landing-copy mt-3 font-sans text-sm leading-relaxed text-ink/65">{item.description}</p>
+                    </Link>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </div>
         </section>
       </main>
-
       <Footer />
     </>
   );

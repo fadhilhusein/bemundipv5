@@ -12,6 +12,13 @@
   --clay: #8D6543;
   --red: #B83935;
   --divider: #EFE4D6;
+  --ink: #344054;
+  --charcoal: #171717;
+  --surface: #F2F4F7;
+  --accent: #FD853A;
+  --accent-deep: #BB3F17;
+  --muted: #ADA4A4;
+  --line: #D9D9D9;
 }
 
 * {
@@ -72,6 +79,58 @@ html {
 
 .font-script {
   font-family: var(--font-great-vibes), "Great Vibes", cursive;
+}
+
+.font-landing-serif {
+  font-family: var(--font-abhaya), Georgia, serif;
+}
+
+.font-landing-display {
+  font-family: var(--font-abril), Georgia, serif;
+}
+
+.font-landing-directory {
+  font-family: var(--font-abeezee), Arial, sans-serif;
+}
+
+.font-landing-copy {
+  font-family: var(--font-hind), Arial, sans-serif;
+}
+
+.font-landing-stat {
+  font-family: var(--font-alata), Arial, sans-serif;
+}
+
+.landing-page {
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-abhaya), Georgia, serif;
+}
+
+.landing-container {
+  width: min(100% - 40px, 1180px);
+  margin-inline: auto;
+}
+
+.landing-grain {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(253, 133, 58, 0.08), transparent 24rem),
+    radial-gradient(circle at 84% 76%, rgba(255, 243, 168, 0.32), transparent 28rem);
+}
+
+.landing-title {
+  text-wrap: balance;
+  letter-spacing: -0.035em;
+}
+
+.landing-copy {
+  text-wrap: pretty;
+}
+
+@media (min-width: 1024px) {
+  .landing-container {
+    width: min(100% - 80px, 1180px);
+  }
 }
 
 .container-shell {

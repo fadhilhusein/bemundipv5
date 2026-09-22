@@ -34,6 +34,17 @@ export const getBidangList = unstable_cache(
   { tags: ["bidang"], revalidate: 60 }
 );
 
+export const getProgramUnggulanCount = unstable_cache(
+  async (): Promise<number> => {
+    const rows = (await client`SELECT COUNT(*)::int AS count FROM program_unggulan`) as unknown as {
+      count: number;
+    }[];
+    return rows[0]?.count ?? 0;
+  },
+  ["program-unggulan-count"],
+  { tags: ["bidang"], revalidate: 60 }
+);
+
 export const getBidangById = (id: number) =>
   unstable_cache(
     async (): Promise<BidangRecord | null> => {
