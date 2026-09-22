@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, CalendarDays, Landmark, Newspaper, Play, UsersRound } from "lucide-react";
+import { ArrowUpLeft, ArrowUpRight, CalendarDays, Landmark, Newspaper, Play, UsersRound } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LandingNewsCarousel } from "@/components/LandingNewsCarousel";
@@ -68,46 +68,23 @@ export default async function Home() {
         >
           <div className="landing-container relative flex flex-col items-center text-center">
             <Reveal className="is-visible w-full">
-              <p className="font-sans text-xs font-semibold uppercase tracking-[0.32em] text-ink/55 sm:text-sm">
-                Badan Eksekutif Mahasiswa Universitas Diponegoro
-              </p>
               <div className="relative mx-auto mt-5 w-full max-w-[520px] sm:mt-6 sm:max-w-[650px] lg:max-w-[760px]">
                 <Image
-                  src="/assets/landing/hero-composite.png"
+                  src="/assets/hero_image.png"
                   alt="Ilustrasi warung makan sebagai identitas visual Kabinet Dipanegara"
-                  width={1095}
-                  height={824}
+                  width={755}
+                  height={627}
                   priority
                   sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) 650px, 760px"
                   className="h-auto w-full object-contain"
                 />
-                <div className="absolute inset-x-[16%] top-[28%] rotate-[-1deg] sm:top-[27%]">
-                  <span className="block font-landing-display text-[clamp(1.45rem,5.4vw,4rem)] leading-[0.84] tracking-[0.02em] text-[#BE1518] [text-shadow:-2px_3px_0_#171717]">
-                    KABINET
-                  </span>
-                  <span className="mt-1 block font-landing-display text-[clamp(1.25rem,4.7vw,3.5rem)] leading-none tracking-[0.01em] text-[#BE1518] [text-shadow:-2px_3px_0_#171717]">
-                    DIPANEGARA
-                  </span>
-                </div>
-              </div>
-              <div className="relative z-10 -mt-7 flex flex-wrap items-center justify-center gap-3 sm:-mt-11">
-                <Link
-                  href="#sambutan"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 font-bold text-white transition hover:-translate-y-0.5 hover:bg-charcoal active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-                >
-                  Kenali kabinet
-                  <ArrowUpRight size={18} />
-                </Link>
-                <span className="rounded-full border border-line bg-white/80 px-5 py-3 font-sans text-sm text-ink/70 backdrop-blur">
-                  BEM UNDIP 2026
-                </span>
               </div>
             </Reveal>
           </div>
         </section>
 
         <section id="sambutan" className="relative bg-white pb-14 sm:pb-[72px] lg:pb-24">
-          <div className="landing-container relative overflow-hidden rounded-[24px] bg-accent px-5 py-7 text-white shadow-[0_24px_64px_rgba(187,63,23,0.14)] sm:rounded-[30px] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+          <div className="landing-container relative overflow-hidden rounded-[24px] bg-accent p-2 text-white shadow-[0_24px_64px_rgba(187,63,23,0.14)] sm:rounded-[30px]">
             <Image
               src="/assets/landing/welcome-art.svg"
               alt=""
@@ -115,37 +92,62 @@ export default async function Home() {
               sizes="100vw"
               className="pointer-events-none select-none object-fill opacity-70"
             />
-            <div className="relative z-10">
+            <div className="relative z-10 rounded-[18px] border-2 border-white/70 px-5 py-7 sm:rounded-[24px] sm:px-8 sm:py-10 lg:px-10 lg:py-10">
               <Reveal>
-                <p className="landing-copy mx-auto max-w-3xl break-words border-y border-white/70 px-3 py-3 text-center text-base leading-snug sm:text-xl">
-                  Selamat datang di rumah digital BEM UNDIP 2026
-                </p>
-                <p className="landing-copy mx-auto mt-7 max-w-4xl text-center font-sans text-sm leading-7 text-white/95 sm:text-base sm:leading-8">
-                  BEM UNDIP 2026 berkomitmen penuh untuk merawat spirit perjuangan Pangeran Diponegoro,
-                  menjadi katalisator bagi perbaikan dan perubahan di lingkungan kampus, regional, maupun nasional.
-                  Mari merajut kembali simpul gerakan, memperjuangkan hak yang terpinggirkan, dan membawa dampak
-                  bagi almamater serta Indonesia.
+                <p className="landing-copy mx-auto w-fit max-w-3xl break-words rounded-[10px] border-2 border-white/80 px-5 py-2.5 text-center text-sm font-bold leading-snug sm:text-lg">
+                  Selamat datang di rumah digital BEM UNDIP 2026!
                 </p>
               </Reveal>
 
-              <div className="mt-8 grid gap-4 md:grid-cols-2 lg:mt-10">
+              <div className="mt-6 rounded-[16px] border-2 border-white/50 px-5 py-6 sm:mt-8 sm:px-8 sm:py-8">
                 <Reveal>
-                  <article className="min-h-full rounded-[20px] border border-white/55 bg-white/12 p-5 backdrop-blur-sm sm:p-7">
-                    <p className="font-sans text-xs font-bold uppercase tracking-[0.24em] text-white/70">Visi</p>
-                    <h2 className="landing-title mt-3 text-[clamp(2rem,4.3vw,3.4rem)] leading-[0.98]">
-                      Gerak yang dekat, dampak yang terasa.
-                    </h2>
-                  </article>
+                  <p className="landing-copy font-sans text-sm leading-7 text-white/95 sm:text-base sm:leading-8">
+                    BEM UNDIP 2026 berkomitmen penuh untuk merawat spirit perjuangan Pangeran Diponegoro,
+                    menjadi katalisator bagi perbaikan dan perubahan di lingkungan kampus, regional, maupun nasional.
+                  </p>
+                  <p className="landing-copy mt-4 font-sans text-sm leading-7 text-white/95 sm:text-base sm:leading-8">
+                    Maka dari itu, mari merajut kembali simpul-simpul gerakan, memperjuangkan hak-hak yang
+                    terpinggirkan, dan membawa dampaknya bagi almamater dan Indonesia.
+                  </p>
+                  <p className="landing-copy mt-4 font-sans text-sm leading-7 text-white/95 sm:text-base sm:leading-8">
+                    Hidup Mahasiswa.
+                    <br />
+                    Hidup Rakyat Indonesia.
+                    <br />
+                    Hidup Perempuan yang Melawan.
+                  </p>
                 </Reveal>
-                <Reveal delay={100}>
-                  <article className="min-h-full rounded-[20px] bg-white p-5 text-ink shadow-[0_14px_32px_rgba(187,63,23,0.14)] sm:p-7">
-                    <p className="font-sans text-xs font-bold uppercase tracking-[0.24em] text-accent-deep">Misi</p>
-                    <p className="landing-copy mt-3 font-sans text-sm leading-7 text-ink/80 sm:text-base sm:leading-8">
-                      Menguatkan pencerdasan, pelayanan, advokasi, serta ruang karya yang terbuka dan relevan bagi
-                      seluruh mahasiswa Universitas Diponegoro.
-                    </p>
-                  </article>
-                </Reveal>
+
+                <div className="mt-10 grid gap-10 sm:grid-cols-2 lg:mt-12">
+                  <Reveal>
+                    <div className="relative pb-4 pl-3 pt-2">
+                      <div className="absolute inset-0 right-3 top-4 rotate-2 rounded-[18px] bg-accent-deep/40" />
+                      <article className="relative rounded-[18px] bg-accent-deep/30 p-3 shadow-[0_14px_28px_rgba(0,0,0,0.18)] sm:p-4">
+                        <p className="rounded-[12px] bg-charcoal/30 py-2 text-center font-sans text-xs font-bold uppercase tracking-[0.24em] text-white">
+                          Visi
+                        </p>
+                        <div className="mt-3 aspect-[4/3] w-full rounded-[14px] bg-[#B9B9B9]" />
+                      </article>
+                      <span className="absolute -bottom-1 left-0 flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white shadow-[0_8px_16px_rgba(0,0,0,0.3)]">
+                        <ArrowUpLeft size={16} />
+                      </span>
+                    </div>
+                  </Reveal>
+                  <Reveal delay={100}>
+                    <div className="relative pb-4 pr-3 pt-2">
+                      <div className="absolute inset-0 left-3 top-4 -rotate-2 rounded-[18px] bg-accent-deep/40" />
+                      <article className="relative rounded-[18px] bg-accent-deep/30 p-3 shadow-[0_14px_28px_rgba(0,0,0,0.18)] sm:p-4">
+                        <p className="rounded-[12px] bg-charcoal/30 py-2 text-center font-sans text-xs font-bold uppercase tracking-[0.24em] text-white">
+                          Misi
+                        </p>
+                        <div className="mt-3 aspect-[4/3] w-full rounded-[14px] bg-[#B9B9B9]" />
+                      </article>
+                      <span className="absolute -bottom-1 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white shadow-[0_8px_16px_rgba(0,0,0,0.3)]">
+                        <ArrowUpRight size={16} />
+                      </span>
+                    </div>
+                  </Reveal>
+                </div>
               </div>
             </div>
           </div>
