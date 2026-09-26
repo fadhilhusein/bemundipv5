@@ -10,7 +10,19 @@ export type BidangRecord = {
   penanggung_jawab: string;
   jumlah_anggota: number;
   gambar: string | null;
+  gambar_utama: string | null;
+  quote_utama: string | null;
+  quote_penutup: string | null;
   created_at: string;
+};
+
+export type AnggotaBidangRecord = {
+  id: number;
+  id_bidang: number;
+  nama_anggota: string;
+  jabatan: string | null;
+  foto: string | null;
+  urutan: number;
 };
 
 export type ProgramUnggulanRecord = {
@@ -25,7 +37,8 @@ export type ProgramUnggulanRecord = {
 export const getBidangList = unstable_cache(
   async (): Promise<BidangRecord[]> => {
     return client`
-      SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar, created_at
+      SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar,
+             gambar_utama, quote_utama, quote_penutup, created_at
       FROM bidang
       ORDER BY nama_bidang ASC
     ` as unknown as BidangRecord[];
@@ -49,7 +62,8 @@ export const getBidangById = (id: number) =>
   unstable_cache(
     async (): Promise<BidangRecord | null> => {
       const rows = (await client`
-        SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar, created_at
+        SELECT id, nama_bidang, deskripsi, penanggung_jawab, jumlah_anggota, gambar,
+               gambar_utama, quote_utama, quote_penutup, created_at
         FROM bidang
         WHERE id = ${id}
         LIMIT 1
@@ -57,6 +71,20 @@ export const getBidangById = (id: number) =>
       return rows[0] ?? null;
     },
     [`bidang-detail-${id}`],
+    { tags: ["bidang"], revalidate: 60 }
+  )();
+
+export const getAnggotaByBidang = (bidangId: number) =>
+  unstable_cache(
+    async (): Promise<AnggotaBidangRecord[]> => {
+      return (await client`
+        SELECT id, id_bidang, nama_anggota, jabatan, foto, urutan
+        FROM anggota_bidang
+        WHERE id_bidang = ${bidangId}
+        ORDER BY urutan ASC, id ASC
+      `) as unknown as AnggotaBidangRecord[];
+    },
+    [`bidang-anggota-${bidangId}`],
     { tags: ["bidang"], revalidate: 60 }
   )();
 

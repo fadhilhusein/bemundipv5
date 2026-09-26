@@ -38,9 +38,15 @@ async function ensureSchema() {
       penanggung_jawab TEXT NOT NULL,
       jumlah_anggota INTEGER NOT NULL,
       gambar TEXT,
+      gambar_utama TEXT,
+      quote_utama TEXT,
+      quote_penutup TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `;
+  await sql`ALTER TABLE bidang ADD COLUMN IF NOT EXISTS gambar_utama TEXT`;
+  await sql`ALTER TABLE bidang ADD COLUMN IF NOT EXISTS quote_utama TEXT`;
+  await sql`ALTER TABLE bidang ADD COLUMN IF NOT EXISTS quote_penutup TEXT`;
   await sql`
     CREATE TABLE IF NOT EXISTS admins (
       id SERIAL PRIMARY KEY,

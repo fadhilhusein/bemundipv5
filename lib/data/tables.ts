@@ -97,9 +97,12 @@ export const bidang: TableConfig = {
   fields: [
     { name: "nama_bidang", label: "Nama Bidang", type: "text", required: true },
     { name: "gambar", label: "Logo Bidang", type: "file", required: false },
+    { name: "gambar_utama", label: "Foto Utama Halaman", type: "file", required: false },
     { name: "penanggung_jawab", label: "Penanggung Jawab", type: "text", required: true },
     { name: "jumlah_anggota", label: "Jumlah Anggota", type: "number", required: true, defaultValue: 0 },
-    { name: "deskripsi", label: "Deskripsi", type: "textarea", required: false, colSpan: 2 }
+    { name: "deskripsi", label: "Deskripsi", type: "textarea", required: false, colSpan: 2 },
+    { name: "quote_utama", label: "Quote Utama", type: "textarea", required: false, colSpan: 2 },
+    { name: "quote_penutup", label: "Quote Penutup", type: "textarea", required: false, colSpan: 2 }
   ]
 };
 

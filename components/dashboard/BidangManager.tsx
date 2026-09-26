@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
+import { ImagePlus, Pencil, Plus, Sparkles, Trash2, UserPlus, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 type Bidang = {
@@ -13,27 +13,50 @@ type Bidang = {
   penanggung_jawab: string;
   jumlah_anggota: number;
   gambar: string | null;
+  gambar_utama: string | null;
+  quote_utama: string | null;
+  quote_penutup: string | null;
+  anggota: Array<{
+    id: number;
+    nama_anggota: string;
+    jabatan: string | null;
+    foto: string | null;
+    urutan: number;
+  }>;
   created_at: string;
+};
+
+type AnggotaForm = {
+  clientId: string;
+  namaAnggota: string;
+  jabatan: string;
+  foto: string;
 };
 
 type BidangManagerProps = {
   canManageAll: boolean;
 };
 
-const emptyForm = {
+const createEmptyForm = () => ({
   namaBidang: "",
   deskripsi: "",
   penanggungJawab: "",
   jumlahAnggota: "",
-  gambar: ""
-};
+  gambar: "",
+  gambarUtama: "",
+  quoteUtama: "Tanpa Rencana, Kamu Sampai di Sini.\nBukan seperti kafe. Tapi Warteg",
+  quotePenutup: "Cerita-Cerita Bermula di Sini. Beberapa Berakhir Dengan Baik.",
+  anggota: [] as AnggotaForm[]
+});
 
 export function BidangManager({ canManageAll }: BidangManagerProps) {
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState(createEmptyForm);
   const [entries, setEntries] = useState<Bidang[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingHero, setIsUploadingHero] = useState(false);
+  const [uploadingAnggotaIndex, setUploadingAnggotaIndex] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,9 +109,66 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
     }
   };
 
+  const uploadImage = async (file: File, folder: string) => {
+    const body = new FormData();
+    body.append("file", file);
+    body.append("folder", folder);
+    const res = await fetch("/api/upload", { method: "POST", body });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error ?? "Upload gagal");
+    return String(json.url);
+  };
+
+  const handleHeroFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingHero(true);
+    setError(null);
+    try {
+      const url = await uploadImage(file, "bidang-hero");
+      setForm((prev) => ({ ...prev, gambarUtama: url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal mengunggah foto halaman bidang");
+    } finally {
+      setIsUploadingHero(false);
+    }
+  };
+
+  const addAnggota = () => {
+    setForm((prev) => ({
+      ...prev,
+      anggota: [...prev.anggota, { clientId: crypto.randomUUID(), namaAnggota: "", jabatan: "", foto: "" }]
+    }));
+  };
+
+  const updateAnggota = (index: number, values: Partial<AnggotaForm>) => {
+    setForm((prev) => ({
+      ...prev,
+      anggota: prev.anggota.map((item, itemIndex) => (itemIndex === index ? { ...item, ...values } : item))
+    }));
+  };
+
+  const removeAnggota = (index: number) => {
+    setForm((prev) => ({ ...prev, anggota: prev.anggota.filter((_, itemIndex) => itemIndex !== index) }));
+  };
+
+  const handleAnggotaFileChange = async (index: number, file?: File) => {
+    if (!file) return;
+    setUploadingAnggotaIndex(index);
+    setError(null);
+    try {
+      const url = await uploadImage(file, "anggota-bidang");
+      updateAnggota(index, { foto: url });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal mengunggah foto anggota");
+    } finally {
+      setUploadingAnggotaIndex(null);
+    }
+  };
+
   const openCreate = () => {
     setEditingId(null);
-    setForm(emptyForm);
+    setForm(createEmptyForm());
     setError(null);
     setIsModalOpen(true);
   };
@@ -100,7 +180,16 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
       deskripsi: entry.deskripsi,
       penanggungJawab: entry.penanggung_jawab,
       jumlahAnggota: String(entry.jumlah_anggota),
-      gambar: entry.gambar ?? ""
+      gambar: entry.gambar ?? "",
+      gambarUtama: entry.gambar_utama ?? "",
+      quoteUtama: entry.quote_utama ?? "Tanpa Rencana, Kamu Sampai di Sini.\nBukan seperti kafe. Tapi Warteg",
+      quotePenutup: entry.quote_penutup ?? "Cerita-Cerita Bermula di Sini. Beberapa Berakhir Dengan Baik.",
+      anggota: (entry.anggota ?? []).map((item) => ({
+        clientId: String(item.id),
+        namaAnggota: item.nama_anggota,
+        jabatan: item.jabatan ?? "",
+        foto: item.foto ?? ""
+      }))
     });
     setError(null);
     setIsModalOpen(true);
@@ -109,7 +198,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
   const closeModal = () => {
     setIsModalOpen(false);
     setEditingId(null);
-    setForm(emptyForm);
+    setForm(createEmptyForm());
     setError(null);
   };
 
@@ -187,10 +276,11 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
         </div>
 
         <div className="mt-6 overflow-x-auto">
-          <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+          <table className="w-full min-w-[860px] border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-divider text-xs font-semibold uppercase tracking-wide text-clay">
                 <th className="py-3 pr-4">Logo</th>
+                <th className="py-3 pr-4">Foto Halaman</th>
                 <th className="py-3 pr-4">Nama Bidang</th>
                 <th className="py-3 pr-4">Penanggung Jawab</th>
                 <th className="py-3 pr-4">Jumlah Anggota</th>
@@ -201,13 +291,13 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="py-6 text-center text-clay">
+                  <td colSpan={7} className="py-6 text-center text-clay">
                     Memuat data…
                   </td>
                 </tr>
               ) : entries.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-6 text-center text-clay">
+                  <td colSpan={7} className="py-6 text-center text-clay">
                     Belum ada data bidang.
                   </td>
                 </tr>
@@ -217,6 +307,13 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                     <td className="py-3 pr-4">
                       {entry.gambar ? (
                         <Image src={entry.gambar} alt="" width={40} height={40} className="h-10 w-10 rounded-lg object-cover" />
+                      ) : (
+                        <span className="text-brown/40">—</span>
+                      )}
+                    </td>
+                    <td className="py-3 pr-4">
+                      {entry.gambar_utama ? (
+                        <Image src={entry.gambar_utama} alt="" width={72} height={40} className="h-10 w-[72px] rounded-lg object-cover" />
                       ) : (
                         <span className="text-brown/40">—</span>
                       )}
@@ -269,7 +366,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
           <div
             role="dialog"
             aria-modal="true"
-            className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8"
+            className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -352,6 +449,24 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                 ) : null}
               </div>
 
+              <div className="sm:col-span-1">
+                <label htmlFor="gambarUtama" className="text-sm font-semibold text-brown">
+                  Foto Utama Halaman Bidang
+                </label>
+                <input
+                  id="gambarUtama"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  onChange={handleHeroFileChange}
+                  className="mt-2 block w-full text-sm text-brown file:mr-4 file:rounded-full file:border-0 file:bg-orange file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                />
+                <p className="mt-1 text-xs text-clay">Gunakan foto landscape untuk area hero di halaman publik.</p>
+                {isUploadingHero ? <p className="mt-1 text-xs text-clay">Mengunggah…</p> : null}
+                {form.gambarUtama ? (
+                  <Image src={form.gambarUtama} alt="Pratinjau foto utama" width={320} height={140} className="mt-2 h-28 w-full rounded-xl object-cover" />
+                ) : null}
+              </div>
+
               <div className="sm:col-span-2">
                 <label htmlFor="deskripsi" className="text-sm font-semibold text-brown">
                   Deskripsi
@@ -367,6 +482,88 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                 />
               </div>
 
+              <div className="sm:col-span-1">
+                <label htmlFor="quoteUtama" className="text-sm font-semibold text-brown">
+                  Quote Utama (Kiri)
+                </label>
+                <textarea
+                  id="quoteUtama"
+                  rows={4}
+                  value={form.quoteUtama}
+                  onChange={(e) => setForm({ ...form, quoteUtama: e.target.value })}
+                  className={textareaClass}
+                  placeholder="Tanpa Rencana, Kamu Sampai di Sini..."
+                />
+              </div>
+
+              <div className="sm:col-span-1">
+                <label htmlFor="quotePenutup" className="text-sm font-semibold text-brown">
+                  Quote Penutup (Kanan)
+                </label>
+                <textarea
+                  id="quotePenutup"
+                  rows={4}
+                  value={form.quotePenutup}
+                  onChange={(e) => setForm({ ...form, quotePenutup: e.target.value })}
+                  className={textareaClass}
+                  placeholder="Cerita-Cerita Bermula di Sini..."
+                />
+              </div>
+
+              <fieldset className="rounded-2xl border border-divider bg-cream/50 p-4 sm:col-span-2 sm:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <legend className="text-base font-semibold text-brown">Daftar Anggota Bidang</legend>
+                    <p className="mt-1 text-xs text-clay">Nama, jabatan, dan foto akan tampil sebagai roster pada halaman publik.</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setForm((prev) => ({ ...prev, jumlahAnggota: String(prev.anggota.length) }))}
+                      className="rounded-full border border-clay/30 bg-white px-3 py-2 text-xs font-semibold text-clay hover:text-brown"
+                    >
+                      Samakan jumlah ({form.anggota.length})
+                    </button>
+                    <button type="button" onClick={addAnggota} className="inline-flex items-center gap-2 rounded-full bg-brown px-4 py-2 text-xs font-semibold text-white hover:bg-orange">
+                      <UserPlus size={15} /> Tambah Anggota
+                    </button>
+                  </div>
+                </div>
+
+                {form.anggota.length === 0 ? (
+                  <p className="mt-5 rounded-xl border border-dashed border-clay/30 bg-white/60 px-4 py-6 text-center text-sm text-clay">Belum ada anggota yang ditambahkan.</p>
+                ) : (
+                  <div className="mt-5 space-y-4">
+                    {form.anggota.map((anggota, index) => (
+                      <div key={anggota.clientId} className="grid gap-3 rounded-xl border border-divider bg-white p-4 sm:grid-cols-[80px_1fr_1fr_auto] sm:items-start">
+                        <div>
+                          {anggota.foto ? (
+                            <Image src={anggota.foto} alt="" width={80} height={80} className="h-20 w-20 rounded-xl object-cover" />
+                          ) : (
+                            <div className="grid h-20 w-20 place-items-center rounded-xl bg-orange-soft text-orange"><ImagePlus size={24} /></div>
+                          )}
+                          <label className="mt-2 block cursor-pointer text-center text-[11px] font-semibold text-orange hover:underline">
+                            {uploadingAnggotaIndex === index ? "Mengunggah…" : "Pilih foto"}
+                            <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="sr-only" disabled={uploadingAnggotaIndex !== null} onChange={(event) => handleAnggotaFileChange(index, event.target.files?.[0])} />
+                          </label>
+                        </div>
+                        <div>
+                          <label htmlFor={`anggota-nama-${index}`} className="text-xs font-semibold text-brown">Nama Anggota</label>
+                          <input id={`anggota-nama-${index}`} required value={anggota.namaAnggota} onChange={(e) => updateAnggota(index, { namaAnggota: e.target.value })} className={inputClass} placeholder="Nama lengkap" />
+                        </div>
+                        <div>
+                          <label htmlFor={`anggota-jabatan-${index}`} className="text-xs font-semibold text-brown">Jabatan / Posisi</label>
+                          <input id={`anggota-jabatan-${index}`} value={anggota.jabatan} onChange={(e) => updateAnggota(index, { jabatan: e.target.value })} className={inputClass} placeholder="Staf, Wakil Ketua, dll." />
+                        </div>
+                        <button type="button" onClick={() => removeAnggota(index)} aria-label={`Hapus anggota ${index + 1}`} className="mt-7 rounded-full p-2 text-clay hover:bg-red/10 hover:text-red">
+                          <Trash2 size={17} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </fieldset>
+
               {error ? (
                 <p role="alert" className="text-sm text-red sm:col-span-2">
                   {error}
@@ -374,7 +571,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
               ) : null}
 
               <div className="flex items-center gap-3 sm:col-span-2">
-                <Button className="px-8" disabled={isSubmitting || isUploading}>
+                <Button className="px-8" disabled={isSubmitting || isUploading || isUploadingHero || uploadingAnggotaIndex !== null}>
                   {isSubmitting ? "Menyimpan…" : editingId ? "Simpan Perubahan" : "Simpan Bidang"}
                 </Button>
                 <button

@@ -345,9 +345,26 @@ export const SCHEMA_STATEMENTS: string[] = [
       penanggung_jawab  TEXT NOT NULL,
       jumlah_anggota    INTEGER NOT NULL,
       gambar            TEXT,
+      gambar_utama      TEXT,
+      quote_utama       TEXT,
+      quote_penutup     TEXT,
       created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
   );`,
   `ALTER TABLE bidang ADD COLUMN IF NOT EXISTS gambar TEXT;`,
+  `ALTER TABLE bidang ADD COLUMN IF NOT EXISTS gambar_utama TEXT;`,
+  `ALTER TABLE bidang ADD COLUMN IF NOT EXISTS quote_utama TEXT;`,
+  `ALTER TABLE bidang ADD COLUMN IF NOT EXISTS quote_penutup TEXT;`,
+  `CREATE TABLE IF NOT EXISTS anggota_bidang (
+      id            SERIAL PRIMARY KEY,
+      id_bidang     INTEGER NOT NULL,
+      nama_anggota  TEXT NOT NULL,
+      jabatan       TEXT,
+      foto          TEXT,
+      urutan        INTEGER NOT NULL DEFAULT 0,
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+      CONSTRAINT fk_anggota_bidang FOREIGN KEY (id_bidang) REFERENCES bidang(id)
+          ON UPDATE CASCADE ON DELETE CASCADE
+  );`,
   `CREATE INDEX IF NOT EXISTS idx_users_kabinet ON users(id_kabinet);`,
   `CREATE INDEX IF NOT EXISTS idx_sosmed_kabinet ON media_sosial(id_kabinet);`,
   `CREATE INDEX IF NOT EXISTS idx_layanan_kabinet ON layanan(id_kabinet);`,
@@ -355,5 +372,6 @@ export const SCHEMA_STATEMENTS: string[] = [
   `CREATE INDEX IF NOT EXISTS idx_publikasi_tanggal ON publikasi_terkini(tanggal_publikasi);`,
   `CREATE INDEX IF NOT EXISTS idx_agenda_kabinet ON agenda(id_kabinet);`,
   `CREATE INDEX IF NOT EXISTS idx_agenda_bidang ON agenda(id_bidang);`,
-  `CREATE INDEX IF NOT EXISTS idx_program_bidang ON program_unggulan(id_bidang);`
+  `CREATE INDEX IF NOT EXISTS idx_program_bidang ON program_unggulan(id_bidang);`,
+  `CREATE INDEX IF NOT EXISTS idx_anggota_bidang ON anggota_bidang(id_bidang, urutan, id);`
 ];
