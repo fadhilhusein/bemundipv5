@@ -81,7 +81,7 @@ export default async function BidangDetailPage({ params }: PageProps) {
   }
 
   return (
-    <>
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#f5f5f5]">
       <BidangFigmaHeader />
       <BidangFigmaPage
         bidang={bidang}
@@ -92,6 +92,6 @@ export default async function BidangDetailPage({ params }: PageProps) {
         anggotaError={anggotaError}
       />
       <BidangFigmaFooter />
-    </>
+    </div>
   );
 }

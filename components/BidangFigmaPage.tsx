@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AlertCircle, ArrowLeft, Shield, UserRound, UsersRound } from "lucide-react";
 import { ProgramCard } from "@/components/ProgramCard";
+import { BidangAnggotaReceipt } from "@/components/BidangAnggotaReceipt";
 import { Button } from "@/components/ui/Button";
 import type { AnggotaBidangRecord, BidangRecord, ProgramUnggulanRecord } from "@/lib/bidang-public";
 
@@ -64,7 +65,7 @@ export function BidangFigmaPage({ bidang, numericId, programList, programError, 
               </div>
             )}
 
-            <Link href="https://www.instagram.com/bemundip" target="_blank" rel="noreferrer" className="absolute left-5 top-8 z-10 rounded-full bg-[#ff8d28] px-5 py-2 text-[10px] font-semibold uppercase tracking-wide text-white shadow sm:left-9 sm:top-12 sm:px-8 sm:text-sm">
+            <Link href="https://www.instagram.com/bemundip" target="_blank" rel="noreferrer" className="absolute left-5 top-8 z-10 rounded-full bg-[#b84b00] px-5 py-2 text-[10px] font-semibold uppercase tracking-wide text-white shadow sm:left-9 sm:top-12 sm:px-8 sm:text-sm">
               Kunjungi Instagram
             </Link>
           </div>
@@ -75,7 +76,7 @@ export function BidangFigmaPage({ bidang, numericId, programList, programError, 
           </div>
         </div>
 
-        <div className="mx-[4.5%] bg-[#ff7100] px-6 pb-10 pt-8 sm:px-10 sm:pb-14 lg:px-14 lg:pb-16 lg:pt-12">
+        <div className="mx-[4.5%] bg-[#b84b00] px-6 pb-10 pt-8 sm:px-10 sm:pb-14 lg:px-14 lg:pb-16 lg:pt-12">
           <div className="grid min-w-0 gap-9 md:grid-cols-[1fr_0.95fr] md:gap-14">
             <div className="min-w-0">
               <p className="max-w-[520px] whitespace-pre-line font-sans text-[clamp(2.25rem,5vw,5rem)] font-light uppercase leading-[0.86] tracking-[-0.055em]">{quoteHeadline}</p>
@@ -113,43 +114,11 @@ export function BidangFigmaPage({ bidang, numericId, programList, programError, 
         </div>
       </section>
 
-      <section className="bg-[#f5f5f5] px-5 pb-12 pt-10 text-brown sm:px-8 lg:pb-20 lg:pt-20">
-        <div className="mx-auto max-w-[1200px]">
-          <div className="flex min-w-0 flex-col gap-3 border-b border-brown/20 pb-7 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#df1e25]">Orang-Orang di Baliknya</p>
-              <h2 className="mt-2 font-display text-4xl font-bold sm:text-5xl">Anggota Bidang</h2>
-            </div>
-            <p className="max-w-md text-sm leading-relaxed text-clay">Kenali tim yang menggerakkan {name}.</p>
-          </div>
-
-          {anggotaError ? (
-            <div className="mt-10 rounded-2xl border border-red/20 bg-white p-8 text-center">
-              <AlertCircle className="mx-auto text-red" aria-hidden="true" />
-              <p className="mt-3 font-semibold">Gagal memuat daftar anggota.</p>
-            </div>
-          ) : anggotaList.length === 0 ? (
-            <p className="mt-10 rounded-2xl border border-dashed border-clay/35 bg-white/50 px-6 py-12 text-center text-clay">Daftar anggota bidang belum ditambahkan.</p>
-          ) : (
-            <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
-              {anggotaList.map((anggota, index) => (
-                <article key={anggota.id} className={`min-w-0 ${index % 2 === 1 ? "sm:translate-y-8" : ""}`}>
-                  <div className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] border-2 border-[#ff7100] bg-[#ff8d28] shadow-card">
-                    {anggota.foto ? (
-                      <Image src={anggota.foto} alt={`Foto ${anggota.nama_anggota}`} fill sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 270px" className="object-cover" />
-                    ) : (
-                      <div className="grid h-full place-items-center text-white/75"><UserRound className="h-20 w-20" strokeWidth={1.2} aria-hidden="true" /></div>
-                    )}
-                    <span className="absolute bottom-3 left-3 rounded-full bg-[#ff7100] px-3 py-1 text-xs font-bold text-white">{String(index + 1).padStart(2, "0")}</span>
-                  </div>
-                  <h3 className="mt-4 break-words font-display text-xl font-bold leading-tight text-brown [overflow-wrap:anywhere]">{anggota.nama_anggota}</h3>
-                  <p className="mt-1 break-words text-sm font-medium uppercase tracking-wide text-[#df1e25] [overflow-wrap:anywhere]">{anggota.jabatan || "Anggota"}</p>
-                </article>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      <BidangAnggotaReceipt
+        bidang={bidang}
+        anggotaList={anggotaList}
+        anggotaError={anggotaError}
+      />
 
       <section className="bg-[#f5f5f5] px-5 pb-28 pt-16 text-brown sm:px-8 lg:pb-40 lg:pt-28">
         <div className="mx-auto max-w-[1200px]">

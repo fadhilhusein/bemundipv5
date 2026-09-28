@@ -11,10 +11,10 @@ const items = [
 
 export function BidangFigmaHeader() {
   return (
-    <header className="relative z-50 bg-[#f5f5f5] px-5 pb-7 pt-7 sm:px-8 sm:pb-10 sm:pt-10 lg:pb-14 lg:pt-14">
+    <header className="relative z-50 overflow-x-clip bg-[#f5f5f5] px-3.5 pb-7 pt-7 sm:px-8 sm:pb-10 sm:pt-10 lg:pb-14 lg:pt-14">
       <nav
         aria-label="Navigasi utama"
-        className="mx-auto flex w-full max-w-[1207px] items-center gap-1 overflow-x-auto rounded-full border border-white bg-[#ff8d28] p-2 font-display text-sm text-white shadow-[0_4px_2px_rgba(0,0,0,0.25)] backdrop-blur-md sm:justify-between sm:gap-2 sm:px-4 lg:text-base"
+        className="bidang-nav-scroll mx-auto flex w-full max-w-[1207px] items-center gap-1 overflow-x-auto rounded-full border border-white bg-[#b84b00] p-2 font-display text-sm text-white shadow-[0_4px_2px_rgba(0,0,0,0.25)] backdrop-blur-md sm:justify-between sm:gap-2 sm:px-4 lg:text-base"
       >
         {items.map((item) => (
           <Link

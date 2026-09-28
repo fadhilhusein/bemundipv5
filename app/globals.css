@@ -90,6 +90,53 @@ html {
   text-wrap: pretty;
 }
 
+.bidang-receipt {
+  isolation: isolate;
+  background: #fffdf7;
+}
+
+.bidang-receipt::before,
+.bidang-receipt::after {
+  background-image: radial-gradient(circle at 5px 0, transparent 5px, #fffdf7 5.5px);
+  background-position: 0 0;
+  background-repeat: repeat-x;
+  background-size: 10px 10px;
+  content: "";
+  height: 10px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 2;
+}
+
+.bidang-receipt::before {
+  top: -1px;
+  transform: rotate(180deg);
+}
+
+.bidang-receipt::after {
+  bottom: -1px;
+}
+
+.bidang-nav-scroll {
+  scrollbar-color: rgba(255, 255, 255, 0.75) transparent;
+  scrollbar-width: thin;
+  touch-action: pan-x;
+}
+
+.bidang-nav-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.bidang-nav-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bidang-nav-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+}
+
 .font-display {
   font-family: var(--font-playfair), "Playfair Display", serif;
 }
