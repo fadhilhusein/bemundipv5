@@ -4,6 +4,7 @@ node_modules/
 # Next.js
 .next/
 .next-build/
+.next-claude/
 out/
 
 # production

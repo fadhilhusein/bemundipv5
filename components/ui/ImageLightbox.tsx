@@ -14,6 +14,8 @@ type ImageLightboxProps = {
   priority?: boolean;
   quality?: number;
   roundedClass?: string;
+  /** Fill the empty space around a contained image with a blurred copy of itself. */
+  backdrop?: boolean;
 };
 
 export function ImageLightbox({
@@ -25,6 +27,7 @@ export function ImageLightbox({
   priority = false,
   quality = 75,
   roundedClass = "rounded-sm",
+  backdrop = false,
 }: ImageLightboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -106,17 +109,29 @@ export function ImageLightbox({
             </span>
           </span>
         ) : (
-          <Image
-            src={src}
-            alt={safeAlt}
-            fill
-            sizes={sizes}
-            priority={priority}
-            quality={quality}
-            decoding="async"
-            onError={() => setHasError(true)}
-            className={`${imageClassName} [overflow-wrap:anywhere] transition-transform duration-300 group-hover/image:scale-[1.02]`}
-          />
+          <>
+            {backdrop ? (
+              <Image
+                src={src}
+                alt=""
+                aria-hidden="true"
+                fill
+                sizes="128px"
+                className="scale-110 object-cover opacity-70 blur-2xl"
+              />
+            ) : null}
+            <Image
+              src={src}
+              alt={safeAlt}
+              fill
+              sizes={sizes}
+              priority={priority}
+              quality={quality}
+              decoding="async"
+              onError={() => setHasError(true)}
+              className={`${imageClassName} [overflow-wrap:anywhere] transition-transform duration-300 group-hover/image:scale-[1.02]`}
+            />
+          </>
         )}
         {!hasError && (
           <>
