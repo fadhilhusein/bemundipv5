@@ -61,7 +61,7 @@ export function DashboardShell({ userEmail, role, children }: DashboardShellProp
         </div>
       </div>
 
-      <div className="flex min-h-screen flex-1 flex-col max-w-full">
+      <div className="flex min-h-screen min-w-0 flex-1 flex-col max-w-full">
         <Topbar title={title} onOpenSidebar={() => setIsSidebarOpen(true)} />
         <main className="flex-1 px-5 py-8 sm:px-8 sm:py-10">
           <div className="mx-auto max-w-full">{children}</div>
