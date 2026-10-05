@@ -53,42 +53,37 @@ export function BidangAnggotaReceipt({ bidang, anggotaList, anggotaError }: Prop
   }, [selectedAnggota]);
 
   return (
-    <section className="overflow-hidden bg-[#f5f5f5] px-4 py-12 text-black sm:px-6 sm:py-16 lg:py-24" aria-label="Daftar Anggota">
-      <div className="mx-auto w-full max-w-[1100px]">
+    <section className="mx-auto w-full max-w-[1385px] overflow-hidden bg-[#f5f5f5] px-3 text-black sm:px-7 lg:px-10" aria-label="Daftar Anggota">
+      <div className="bidang-anggota-frame w-full">
         {/* Receipt / Nota Card */}
         <article className="bidang-receipt relative w-full overflow-hidden border border-black/20 p-4 shadow-[0_18px_45px_rgba(64,35,18,0.16)] sm:p-8 lg:p-12">
-          <div className="mb-5 flex items-center justify-between border-b border-dashed border-black/30 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-black/55 sm:text-xs">
-            <span>BEM UNDIP 2026</span>
-            <span>NO. {String(bidang.id).padStart(3, "0")}</span>
-          </div>
-
           {/* Receipt Header */}
           <header className="text-center">
             <h2 className="font-landing-display text-2xl font-black uppercase tracking-wider text-black sm:text-3xl lg:text-4xl">
               Anggota Kami
             </h2>
-            <p className="mt-1 font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-black/85 sm:text-sm">
+            <p className="mt-3 font-sans text-[11px] uppercase text-black/85 sm:text-sm">
               {name}
             </p>
           </header>
 
           {/* Leadership lines */}
-          <div className="mt-6 space-y-1 font-sans text-xs font-semibold uppercase tracking-wider text-black sm:text-sm">
+          <div className="space-y-1 font-sans text-xs uppercase text-black sm:text-sm">
             <p className="flex flex-wrap items-baseline gap-1.5">
               <span className="shrink-0">NAMA {titles.lead}:</span>
-              <span className="font-bold underline decoration-black/50 underline-offset-4 break-words">
+              <span className="break-words">
                 {bidang.penanggung_jawab?.trim() || "—"}
               </span>
             </p>
             <p className="flex flex-wrap items-baseline gap-1.5">
               <span className="shrink-0">NAMA {titles.deputy}:</span>
-              <span className="font-bold underline decoration-black/50 underline-offset-4 break-words">
+              <span className="break-words">
                 {deputyMember?.nama_anggota || "—"}
               </span>
             </p>
           </div>
 
-          <div className="my-5 border-b-2 border-black" />
+          <div className="mb-2 mt-5 border-b border-black/30" />
 
           {/* Table Header */}
           <div className="grid grid-cols-[1.75rem_minmax(0,1fr)_minmax(0,6.5rem)] items-center gap-2 pb-2 font-sans text-[11px] font-bold uppercase tracking-tight text-black sm:grid-cols-[3.25rem_minmax(0,1fr)_9.5rem] sm:text-sm sm:tracking-wider">
@@ -96,7 +91,6 @@ export function BidangAnggotaReceipt({ bidang, anggotaList, anggotaError }: Prop
             <span>NAMA</span>
             <span className="text-right sm:text-left">KETERANGAN</span>
           </div>
-          <div className="border-b-2 border-black" />
 
           {/* Table Content */}
           {anggotaError ? (
@@ -178,17 +172,13 @@ export function BidangAnggotaReceipt({ bidang, anggotaList, anggotaError }: Prop
           )}
 
           {/* Receipt Footer */}
-          <div className="mt-3 border-b-2 border-black" />
-          <div className="mt-4 flex items-baseline justify-between gap-4 font-sans text-xs font-bold uppercase tracking-wider text-black sm:text-sm">
+          <div className="mt-4 flex items-baseline justify-between gap-4 font-sans text-xs uppercase text-black sm:text-sm">
             <p>
               TOTAL ANGGOTA
             </p>
             <span className="font-mono text-base sm:text-lg">{totalPesanan}</span>
           </div>
 
-          <p className="mt-8 text-center font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-black/65 sm:text-xs">
-            TERIMA KASIH — BUILT WITH INTEGRITY
-          </p>
         </article>
       </div>
 

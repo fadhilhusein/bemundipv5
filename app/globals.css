@@ -90,32 +90,270 @@ html {
   text-wrap: pretty;
 }
 
+.bidang-poster {
+  container-type: inline-size;
+}
+
+.bidang-poster-title {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1.2cqw;
+  margin-inline: 7%;
+  padding-bottom: 1.2cqw;
+  color: #ed191c;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bidang-poster-title > p {
+  font-family: inherit;
+  font-size: 14.7cqw;
+  line-height: .78;
+  letter-spacing: -.065em;
+}
+
+.bidang-poster-title > p:first-child {
+  font-weight: 800;
+}
+
+.bidang-poster-title > p:last-child {
+  font-weight: 600;
+}
+
+.bidang-poster-title > h1 {
+  padding: 0;
+  font-family: inherit;
+  font-size: 4.5cqw;
+  font-weight: 700;
+  line-height: .82;
+  letter-spacing: -.055em;
+  text-wrap: initial;
+  overflow-wrap: anywhere;
+}
+
+.bidang-poster-store {
+  margin-top: -1.2cqw;
+  isolation: isolate;
+}
+
+.bidang-poster-store::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, #bd5905 0 4.5%, transparent 4.5% 95.5%, #bd5905 95.5%);
+  border-inline: 1px solid #773d13;
+  /* Follow the SVG's sloping eaves, with 1px overlap to avoid seams. */
+  clip-path: polygon(
+    0 calc(10.074cqw - 1px),
+    4.5% calc(9.196cqw - 1px),
+    95.5% calc(9.09cqw - 1px),
+    100% calc(9.924cqw - 1px),
+    100% 100%,
+    0 100%
+  );
+}
+
+.bidang-poster-store .bidang-photo-mask {
+  clip-path: none;
+  aspect-ratio: 2.86 / 1;
+}
+
+/* The SVG skyline has a stepped, transparent lower edge. Continue the
+   orange panel behind it without filling the transparent sky above. */
+.bidang-poster-buildings::before {
+  content: "";
+  position: absolute;
+  inset-inline: 4.5%;
+  bottom: 0;
+  height: 20%;
+  background: #ff7300;
+}
+
+.bidang-poster-buildings > img {
+  position: relative;
+}
+
+.bidang-instagram {
+  top: 3cqw;
+  left: 2.2cqw;
+  padding: .65cqw 3cqw;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.3cqw;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.bidang-poster-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 4cqw;
+  min-height: 44cqw;
+  padding: 3.5cqw 7.8% 3cqw;
+  border: 1px solid #773d13;
+  border-top: 0;
+  background: linear-gradient(90deg, #bd5905 0 4.5%, #ff7300 4.5% 95.5%, #bd5905 95.5%);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bidang-poster-copy,
+.bidang-poster-story {
+  position: relative;
+  min-width: 0;
+}
+
+.bidang-poster-headline {
+  max-width: 39cqw;
+  font-size: 4.5cqw;
+  line-height: .88;
+  font-weight: 400;
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.bidang-poster-support {
+  width: 55%;
+  margin-top: 2.5cqw;
+  min-height: 7cqw;
+  font-family: var(--font-great-vibes), cursive;
+  font-size: 2.8cqw;
+  line-height: 1.1;
+}
+
+.bidang-poster-program {
+  position: relative;
+  float: right;
+  width: 18cqw;
+  aspect-ratio: 1.25;
+  margin: -12cqw -1cqw 2cqw 1cqw;
+  transform: rotate(-12deg);
+}
+
+.bidang-poster-description {
+  clear: both;
+  font-size: 1.65cqw;
+  line-height: 1.12;
+  text-align: justify;
+  overflow-wrap: anywhere;
+}
+
+.bidang-poster-copy > .bidang-poster-description {
+  margin-top: 1.4cqw;
+}
+
+.bidang-description-upper {
+  position: relative;
+  height: 11cqw;
+  flex: none;
+}
+
+.bidang-description-measure {
+  position: absolute;
+  inset: 0 0 auto;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.bidang-poster-story {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6cqw;
+}
+
+.bidang-poster-closing {
+  margin-top: auto;
+  font-size: 4.5cqw;
+  line-height: .88;
+  font-weight: 400;
+  letter-spacing: -.025em;
+  text-align: right;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 479px) {
+  .bidang-poster-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7cqw;
+    padding-block: 6cqw;
+  }
+
+  .bidang-poster-headline,
+  .bidang-poster-closing {
+    max-width: 100%;
+    font-size: 7cqw;
+  }
+
+  .bidang-poster-support {
+    font-size: 5cqw;
+    min-height: 14cqw;
+  }
+
+  .bidang-poster-program {
+    width: 27cqw;
+    margin-top: -20cqw;
+  }
+
+  .bidang-poster-description {
+    font-size: 3.4cqw;
+    line-height: 1.35;
+  }
+
+  .bidang-description-upper {
+    height: 24cqw;
+  }
+
+  .bidang-poster-panel > .bidang-poster-story {
+    display: contents;
+  }
+
+  .bidang-description-upper {
+    order: -1;
+  }
+
+  .bidang-instagram {
+    font-size: 2cqw;
+    padding-block: 1cqw;
+  }
+}
+
+.bidang-anggota-frame {
+  padding: clamp(16px, 4vw, 42px);
+  background: linear-gradient(180deg, #bd5905 0%, #d9823c 45%, #f4e5d8 100%);
+}
+
 .bidang-receipt {
   isolation: isolate;
-  background: #fffdf7;
+  background: #f9f9f7 url('/assets/bidang-figma/paper-texture.svg') center / 600px 800px repeat;
+  font-family: Arial, Helvetica, sans-serif;
+  box-shadow: 0 3px 8px rgb(64 35 18 / 12%), inset 0 0 24px rgb(0 0 0 / 3%);
 }
 
-.bidang-receipt::before,
-.bidang-receipt::after {
-  background-image: radial-gradient(circle at 5px 0, transparent 5px, #fffdf7 5.5px);
-  background-position: 0 0;
-  background-repeat: repeat-x;
-  background-size: 10px 10px;
-  content: "";
-  height: 10px;
-  left: 0;
-  position: absolute;
-  right: 0;
-  z-index: 2;
+.bidang-receipt [class*="font-"] {
+  font-family: inherit;
 }
 
-.bidang-receipt::before {
-  top: -1px;
-  transform: rotate(180deg);
+.bidang-receipt > header {
+  margin-bottom: clamp(32px, 5vw, 64px);
 }
 
-.bidang-receipt::after {
-  bottom: -1px;
+.bidang-receipt > header h2 {
+  letter-spacing: -.035em;
+  font-weight: 700;
+}
+
+.bidang-receipt .grid {
+  border-bottom: 1px solid rgb(0 0 0 / 30%);
+}
+
+.bidang-receipt .grid .font-bold {
+  font-weight: 400;
 }
 
 .bidang-nav-scroll {
