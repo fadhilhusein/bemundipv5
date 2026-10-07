@@ -69,7 +69,11 @@ const alata = Alata({
 
 export const metadata: Metadata = {
   title: "BEM Universitas Diponegoro 2026",
-  description: "Website organisasi Kabinet BEM Universitas Diponegoro 2026."
+  description: "Website organisasi Kabinet BEM Universitas Diponegoro 2026.",
+  icons: {
+    icon: { url: "/assets/logo-bem.png", type: "image/png" },
+    shortcut: "/assets/logo-bem.png"
+  }
 };
 
 export default function RootLayout({

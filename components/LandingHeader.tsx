@@ -89,8 +89,8 @@ export function LandingHeader() {
             </nav>
             <button ref={trigger} type="button" className="landing-icon-button ml-auto text-white hover:bg-white/10 lg:hidden" aria-label="Buka menu" aria-expanded={open} aria-controls="landing-menu" onClick={() => setOpen(true)}><Menu size={22} /></button>
           </div>
-          <Link href="/#beranda" className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-full border border-line bg-white p-2 transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink lg:h-16 lg:w-16" aria-label="Identitas Kabinet Dipanegara">
-            <Image src="/assets/bemundip.png" alt="Logo Kabinet Dipanegara" width={64} height={64} priority className="h-full w-full object-contain" />
+          <Link href="/#beranda" className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-full border border-line bg-white p-2 transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink lg:h-16 lg:w-16" aria-label="Identitas BEM Universitas Diponegoro">
+            <Image src="/assets/logo-bem.png" alt="Logo BEM Universitas Diponegoro" width={64} height={64} priority className="h-full w-full object-contain" />
           </Link>
         </div>
         <noscript><nav className="landing-container mt-2 flex flex-wrap gap-2 rounded-2xl bg-charcoal p-3 text-white" aria-label="Navigasi tanpa JavaScript">{items.slice(1).map(item => <a key={item.href} href={item.href} className="landing-nav-link">{item.label}</a>)}</nav></noscript>
@@ -101,7 +101,7 @@ export function LandingHeader() {
             <div className="absolute inset-0 bg-black/35" onClick={() => setOpen(false)} aria-hidden="true" />
             <motion.div id="landing-menu" ref={dialog} role="dialog" aria-modal="true" aria-label="Menu navigasi" className="relative ml-auto flex h-[100dvh] w-[min(90vw,380px)] flex-col overflow-y-auto bg-charcoal p-6 text-white" initial={reduceMotion ? false : { x: "100%" }} animate={{ x: 0 }} exit={reduceMotion ? { opacity: 0 } : { x: "100%" }} transition={{ duration: reduceMotion ? 0 : 0.3, ease: "easeOut" }}>
               <div className="flex shrink-0 items-center justify-between">
-                <Image src="/assets/bemundip.png" alt="Logo Kabinet Dipanegara" width={52} height={52} className="h-[52px] w-[52px] rounded-full bg-white p-2" />
+                <Image src="/assets/logo-bem.png" alt="Logo BEM Universitas Diponegoro" width={52} height={52} className="h-[52px] w-[52px] rounded-full bg-white p-2" />
                 <button type="button" className="landing-icon-button border border-white/25 hover:bg-white/10" aria-label="Tutup menu" onClick={() => setOpen(false)}><X size={24} /></button>
               </div>
               <nav className="mt-8 flex flex-col" aria-label="Navigasi seluler">

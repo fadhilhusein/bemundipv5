@@ -254,12 +254,12 @@ export default async function Home() {
               <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-[24px] bg-[#D9D9D9] p-3 shadow-[0_22px_58px_rgba(52,64,84,0.18)] sm:rounded-[32px] sm:p-5">
                 <div className="relative grid aspect-video place-items-center overflow-hidden rounded-[18px] bg-gradient-to-br from-[#E5E7EB] to-[#BFC5CC] sm:rounded-[24px]">
                   <Image
-                    src="/assets/bemundip.png"
+                    src="/assets/logo-bem.png"
                     alt="Logo BEM UNDIP pada poster company profile"
                     width={240}
                     height={180}
                     loading="lazy"
-                    className="h-auto w-24 object-contain opacity-35 sm:w-36"
+                    className="h-auto w-24 object-contain sm:w-36"
                   />
                   <a
                     href="https://www.youtube.com/@bemundip"
