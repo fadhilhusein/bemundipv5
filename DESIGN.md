@@ -45,7 +45,7 @@ Large headings use tight leading and negative tracking. Body copy should stay be
 
 1. Floating dark pill navigation with an orange active item.
 2. Kabinet Dipanegara hero using the exported Figma illustration.
-3. Orange welcome, vision, and mission panel.
+3. Editorial welcome section on white with dark headings and restrained orange accents. The heading and welcome copy use a 5:7 split on desktop and stack below 1024px. Neutral vision and mission media cards sit below, stacking below 768px, with explicit empty states until media is available. This revised direction supersedes the original orange welcome panel.
 4. Editorial organization directory driven by database records.
 5. Two-up latest-news carousel driven by publication records.
 6. Company-profile media section.

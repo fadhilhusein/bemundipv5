@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpLeft, ArrowUpRight, CalendarDays, Landmark, Newspaper, Play, UsersRound } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Landmark, Newspaper, Play, UsersRound } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LandingNewsCarousel } from "@/components/LandingNewsCarousel";
@@ -34,11 +34,25 @@ const serviceItems = [
 ];
 
 export default async function Home() {
-  const [bidangList, publicationList, programCount] = await Promise.all([
+  const [bidangResult, publicationResult, programResult] = await Promise.allSettled([
     getBidangList(),
     getPublikasiPaginated(1, 6),
     getProgramUnggulanCount()
   ]);
+
+  const bidangList = bidangResult.status === "fulfilled" ? bidangResult.value : [];
+  const publicationList = publicationResult.status === "fulfilled" ? publicationResult.value : [];
+  const programCount = programResult.status === "fulfilled" ? programResult.value : null;
+
+  for (const [label, result] of [
+    ["direktori bidang", bidangResult],
+    ["publikasi", publicationResult],
+    ["jumlah program unggulan", programResult]
+  ] as const) {
+    if (result.status === "rejected") {
+      console.warn(`[Landing] Gagal memuat ${label}. Periksa koneksi dan konfigurasi database.`);
+    }
+  }
 
   const memberCount = bidangList.reduce(
     (total, bidang) => total + (Number.isFinite(Number(bidang.jumlah_anggota)) ? Number(bidang.jumlah_anggota) : 0),
@@ -83,72 +97,56 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="sambutan" className="relative bg-white pb-14 sm:pb-[72px] lg:pb-24">
-          <div className="landing-container relative overflow-hidden rounded-[24px] bg-accent p-2 text-white shadow-[0_24px_64px_rgba(187,63,23,0.14)] sm:rounded-[30px]">
-            <Image
-              src="/assets/landing/welcome-art.svg"
-              alt=""
-              fill
-              sizes="100vw"
-              className="pointer-events-none select-none object-fill opacity-70"
-            />
-            <div className="relative z-10 rounded-[18px] border-2 border-white/70 px-5 py-7 sm:rounded-[24px] sm:px-8 sm:py-10 lg:px-10 lg:py-10">
-              <Reveal>
-                <p className="landing-copy mx-auto w-fit max-w-3xl break-words rounded-[10px] border-2 border-white/80 px-5 py-2.5 text-center text-sm font-bold leading-snug sm:text-lg">
-                  Selamat datang di rumah digital BEM UNDIP 2026!
+        <section id="sambutan" aria-labelledby="sambutan-title" className="bg-white py-14 sm:py-[72px] lg:py-24">
+          <div className="landing-container">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
+              <Reveal className="min-w-0">
+                <p className="font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-deep">
+                  Sambutan
                 </p>
+                <h2 id="sambutan-title" className="landing-title mt-3 text-[clamp(2.35rem,4.5vw,4.25rem)] leading-[1.08] text-charcoal">
+                  Selamat datang di rumah digital BEM UNDIP 2026!
+                </h2>
               </Reveal>
-
-              <div className="mt-6 rounded-[16px] border-2 border-white/50 px-5 py-6 sm:mt-8 sm:px-8 sm:py-8">
-                <Reveal>
-                  <p className="landing-copy font-sans text-sm leading-7 text-white/95 sm:text-base sm:leading-8">
+              <Reveal className="min-w-0" delay={100}>
+                <div className="landing-copy max-w-[65ch] font-landing-copy text-base leading-8 text-ink sm:text-lg">
+                  <p>
                     BEM UNDIP 2026 berkomitmen penuh untuk merawat spirit perjuangan Pangeran Diponegoro,
                     menjadi katalisator bagi perbaikan dan perubahan di lingkungan kampus, regional, maupun nasional.
                   </p>
-                  <p className="landing-copy mt-4 font-sans text-sm leading-7 text-white/95 sm:text-base sm:leading-8">
+                  <p className="mt-4">
                     Maka dari itu, mari merajut kembali simpul-simpul gerakan, memperjuangkan hak-hak yang
                     terpinggirkan, dan membawa dampaknya bagi almamater dan Indonesia.
                   </p>
-                  <p className="landing-copy mt-4 font-sans text-sm leading-7 text-white/95 sm:text-base sm:leading-8">
+                  <p className="mt-6 border-t border-line pt-6 font-semibold text-charcoal">
                     Hidup Mahasiswa.
                     <br />
                     Hidup Rakyat Indonesia.
                     <br />
                     Hidup Perempuan yang Melawan.
                   </p>
-                </Reveal>
-
-                <div className="mt-10 grid gap-10 sm:grid-cols-2 lg:mt-12">
-                  <Reveal>
-                    <div className="relative pb-4 pl-3 pt-2">
-                      <div className="absolute inset-0 right-3 top-4 rotate-2 rounded-[18px] bg-accent-deep/40" />
-                      <article className="relative rounded-[18px] bg-accent-deep/30 p-3 shadow-[0_14px_28px_rgba(0,0,0,0.18)] sm:p-4">
-                        <p className="rounded-[12px] bg-charcoal/30 py-2 text-center font-sans text-xs font-bold uppercase tracking-[0.24em] text-white">
-                          Visi
-                        </p>
-                        <div className="mt-3 aspect-[4/3] w-full rounded-[14px] bg-[#B9B9B9]" />
-                      </article>
-                      <span className="absolute -bottom-1 left-0 flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white shadow-[0_8px_16px_rgba(0,0,0,0.3)]">
-                        <ArrowUpLeft size={16} />
-                      </span>
-                    </div>
-                  </Reveal>
-                  <Reveal delay={100}>
-                    <div className="relative pb-4 pr-3 pt-2">
-                      <div className="absolute inset-0 left-3 top-4 -rotate-2 rounded-[18px] bg-accent-deep/40" />
-                      <article className="relative rounded-[18px] bg-accent-deep/30 p-3 shadow-[0_14px_28px_rgba(0,0,0,0.18)] sm:p-4">
-                        <p className="rounded-[12px] bg-charcoal/30 py-2 text-center font-sans text-xs font-bold uppercase tracking-[0.24em] text-white">
-                          Misi
-                        </p>
-                        <div className="mt-3 aspect-[4/3] w-full rounded-[14px] bg-[#B9B9B9]" />
-                      </article>
-                      <span className="absolute -bottom-1 right-0 flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white shadow-[0_8px_16px_rgba(0,0,0,0.3)]">
-                        <ArrowUpRight size={16} />
-                      </span>
-                    </div>
-                  </Reveal>
                 </div>
-              </div>
+              </Reveal>
+            </div>
+
+            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:mt-12">
+              {[
+                { title: "Visi", message: "Media visi belum tersedia" },
+                { title: "Misi", message: "Media misi belum tersedia" }
+              ].map((item, index) => (
+                <Reveal key={item.title} className="min-w-0" delay={index * 100}>
+                  <article className="rounded-[24px] bg-surface p-5 sm:p-6">
+                    <h3 className="landing-title text-3xl leading-tight text-charcoal sm:text-4xl">
+                      {item.title}
+                    </h3>
+                    <div className="mt-4 grid aspect-[4/3] w-full place-items-center rounded-[16px] bg-white px-5">
+                      <p className="landing-copy text-center font-landing-copy text-base leading-relaxed text-ink">
+                        {item.message}
+                      </p>
+                    </div>
+                  </article>
+                </Reveal>
+              ))}
             </div>
           </div>
         </section>
@@ -201,7 +199,9 @@ export default async function Home() {
               </div>
             ) : (
               <div className="mt-12 rounded-[24px] border border-dashed border-line bg-white p-10 text-center font-sans text-ink/60">
-                Direktori bidang sedang disiapkan.
+                {bidangResult.status === "rejected"
+                  ? "Direktori bidang belum dapat dimuat. Silakan muat ulang halaman untuk mencoba kembali."
+                  : "Direktori bidang sedang disiapkan."}
               </div>
             )}
           </div>
@@ -229,7 +229,9 @@ export default async function Home() {
               <LandingNewsCarousel items={newsItems} />
             ) : (
               <div className="mt-12 rounded-[28px] bg-surface p-12 text-center font-sans text-ink/60">
-                Berita terbaru sedang disiapkan.
+                {publicationResult.status === "rejected"
+                  ? "Berita terbaru belum dapat dimuat. Silakan muat ulang halaman untuk mencoba kembali."
+                  : "Berita terbaru sedang disiapkan."}
               </div>
             )}
           </div>
@@ -292,14 +294,19 @@ export default async function Home() {
             </Reveal>
             <div className="mt-10 grid gap-7 sm:grid-cols-3 sm:gap-4">
               {[
-                { value: bidangList.length, label: "Bidang/Biro/Kantor/Unit" },
-                { value: memberCount > 0 ? `${memberCount}+` : "450+", label: "Pengurus" },
+                { value: bidangResult.status === "fulfilled" ? bidangList.length : null, label: "Bidang/Biro/Kantor/Unit" },
+                { value: bidangResult.status === "fulfilled" ? (memberCount > 0 ? `${memberCount}+` : 0) : null, label: "Pengurus" },
                 { value: programCount, label: "Program kerja" }
               ].map((stat, index) => (
                 <Reveal key={stat.label} delay={index * 100}>
                   <div className="border-t border-line pt-5 text-center sm:border-l sm:border-t-0 sm:first:border-l-0 sm:pt-0">
                     <p className="font-landing-stat text-[clamp(3rem,7vw,4.5rem)] tabular-nums leading-none text-charcoal">
-                      {stat.value}
+                      {stat.value === null ? (
+                        <>
+                          <span aria-hidden="true">—</span>
+                          <span className="sr-only">Belum tersedia</span>
+                        </>
+                      ) : stat.value}
                     </p>
                     <p className="mt-3 font-sans text-sm font-medium text-ink/70 sm:text-base">{stat.label}</p>
                   </div>
