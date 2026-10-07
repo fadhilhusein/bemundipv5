@@ -13,6 +13,7 @@ function revalidatePublicCache(slug: string, id?: string | number) {
     revalidateTag("agenda");
     revalidatePath("/");
     revalidatePath("/agenda");
+    if (id) revalidatePath(`/agenda/${id}`);
   } else if (slug === "publikasi") {
     revalidateTag("publikasi");
     revalidatePath("/");
@@ -22,6 +23,10 @@ function revalidatePublicCache(slug: string, id?: string | number) {
     revalidateTag("bidang");
     revalidatePath("/");
     if (id) revalidatePath(`/bidang/${id}`);
+  } else if (slug === "layanan") {
+    revalidateTag("layanan");
+    revalidatePath("/layanan");
+    if (id) revalidatePath(`/layanan/${id}`);
   } else if (slug === "program-unggulan") {
     revalidateTag("bidang");
     revalidatePath("/");
