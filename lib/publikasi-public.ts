@@ -49,6 +49,48 @@ export const getPublikasiPaginated = (page: number, limit: number) =>
     { tags: ["publikasi"], revalidate: 60 }
   )();
 
+export const getPublikasiHighlights = (limit: number) =>
+  unstable_cache(
+    async (): Promise<PublikasiRecord[]> => {
+      // Publications with an image come first so the carousel has something to show.
+      return client`
+        SELECT id_publikasi, id_penulis, judul_publikasi, isi_publikasi, gambar_publikasi, tanggal_publikasi, kategori_publikasi
+        FROM publikasi_terkini
+        ORDER BY (gambar_publikasi IS NULL), tanggal_publikasi DESC
+        LIMIT ${limit}
+      ` as unknown as PublikasiRecord[];
+    },
+    [`publikasi-highlights-${limit}`],
+    { tags: ["publikasi"], revalidate: 60 }
+  )();
+
+function toLikePattern(query: string) {
+  return `%${query.replace(/[\\%_]/g, (char) => `\\${char}`)}%`;
+}
+
+// Search results are not cached: every keyword would otherwise create its own cache entry.
+export async function getPublikasiSearchCount(query: string): Promise<number> {
+  const pattern = toLikePattern(query);
+  const rows = (await client`
+    SELECT COUNT(*)::int AS count
+    FROM publikasi_terkini
+    WHERE judul_publikasi ILIKE ${pattern} OR isi_publikasi ILIKE ${pattern} OR kategori_publikasi ILIKE ${pattern}
+  `) as unknown as { count: number }[];
+  return rows[0]?.count ?? 0;
+}
+
+export async function getPublikasiSearchPaginated(query: string, page: number, limit: number): Promise<PublikasiRecord[]> {
+  const pattern = toLikePattern(query);
+  const offset = (page - 1) * limit;
+  return (await client`
+    SELECT id_publikasi, id_penulis, judul_publikasi, isi_publikasi, gambar_publikasi, tanggal_publikasi, kategori_publikasi
+    FROM publikasi_terkini
+    WHERE judul_publikasi ILIKE ${pattern} OR isi_publikasi ILIKE ${pattern} OR kategori_publikasi ILIKE ${pattern}
+    ORDER BY (judul_publikasi ILIKE ${pattern}) DESC, tanggal_publikasi DESC
+    LIMIT ${limit} OFFSET ${offset}
+  `) as unknown as PublikasiRecord[];
+}
+
 export const getPublikasiById = (id: number) =>
   unstable_cache(
     async (): Promise<PublikasiRecord | null> => {

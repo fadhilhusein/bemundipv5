@@ -3,9 +3,21 @@
   "configurations": [
     {
       "name": "bem-undip-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "-p", "3210"],
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "NEXT_DIST_DIR=.next-claude npm run dev -- -p 3210"
+      ],
       "port": 3210
+    },
+    {
+      "name": "bem-undip-prod",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "NEXT_DIST_DIR=.next-build npx next start -p 3211"
+      ],
+      "port": 3211
     }
   ]
 }
