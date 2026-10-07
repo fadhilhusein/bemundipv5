@@ -99,3 +99,9 @@ Use `clamp()` for display type and fluid media. Do not copy absolute Figma coord
 - Anchor targets reserve 104px for fixed navigation. Body paragraphs stay left aligned.
 - Data failures remain independent: failed statistics show “—”, distinct from valid zero values, and failed lists show a retry message.
 - User-approved existing fonts, Motion, preserved content, and modest interaction supersede the gpt-taste requirements for random font swaps, GSAP, and cinematic pinning.
+
+
+## Login dan CMS
+Gaya khusus `admin-theme`: putih, surface abu-abu, teks charcoal/ink, aksen oranye dengan teks gelap. Poppins untuk UI CMS; Abhaya Libre 32–44px untuk heading login. Heading CMS 26–32px, subjudul 20–24px, teks 14–16px, helper minimal 13px. Logo `/assets/logo-bem.png`. Halaman publik tetap memakai desain sebelumnya.
+Login memiliki form maksimum 440px dan panel identitas charcoal dengan ilustrasi lokal pada desktop. Sidebar 264px mulai 1024px, topbar minimum 72px, konten maksimum 1280px dengan gutter 20/32/40px. Panel radius 16px, padding 20–28px. Tombol `appearance="admin"`; input tinggi 48px/radius 10px. Aksi minimum 44px dan focus ring jelas.
+Daftar memakai tabel desktop/kartu mobile di bawah 768px, detail lengkap untuk nilai panjang, dan status loading/kosong/gagal terpisah. CRUD memakai dialog native bersama, header/footer tetap dan isi scroll. Motion 150–200ms dengan reduced motion; Escape, penguncian/pengembalian fokus tersedia. Perlindungan perubahan belum disimpan dan busy pada bidang dipertahankan. Autentikasi, sesi, route, payload, dan hak akses tetap.

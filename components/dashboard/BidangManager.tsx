@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowUp, Pencil, Plus, Sparkles, Trash2, UserPlus, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Pencil, Plus, Sparkles, Trash2, UserPlus } from "lucide-react";
+import { AdminDialog } from "./AdminDialog";
 import { Button } from "@/components/ui/Button";
 
 type Bidang = {
@@ -102,15 +103,6 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
       if (toastTimer.current) clearTimeout(toastTimer.current);
     };
   }, [loadEntries]);
-
-  useEffect(() => {
-    if (!isModalOpen) return;
-    dialogRef.current?.showModal();
-    dialogRef.current?.querySelector<HTMLInputElement>("#namaBidang")?.focus();
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = previousOverflow; };
-  }, [isModalOpen]);
 
   useEffect(() => {
     if (!isModalOpen || (!dirty && !busy)) return;
@@ -313,26 +305,26 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
   };
 
   const inputClass =
-    "mt-2 h-12 w-full rounded-full border border-divider bg-white px-5 text-sm text-brown outline-none focus:border-orange focus:ring-2 focus:ring-orange/20";
+    "mt-2 h-12 w-full rounded-[10px] border border-line bg-white px-4 text-base text-ink outline-none focus:border-accent-deep focus:ring-2 focus:ring-accent-deep/20";
   const textareaClass =
-    "mt-2 w-full rounded-2xl border border-divider bg-white px-5 py-3 text-sm text-brown outline-none focus:border-orange focus:ring-2 focus:ring-orange/20";
+    "admin-input admin-textarea mt-2";
 
   return (
     <div className="flex min-w-0 flex-col gap-8">
-      <div className="rounded-2xl border border-divider bg-white p-6 shadow-card sm:p-8">
+      <div className="admin-panel">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="font-display text-2xl font-medium text-brown">
+            <h2 className="font-semibold text-[22px] text-ink">
               {canManageAll ? "Daftar Bidang" : "Profil Bidang Saya"}
             </h2>
-            <p className="mt-1 text-sm text-clay">
+            <p className="mt-1 text-sm admin-muted">
               {canManageAll
                 ? "Kelola data bidang/departemen kabinet BEM UNDIP 2026."
                 : "Kelola data profil bidang/biro milik Anda."}
             </p>
           </div>
           {canManageAll ? (
-            <Button type="button" disabled={deletingId !== null || isSubmitting} onClick={openCreate} className="px-5">
+            <Button appearance="admin" type="button" disabled={deletingId !== null || isSubmitting} onClick={openCreate} className="px-5">
               <Plus size={16} />
               Tambah Bidang
             </Button>
@@ -340,17 +332,17 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
         </div>
 
         {pageError ? <p role="alert" className="mt-5 rounded-xl border border-red/30 bg-red/5 p-4 text-sm text-red">{pageError}</p> : null}
-        {listError ? <div role="alert" className="mt-5 rounded-xl border border-red/30 bg-red/5 p-4 text-sm text-red"><p>{listError}</p><button type="button" onClick={() => void loadEntries()} className="mt-3 rounded-lg border border-red/30 px-4 py-2 font-semibold">Coba lagi</button>{listError.includes("Sesi") ? <Link href="/login" className="ml-4 underline">Masuk kembali</Link> : null}</div> : null}
+        {listError ? <div role="alert" className="mt-5 rounded-xl border border-red/30 bg-red/5 p-4 text-sm text-red"><p>{listError}</p><button type="button" onClick={() => void loadEntries()} className="mt-3 min-h-11 rounded-lg border border-red/30 px-4 py-2 font-semibold">Coba lagi</button>{listError.includes("Sesi") ? <Link href="/login" className="ml-4 inline-flex min-h-11 items-center underline">Masuk kembali</Link> : null}</div> : null}
         <div className="mt-6 space-y-4 md:hidden">
-          {isLoading ? <p role="status" className="py-6 text-center text-clay">Memuat data…</p> : entries.length === 0 && !listError ? <p className="py-6 text-center text-clay">Belum ada data bidang.</p> : entries.map((entry) => (
-            <article key={entry.id} className="rounded-xl border border-divider p-4">
-              <h3 className="break-words font-semibold text-brown">{entry.nama_bidang}</h3>
-              <p className="mt-1 text-sm text-clay">{entry.penanggung_jawab} · {entry.jumlah_anggota} anggota</p>
-              <p className="my-4 line-clamp-3 break-words text-sm text-clay">{entry.deskripsi}</p>
+          {isLoading ? <p role="status" className="py-6 text-center admin-muted">Memuat data…</p> : entries.length === 0 && !listError ? <p className="py-6 text-center admin-muted">Belum ada data bidang.</p> : entries.map((entry) => (
+            <article key={entry.id} className="rounded-xl border border-line p-4">
+              <h3 className="break-words font-semibold text-ink">{entry.nama_bidang}</h3>
+              <p className="mt-1 text-sm admin-muted">{entry.penanggung_jawab} · {entry.jumlah_anggota} anggota</p>
+              <p className="my-4 line-clamp-3 break-words text-sm admin-muted">{entry.deskripsi}</p>
               <div className="flex flex-wrap gap-2">
-                <button type="button" disabled={deletingId !== null || isSubmitting} onClick={() => openEdit(entry)} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-divider px-3 text-sm text-brown"><Pencil size={16} />Edit</button>
-                <Link href="/dashboard/program-unggulan" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-divider px-3 text-sm text-brown"><Sparkles size={16} />Program</Link>
-                <Link href={`/bidang/${entry.id}`} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-lg border border-divider px-3 text-sm text-brown" aria-label={`Lihat ${entry.nama_bidang} di tab baru`}>Lihat</Link>
+                <button type="button" disabled={deletingId !== null || isSubmitting} onClick={() => openEdit(entry)} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line px-3 text-sm text-ink"><Pencil size={16} />Edit</button>
+                <Link href="/dashboard/program-unggulan" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line px-3 text-sm text-ink"><Sparkles size={16} />Program</Link>
+                <Link href={`/bidang/${entry.id}`} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-lg border border-line px-3 text-sm text-ink" aria-label={`Lihat ${entry.nama_bidang} di tab baru`}>Lihat</Link>
                 {canManageAll ? <button type="button" disabled={deletingId !== null} onClick={() => void handleDelete(entry)} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-red/20 px-3 text-sm text-red"><Trash2 size={16} />{deletingId === entry.id ? "Menghapus…" : "Hapus"}</button> : null}
               </div>
             </article>
@@ -359,7 +351,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
         <div className="mt-6 hidden overflow-x-auto md:block">
           <table className="w-full min-w-[860px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-divider text-xs font-semibold uppercase tracking-wide text-clay">
+              <tr className="border-b border-line text-[13px] font-semibold uppercase tracking-wide admin-muted">
                 <th className="py-3 pr-4">Logo</th>
                 <th className="py-3 pr-4">Foto Halaman</th>
                 <th className="py-3 pr-4">Nama Bidang</th>
@@ -372,44 +364,44 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="py-6 text-center text-clay">
+                  <td colSpan={7} className="py-6 text-center admin-muted">
                     Memuat data…
                   </td>
                 </tr>
               ) : entries.length === 0 && !listError ? (
                 <tr>
-                  <td colSpan={7} className="py-6 text-center text-clay">
+                  <td colSpan={7} className="py-6 text-center admin-muted">
                     Belum ada data bidang.
                   </td>
                 </tr>
               ) : (
                 entries.map((entry) => (
-                  <tr key={entry.id} className="border-b border-divider last:border-0">
+                  <tr key={entry.id} className="border-b border-line last:border-0">
                     <td className="py-3 pr-4">
                       {entry.gambar ? (
                         <Image src={entry.gambar} alt="" width={40} height={40} className="h-10 w-10 rounded-lg object-cover" />
                       ) : (
-                        <span className="text-brown/40">—</span>
+                        <span className="text-ink/40">—</span>
                       )}
                     </td>
                     <td className="py-3 pr-4">
                       {entry.gambar_utama ? (
                         <Image src={entry.gambar_utama} alt="" width={72} height={40} className="h-10 w-[72px] rounded-lg object-cover" />
                       ) : (
-                        <span className="text-brown/40">—</span>
+                        <span className="text-ink/40">—</span>
                       )}
                     </td>
-                    <td className="py-3 pr-4 font-semibold text-brown">{entry.nama_bidang}</td>
-                    <td className="py-3 pr-4 text-brown/90">{entry.penanggung_jawab}</td>
-                    <td className="py-3 pr-4 text-brown/90">{entry.jumlah_anggota}</td>
-                    <td className="py-3 pr-4 text-brown/70"><p className="line-clamp-3 w-60 break-words">{entry.deskripsi}</p></td>
+                    <td className="py-3 pr-4 font-semibold text-ink">{entry.nama_bidang}</td>
+                    <td className="py-3 pr-4 text-ink/90">{entry.penanggung_jawab}</td>
+                    <td className="py-3 pr-4 text-ink/90">{entry.jumlah_anggota}</td>
+                    <td className="py-3 pr-4 text-ink/70"><p className="line-clamp-3 w-60 break-words">{entry.deskripsi}</p></td>
                     <td className="sticky right-0 bg-white py-3 pr-4 pl-3">
                       <div className="flex items-center gap-3">
                         <Link
                           href="/dashboard/program-unggulan"
                           aria-label={`Program Unggulan ${entry.nama_bidang}`}
                           title="Kelola Program Unggulan"
-                          className="inline-flex min-h-11 min-w-11 items-center justify-center text-clay hover:text-orange"
+                          className="inline-flex min-h-11 min-w-11 items-center justify-center admin-muted hover:text-accent-deep"
                         >
                           <Sparkles size={16} />
                         </Link>
@@ -419,7 +411,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                           disabled={deletingId !== null || isSubmitting}
                           title="Edit bidang"
                           aria-label={`Edit ${entry.nama_bidang}`}
-                          className="inline-flex min-h-11 min-w-11 items-center justify-center text-clay hover:text-orange disabled:opacity-40"
+                          className="inline-flex min-h-11 min-w-11 items-center justify-center admin-muted hover:text-accent-deep disabled:opacity-40"
                         >
                           <Pencil size={16} />
                         </button>
@@ -430,7 +422,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                             disabled={deletingId !== null}
                             title={deletingId === entry.id ? "Menghapus…" : "Hapus bidang"}
                             aria-label={`Hapus ${entry.nama_bidang}`}
-                            className="inline-flex min-h-11 min-w-11 items-center justify-center text-clay hover:text-red disabled:opacity-40"
+                            className="inline-flex min-h-11 min-w-11 items-center justify-center admin-muted hover:text-red disabled:opacity-40"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -446,34 +438,13 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
       </div>
 
       {isModalOpen ? (
-        <dialog ref={dialogRef} aria-labelledby="bidang-dialog-title" aria-describedby="bidang-dialog-description" onCancel={(event) => { event.preventDefault(); closeModal(); }} onClick={(event) => { if (event.target === event.currentTarget) closeModal(); }} className="m-auto w-[calc(100%-2rem)] max-w-4xl max-h-[90dvh] overflow-hidden rounded-2xl border border-divider bg-white p-0 text-brown shadow-2xl backdrop:bg-black/40">
-          <div className="flex max-h-[90dvh] flex-col">
-            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-divider px-5 py-4 sm:px-8">
-              <div>
-                <h2 id="bidang-dialog-title" className="font-display text-2xl font-medium text-brown">
-                  {editingId ? "Edit Bidang" : "Tambah Bidang"}
-                </h2>
-                <p id="bidang-dialog-description" className="mt-1 text-sm text-clay">
-                  Kelola profil, hero, dan anggota. Kolom bertanda * wajib diisi.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={closeModal}
-                disabled={busy}
-                aria-label="Tutup"
-                className="inline-flex min-h-11 min-w-11 items-center justify-center text-clay transition hover:text-brown disabled:opacity-40"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col" aria-busy={busy}>
+        <AdminDialog open={isModalOpen} onClose={closeModal} dialogRef={dialogRef} initialFocus="#namaBidang" busy={busy} size="wide" title={editingId ? "Edit Bidang" : "Tambah Bidang"} description="Kelola profil, media, dan anggota bidang.">
+            <form onSubmit={handleSubmit} className="admin-dialog-form" aria-busy={busy}>
               <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6 sm:px-8">
               <fieldset disabled={busy} className="grid min-w-0 gap-5 sm:grid-cols-2">
-              <legend className="mb-4 text-lg font-semibold text-brown">Profil Bidang</legend>
+              <legend className="mb-4 text-lg font-semibold text-ink">Profil Bidang</legend>
               <div className="sm:col-span-1">
-                <label htmlFor="namaBidang" className="text-sm font-semibold text-brown">
+                <label htmlFor="namaBidang" className="text-sm font-semibold text-ink">
                   Nama Bidang *
                 </label>
                 <input
@@ -487,7 +458,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
               </div>
 
               <div className="sm:col-span-1">
-                <label htmlFor="penanggungJawab" className="text-sm font-semibold text-brown">
+                <label htmlFor="penanggungJawab" className="text-sm font-semibold text-ink">
                   Penanggung Jawab (Ketua Bidang) *
                 </label>
                 <input
@@ -501,7 +472,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
               </div>
 
               <div className="sm:col-span-1">
-                <label htmlFor="jumlahAnggota" className="text-sm font-semibold text-brown">
+                <label htmlFor="jumlahAnggota" className="text-sm font-semibold text-ink">
                   Jumlah Anggota *
                 </label>
                 <input
@@ -515,11 +486,11 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                   className={inputClass}
                   placeholder="mis. 12"
                 />
-                <p className="mt-2 text-xs text-clay">Jumlah dapat berbeda jika daftar anggota belum lengkap.</p>
+                <p className="mt-2 text-[13px] admin-muted">Jumlah dapat berbeda jika daftar anggota belum lengkap.</p>
               </div>
 
               <div className="sm:col-span-1">
-                <label htmlFor="gambar" className="text-sm font-semibold text-brown">
+                <label htmlFor="gambar" className="text-sm font-semibold text-ink">
                   Logo Bidang
                 </label>
                 <input
@@ -527,20 +498,20 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                   type="file"
                   accept="image/png,image/jpeg,image/webp,image/gif"
                   onChange={handleFileChange}
-                  className="mt-2 block w-full text-sm text-brown file:mr-4 file:rounded-full file:border-0 file:bg-orange file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                  className="mt-2 block w-full text-sm text-ink file:mr-4 file:rounded-[10px] file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-charcoal"
                 />
-                <p className="mt-2 text-xs text-clay">PNG, JPG, WebP, atau GIF. Maksimal 5 MB.</p>
-                {isUploading ? <p className="mt-1 text-xs text-clay">Mengunggah…</p> : null}
+                <p className="mt-2 text-[13px] admin-muted">PNG, JPG, WebP, atau GIF. Maksimal 5 MB.</p>
+                {isUploading ? <p className="mt-1 text-[13px] admin-muted">Mengunggah…</p> : null}
                 {form.gambar ? (
                   <Image src={form.gambar} alt="" width={80} height={80} className="mt-2 h-20 w-20 rounded-xl object-cover" />
                 ) : null}
               </div>
 
               </fieldset>
-              <fieldset disabled={busy} className="mt-8 grid min-w-0 gap-5 border-t border-divider pt-6 sm:grid-cols-2">
-              <legend className="px-1 text-lg font-semibold text-brown">Konten Hero</legend>
+              <fieldset disabled={busy} className="mt-8 grid min-w-0 gap-5 border-t border-line pt-6 sm:grid-cols-2">
+              <legend className="px-1 text-lg font-semibold text-ink">Konten Hero</legend>
               <div className="sm:col-span-2">
-                <label htmlFor="gambarUtama" className="text-sm font-semibold text-brown">
+                <label htmlFor="gambarUtama" className="text-sm font-semibold text-ink">
                   Foto Utama Halaman Bidang
                 </label>
                 <input
@@ -548,23 +519,23 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                   type="file"
                   accept="image/png,image/jpeg,image/webp,image/gif"
                   onChange={handleHeroFileChange}
-                  className="mt-2 block w-full text-sm text-brown file:mr-4 file:rounded-full file:border-0 file:bg-orange file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                  className="mt-2 block w-full text-sm text-ink file:mr-4 file:rounded-[10px] file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-charcoal"
                 />
-                <p className="mt-1 text-xs text-clay">Gunakan foto landscape. PNG, JPG, WebP, atau GIF; maksimal 5 MB.</p>
-                {isUploadingHero ? <p className="mt-1 text-xs text-clay">Mengunggah…</p> : null}
+                <p className="mt-1 text-[13px] admin-muted">Gunakan foto landscape. PNG, JPG, WebP, atau GIF; maksimal 5 MB.</p>
+                {isUploadingHero ? <p className="mt-1 text-[13px] admin-muted">Mengunggah…</p> : null}
                 {form.gambarUtama ? (
                   <div>
                   <Image src={form.gambarUtama} alt="Pratinjau foto utama" width={320} height={140} className="mt-2 h-28 w-full rounded-xl object-cover" />
                   <button type="button" disabled={busy} onClick={() => setForm((prev) => ({ ...prev, gambarUtama: "" }))} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg border border-red/20 px-4 text-sm font-semibold text-red hover:bg-red/10 disabled:opacity-40">
                     <Trash2 size={16} aria-hidden="true" /> Hapus gambar
                   </button>
-                  <p className="mt-2 text-xs text-clay">Penghapusan diterapkan setelah klik Simpan Perubahan.</p>
+                  <p className="mt-2 text-[13px] admin-muted">Penghapusan diterapkan setelah klik Simpan Perubahan.</p>
                   </div>
                 ) : null}
               </div>
 
               <div className="sm:col-span-2">
-                <label htmlFor="deskripsi" className="text-sm font-semibold text-brown">
+                <label htmlFor="deskripsi" className="text-sm font-semibold text-ink">
                   Deskripsi *
                 </label>
                 <textarea
@@ -577,11 +548,11 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                   className={textareaClass}
                   placeholder="Ringkasan tugas dan ruang lingkup bidang"
                 />
-                <p id="deskripsi-help" className="mt-2 text-xs text-clay">Teks dimulai di kanan atas hero, kemudian sisanya berlanjut ke kiri bawah secara otomatis.</p>
+                <p id="deskripsi-help" className="mt-2 text-[13px] admin-muted">Teks dimulai di kanan atas hero, kemudian sisanya berlanjut ke kiri bawah secara otomatis.</p>
               </div>
 
               <div className="sm:col-span-1">
-                <label htmlFor="quoteUtama" className="text-sm font-semibold text-brown">
+                <label htmlFor="quoteUtama" className="text-sm font-semibold text-ink">
                   Quote Utama (Kiri)
                 </label>
                 <textarea
@@ -593,11 +564,11 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                   className={textareaClass}
                   placeholder="Tanpa Rencana, Kamu Sampai di Sini..."
                 />
-                <p id="quote-utama-help" className="mt-2 text-xs text-clay">Baris pertama menjadi judul besar. Tekan Enter untuk teks tulisan tangan pada baris berikutnya. Jika kosong, kutipan bawaan ditampilkan.</p>
+                <p id="quote-utama-help" className="mt-2 text-[13px] admin-muted">Baris pertama menjadi judul besar. Tekan Enter untuk teks tulisan tangan pada baris berikutnya. Jika kosong, kutipan bawaan ditampilkan.</p>
               </div>
 
               <div className="sm:col-span-1">
-                <label htmlFor="quotePenutup" className="text-sm font-semibold text-brown">
+                <label htmlFor="quotePenutup" className="text-sm font-semibold text-ink">
                   Quote Penutup (Kanan)
                 </label>
                 <textarea
@@ -609,50 +580,50 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
                   className={textareaClass}
                   placeholder="Cerita-Cerita Bermula di Sini..."
                 />
-                <p id="quote-penutup-help" className="mt-2 text-xs text-clay">Teks besar di kanan bawah hero. Jika kosong, kutipan bawaan ditampilkan.</p>
+                <p id="quote-penutup-help" className="mt-2 text-[13px] admin-muted">Teks besar di kanan bawah hero. Jika kosong, kutipan bawaan ditampilkan.</p>
               </div>
 
               </fieldset>
-              <fieldset disabled={busy} className="mt-8 rounded-2xl border border-divider bg-cream/50 p-4 sm:p-5">
-                <legend className="px-1 text-base font-semibold text-brown">Daftar Anggota Bidang</legend>
+              <fieldset disabled={busy} className="mt-8 rounded-2xl border border-line bg-surface/50 p-4 sm:p-5">
+                <legend className="px-1 text-base font-semibold text-ink">Daftar Anggota Bidang</legend>
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="mt-1 text-xs text-clay">Nama dan jabatan tampil di halaman publik sesuai urutan daftar. Maksimal 200 anggota.</p>
+                    <p className="mt-1 text-[13px] admin-muted">Nama dan jabatan tampil di halaman publik sesuai urutan daftar. Maksimal 200 anggota.</p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setForm((prev) => ({ ...prev, jumlahAnggota: String(memberCount) }))}
-                      className="rounded-full border border-clay/30 bg-white px-3 py-2 text-xs font-semibold text-clay hover:text-brown"
+                      className="min-h-11 rounded-[10px] border border-line bg-white px-3 py-2 text-[13px] font-semibold admin-muted hover:text-ink"
                     >
                       Samakan jumlah ({memberCount})
                     </button>
-                    <button type="button" disabled={form.anggota.length >= 200} onClick={addAnggota} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-brown px-4 py-2 text-xs font-semibold text-white hover:bg-orange disabled:opacity-40">
+                    <button type="button" disabled={form.anggota.length >= 200} onClick={addAnggota} className="inline-flex min-h-11 items-center gap-2 rounded-[10px] bg-charcoal px-4 py-2 text-[13px] font-semibold text-white hover:bg-accent hover:text-charcoal disabled:opacity-40">
                       <UserPlus size={15} /> Tambah Anggota
                     </button>
                   </div>
                 </div>
 
-                {form.jumlahAnggota !== "" && Number(form.jumlahAnggota) !== memberCount ? <p role="status" className="mt-4 rounded-xl border border-orange/30 bg-orange-soft p-3 text-sm text-brown">Jumlah tercatat: {form.jumlahAnggota}. Daftar berisi {memberCount} anggota bernama. Gunakan “Samakan jumlah” jika daftar sudah lengkap.</p> : null}
+                {form.jumlahAnggota !== "" && Number(form.jumlahAnggota) !== memberCount ? <p role="status" className="mt-4 rounded-xl border border-[#F7C8A2] bg-[#FFF3E8] p-3 text-sm text-ink">Jumlah tercatat: {form.jumlahAnggota}. Daftar berisi {memberCount} anggota bernama. Gunakan “Samakan jumlah” jika daftar sudah lengkap.</p> : null}
 
                 {form.anggota.length === 0 ? (
-                  <p className="mt-5 rounded-xl border border-dashed border-clay/30 bg-white/60 px-4 py-6 text-center text-sm text-clay">Belum ada anggota yang ditambahkan.</p>
+                  <p className="mt-5 rounded-xl border border-dashed border-line bg-white/60 px-4 py-6 text-center text-sm admin-muted">Belum ada anggota yang ditambahkan.</p>
                 ) : (
                   <div className="mt-5 space-y-4">
                     {form.anggota.map((anggota, index) => (
-                      <div key={anggota.clientId} className="grid min-w-0 gap-3 rounded-xl border border-divider bg-white p-4 sm:grid-cols-2">
+                      <div key={anggota.clientId} className="grid min-w-0 gap-3 rounded-xl border border-line bg-white p-4 sm:grid-cols-2">
                         <div>
-                          <label htmlFor={`anggota-nama-${anggota.clientId}`} className="text-xs font-semibold text-brown">{index + 1}. Nama Anggota *</label>
+                          <label htmlFor={`anggota-nama-${anggota.clientId}`} className="text-[13px] font-semibold text-ink">{index + 1}. Nama Anggota *</label>
                           <input id={`anggota-nama-${anggota.clientId}`} required value={anggota.namaAnggota} onChange={(e) => updateAnggota(index, { namaAnggota: e.target.value })} className={inputClass} placeholder="Nama lengkap" />
                         </div>
                         <div>
-                          <label htmlFor={`anggota-jabatan-${anggota.clientId}`} className="text-xs font-semibold text-brown">Jabatan / Posisi</label>
+                          <label htmlFor={`anggota-jabatan-${anggota.clientId}`} className="text-[13px] font-semibold text-ink">Jabatan / Posisi</label>
                           <input id={`anggota-jabatan-${anggota.clientId}`} value={anggota.jabatan} onChange={(e) => updateAnggota(index, { jabatan: e.target.value })} className={inputClass} placeholder="Staf, Wakil Ketua, dll." />
                         </div>
                         <div className="flex flex-wrap gap-2 sm:col-span-2">
-                          <button type="button" disabled={index === 0} onClick={() => moveAnggota(index, -1)} aria-label={`Pindahkan anggota ${index + 1} ke atas`} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-divider px-3 text-xs text-clay disabled:opacity-40"><ArrowUp size={16} />Naik</button>
-                          <button type="button" disabled={index === form.anggota.length - 1} onClick={() => moveAnggota(index, 1)} aria-label={`Pindahkan anggota ${index + 1} ke bawah`} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-divider px-3 text-xs text-clay disabled:opacity-40"><ArrowDown size={16} />Turun</button>
-                          <button type="button" onClick={() => { if ((anggota.namaAnggota || anggota.jabatan) && !window.confirm(`Hapus ${anggota.namaAnggota || "anggota ini"} dari daftar? Perubahan diterapkan setelah disimpan.`)) return; removeAnggota(index); }} aria-label={`Hapus anggota ${index + 1}`} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-red/20 px-3 text-xs text-red hover:bg-red/10"><Trash2 size={16} />Hapus</button>
+                          <button type="button" disabled={index === 0} onClick={() => moveAnggota(index, -1)} aria-label={`Pindahkan anggota ${index + 1} ke atas`} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line px-3 text-[13px] admin-muted disabled:opacity-40"><ArrowUp size={16} />Naik</button>
+                          <button type="button" disabled={index === form.anggota.length - 1} onClick={() => moveAnggota(index, 1)} aria-label={`Pindahkan anggota ${index + 1} ke bawah`} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line px-3 text-[13px] admin-muted disabled:opacity-40"><ArrowDown size={16} />Turun</button>
+                          <button type="button" onClick={() => { if ((anggota.namaAnggota || anggota.jabatan) && !window.confirm(`Hapus ${anggota.namaAnggota || "anggota ini"} dari daftar? Perubahan diterapkan setelah disimpan.`)) return; removeAnggota(index); }} aria-label={`Hapus anggota ${index + 1}`} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-red/20 px-3 text-[13px] text-red hover:bg-red/10"><Trash2 size={16} />Hapus</button>
                         </div>
                       </div>
                     ))}
@@ -661,7 +632,7 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
               </fieldset>
 
               </div>
-              <div className="shrink-0 border-t border-divider bg-white px-5 py-4 sm:px-8">
+              <div className="shrink-0 border-t border-line bg-white px-5 py-4 sm:px-8">
               {error ? (
                 <p role="alert" className="mb-3 text-sm text-red">
                   {error}
@@ -669,27 +640,26 @@ export function BidangManager({ canManageAll }: BidangManagerProps) {
               ) : null}
 
               <div className="flex flex-wrap items-center gap-3">
-                <Button type="submit" className="px-5" disabled={busy}>
+                <Button appearance="admin" type="submit" className="px-5" disabled={busy}>
                   {isSubmitting ? "Menyimpan…" : isUploading || isUploadingHero ? "Mengunggah…" : editingId ? "Simpan Perubahan" : "Simpan Bidang"}
                 </Button>
                 <button
                   type="button"
                   onClick={closeModal}
                   disabled={busy}
-                  className="min-h-11 px-3 text-sm font-semibold text-clay hover:text-brown disabled:opacity-40"
+                  className="min-h-11 px-3 text-sm font-semibold admin-muted hover:text-ink disabled:opacity-40"
                 >
                   Batal
                 </button>
-                <span role="status" className="text-xs text-clay">{busy ? "Tunggu hingga proses selesai." : dirty ? "Ada perubahan belum disimpan." : "Belum ada perubahan."}</span>
+                <span role="status" className="text-[13px] admin-muted">{busy ? "Tunggu hingga proses selesai." : dirty ? "Ada perubahan belum disimpan." : "Belum ada perubahan."}</span>
               </div>
               </div>
             </form>
-          </div>
-        </dialog>
+        </AdminDialog>
       ) : null}
 
       {toast ? (
-        <div role="status" className="fixed bottom-6 right-4 z-50 max-w-[calc(100%-2rem)] rounded-xl bg-brown px-5 py-3 text-sm font-semibold text-white shadow-card sm:right-6">
+        <div role="status" className="admin-toast">
           {toast}
         </div>
       ) : null}

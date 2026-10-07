@@ -3,6 +3,7 @@ import Link from "next/link";
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
   href?: string;
+  appearance?: "admin";
   variant?: "primary" | "secondary" | "dark";
   className?: string;
 };
@@ -17,10 +18,11 @@ export function Button({
   children,
   href,
   variant = "primary",
+  appearance,
   className = "",
   ...buttonProps
 }: ButtonProps) {
-  const classes = `inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition duration-[250ms] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brown disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 ${variants[variant]} ${className}`;
+  const classes = appearance === "admin" ? `admin-button admin-button-${variant} ${className}` : `inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition duration-[250ms] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brown disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 ${variants[variant]} ${className}`;
 
   if (href) {
     return (
