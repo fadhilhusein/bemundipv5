@@ -410,7 +410,7 @@ html {
 }
 
 .landing-container {
-  width: min(100% - 40px, 1180px);
+  width: min(100% - 40px, 1200px);
   margin-inline: auto;
 }
 
@@ -431,7 +431,7 @@ html {
 
 @media (min-width: 1024px) {
   .landing-container {
-    width: min(100% - 80px, 1180px);
+    width: min(100% - 96px, 1200px);
   }
 }
 
@@ -597,4 +597,192 @@ html {
     opacity: 1;
     transform: none;
   }
+}
+
+/* Landing-only typography and controls. Other public pages retain their styles. */
+.font-landing-ui {
+  font-family: var(--font-poppins), Arial, sans-serif;
+}
+
+.landing-page {
+  font-family: var(--font-hind), Arial, sans-serif;
+}
+
+.landing-section {
+  padding-block: 64px;
+}
+
+.landing-page h2:not(.sr-only),
+.landing-footer h2 {
+  font-family: var(--font-abhaya), Georgia, serif;
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.landing-page h3 {
+  font-family: var(--font-abhaya), Georgia, serif;
+  font-size: clamp(1.375rem, 2.1vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: pretty;
+}
+
+.landing-page h3.font-landing-directory {
+  font-family: var(--font-abeezee), Arial, sans-serif;
+  font-weight: 400;
+}
+
+.landing-body {
+  font-family: var(--font-hind), Arial, sans-serif;
+  font-size: clamp(1rem, 0.85rem + 0.25vw, 1.125rem);
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+.landing-page p.landing-body {
+  max-width: 65ch;
+}
+
+.landing-page .company-profile-copy {
+  color: var(--charcoal);
+  font-size: clamp(1rem, 0.9rem + 0.3vw, 1.125rem);
+  line-height: 1.8;
+}
+
+.landing-eyebrow {
+  font-family: var(--font-poppins), Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  color: var(--accent-deep);
+}
+
+.landing-page section[id],
+.landing-footer,
+.landing-page #main-content {
+  scroll-margin-top: 104px;
+}
+
+.landing-page {
+  scroll-margin-top: 104px;
+}
+
+.landing-header,
+.landing-menu,
+.landing-skip {
+  font-family: var(--font-poppins), Arial, sans-serif;
+}
+
+.landing-nav-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+  transition: background-color 200ms, color 200ms, transform 200ms;
+}
+
+.landing-icon-button {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  transition: background-color 200ms, color 200ms, transform 200ms;
+}
+
+.landing-nav-link:active,
+.landing-icon-button:active {
+  transform: scale(0.98);
+}
+
+.landing-nav-link:focus-visible,
+.landing-icon-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.landing-footer {
+  padding: 64px 20px 32px;
+  font-family: var(--font-hind), Arial, sans-serif;
+}
+
+.landing-footer > div {
+  max-width: 1200px;
+}
+
+.landing-footer a {
+  min-height: 44px;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.landing-footer nav a {
+  display: inline-flex;
+  min-width: 44px;
+  font-family: var(--font-poppins), Arial, sans-serif;
+  font-size: 0.9375rem;
+}
+
+.landing-footer > div > div:last-child {
+  font-family: var(--font-poppins), Arial, sans-serif;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.landing-footer a > span:last-child {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.landing-footer a:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+
+@media (min-width: 768px) {
+  .landing-container { width: min(100% - 64px, 1200px); }
+  .landing-section { padding-block: 88px; }
+  .landing-footer { padding-inline: 32px; padding-top: 88px; }
+}
+
+@media (min-width: 1024px) {
+  .landing-container { width: min(100% - 96px, 1200px); }
+  .landing-section { padding-block: 112px; }
+  .landing-footer { padding-inline: 48px; padding-top: 112px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-page *, .landing-header *, .landing-footer * {
+    transition: none !important;
+  }
+  .landing-page .group:hover img,
+  .landing-page .group:hover span,
+  .landing-page a:hover,
+  .landing-header a:hover,
+  .landing-icon-button:active,
+  .landing-nav-link:active {
+    transform: none !important;
+  }
+}
+
+/* Reflow at high browser zoom on narrow screens. */
+@media (max-width: 319px) {
+  .landing-header .landing-container > a { display: none; }
+  .landing-header .landing-nav-link { padding-inline: 8px; }
+}
+
+.landing-page h2,
+.landing-page h3,
+.landing-page .landing-body {
+  overflow-wrap: anywhere;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { LandingHeader } from "@/components/LandingHeader";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -15,7 +16,11 @@ const navItems = [
   { label: "Log in", href: "/login" }
 ];
 
-export function Header() {
+export function Header({ variant }: { variant?: "landing" }) {
+  return variant === "landing" ? <LandingHeader /> : <DefaultHeader />;
+}
+
+function DefaultHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("#beranda");
   const pathname = usePathname();

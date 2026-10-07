@@ -28,9 +28,9 @@ const socialLinks = [
   }
 ];
 
-export function Footer() {
+export function Footer({ variant }: { variant?: "landing" }) {
   return (
-    <footer id="kontak" className="rounded-t-[24px] bg-[#272727] px-5 pb-7 pt-11 text-white sm:rounded-t-[32px] sm:px-8 sm:pb-8 sm:pt-14">
+    <footer id="kontak" className={`${variant === "landing" ? "landing-footer " : ""}rounded-t-[24px] bg-[#272727] px-5 pb-7 pt-11 text-white sm:rounded-t-[32px] sm:px-8 sm:pb-8 sm:pt-14`}>
       <div className="mx-auto max-w-[1180px]">
         <h2 className="landing-title font-landing-display text-[clamp(2.35rem,5vw,3.5rem)] leading-none text-[#FCFCFD]">
           Connect With Us

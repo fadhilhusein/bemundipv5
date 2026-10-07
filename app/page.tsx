@@ -4,8 +4,7 @@ import { ArrowUpRight, CalendarDays, Landmark, Newspaper, Play, UsersRound } fro
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LandingNewsCarousel } from "@/components/LandingNewsCarousel";
-import { MotionScene } from "@/components/MotionScene";
-import { Reveal } from "@/components/Reveal";
+import { LandingMotion, LandingReveal as Reveal } from "@/components/LandingMotion";
 import { getBidangList, getProgramUnggulanCount } from "@/lib/bidang-public";
 import { getPublikasiPaginated } from "@/lib/publikasi-public";
 
@@ -72,16 +71,16 @@ export default async function Home() {
   }));
 
   return (
-    <>
-      <Header />
-      <MotionScene />
-      <main id="main-content" className="landing-page overflow-hidden">
+    <LandingMotion>
+      <Header variant="landing" />
+      <main id="main-content" className="landing-page w-full max-w-full overflow-x-clip">
         <section
           id="beranda"
-          className="landing-grain relative flex min-h-[620px] items-center overflow-hidden pb-12 pt-28 sm:min-h-[700px] sm:pb-16 sm:pt-32 lg:min-h-[800px] lg:pt-32"
+          className="landing-grain relative overflow-hidden pb-12 pt-28 md:pb-16 md:pt-32"
         >
           <div className="landing-container relative flex flex-col items-center text-center">
-            <Reveal className="is-visible w-full">
+            <h1 className="sr-only">BEM Universitas Diponegoro 2026 — Kabinet Dipanegara</h1>
+            <Reveal className="w-full" immediate>
               <div className="relative mx-auto mt-5 w-full max-w-[520px] sm:mt-6 sm:max-w-[650px] lg:max-w-[760px]">
                 <Image
                   src="/assets/hero_image.png"
@@ -89,7 +88,7 @@ export default async function Home() {
                   width={755}
                   height={627}
                   priority
-                  sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) 650px, 760px"
+                  sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 767px) min(calc(100vw - 40px), 650px), (max-width: 1023px) 650px, 760px"
                   className="h-auto w-full object-contain"
                 />
               </div>
@@ -97,46 +96,46 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="sambutan" aria-labelledby="sambutan-title" className="bg-white py-14 sm:py-[72px] lg:py-24">
+        <section id="sambutan" aria-labelledby="sambutan-title" className="bg-white landing-section">
           <div className="landing-container">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
-              <Reveal className="min-w-0">
-                <p className="font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-deep">
-                  Sambutan
+            <Reveal>
+              <p className="landing-eyebrow">Sambutan</p>
+              <h2 id="sambutan-title" className="landing-title mt-3 max-w-[960px] text-charcoal">
+                Selamat datang di rumah digital BEM UNDIP 2026!
+              </h2>
+            </Reveal>
+            <div className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-12">
+              <Reveal>
+                <p className="landing-copy landing-body">
+                  BEM UNDIP 2026 berkomitmen penuh untuk merawat spirit perjuangan Pangeran Diponegoro,
+                  menjadi katalisator bagi perbaikan dan perubahan di lingkungan kampus, regional, maupun nasional.
                 </p>
-                <h2 id="sambutan-title" className="landing-title mt-3 text-[clamp(2.35rem,4.5vw,4.25rem)] leading-[1.08] text-charcoal">
-                  Selamat datang di rumah digital BEM UNDIP 2026!
-                </h2>
               </Reveal>
-              <Reveal className="min-w-0" delay={100}>
-                <div className="landing-copy max-w-[65ch] font-landing-copy text-base leading-8 text-ink sm:text-lg">
-                  <p>
-                    BEM UNDIP 2026 berkomitmen penuh untuk merawat spirit perjuangan Pangeran Diponegoro,
-                    menjadi katalisator bagi perbaikan dan perubahan di lingkungan kampus, regional, maupun nasional.
-                  </p>
-                  <p className="mt-4">
-                    Maka dari itu, mari merajut kembali simpul-simpul gerakan, memperjuangkan hak-hak yang
-                    terpinggirkan, dan membawa dampaknya bagi almamater dan Indonesia.
-                  </p>
-                  <p className="mt-6 border-t border-line pt-6 font-semibold text-charcoal">
-                    Hidup Mahasiswa.
-                    <br />
-                    Hidup Rakyat Indonesia.
-                    <br />
-                    Hidup Perempuan yang Melawan.
-                  </p>
-                </div>
+              <Reveal delay={100}>
+                <p className="landing-copy landing-body">
+                  Maka dari itu, mari merajut kembali simpul-simpul gerakan, memperjuangkan hak-hak yang
+                  terpinggirkan, dan membawa dampaknya bagi almamater dan Indonesia.
+                </p>
               </Reveal>
             </div>
+            <Reveal>
+              <p className="landing-copy landing-body mt-8 border-t border-line pt-6 font-semibold text-charcoal">
+                Hidup Mahasiswa.
+                <br />
+                Hidup Rakyat Indonesia.
+                <br />
+                Hidup Perempuan yang Melawan.
+              </p>
+            </Reveal>
 
-            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:mt-12">
+            <div className="mt-10 grid max-w-[960px] grid-flow-dense gap-6 md:grid-cols-2 lg:mt-12">
               {[
                 { title: "Visi", message: "Media visi belum tersedia" },
                 { title: "Misi", message: "Media misi belum tersedia" }
               ].map((item, index) => (
-                <Reveal key={item.title} className="min-w-0" delay={index * 100}>
+                <Reveal key={item.title} className="min-w-0" delay={Math.min(index * 75, 150)}>
                   <article className="rounded-[24px] bg-surface p-5 sm:p-6">
-                    <h3 className="landing-title text-3xl leading-tight text-charcoal sm:text-4xl">
+                    <h3 className="landing-title text-charcoal">
                       {item.title}
                     </h3>
                     <div className="mt-4 grid aspect-[4/3] w-full place-items-center rounded-[16px] bg-white px-5">
@@ -151,17 +150,17 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="bidang" className="relative rounded-[28px] bg-surface py-14 sm:rounded-[36px] sm:py-[72px] lg:py-24">
+        <section id="bidang" className="landing-section relative rounded-[28px] bg-surface sm:rounded-[36px]">
           <div className="landing-container">
             <Reveal>
               <div className="flex flex-col gap-4 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-deep">Rumah gerak</p>
-                  <h2 className="landing-title mt-3 text-[clamp(2.35rem,5.8vw,4.25rem)] leading-none text-charcoal">
+                  <p className="landing-eyebrow">Rumah gerak</p>
+                  <h2 className="landing-title mt-3 text-charcoal">
                     Bidang, biro dan kantor
                   </h2>
                 </div>
-                <p className="landing-copy max-w-sm font-sans text-sm leading-relaxed text-ink/65">
+                <p className="landing-copy landing-body max-w-sm">
                   Setiap unit bekerja dengan mandat berbeda, tetapi bergerak menuju tujuan yang sama.
                 </p>
               </div>
@@ -179,14 +178,14 @@ export default async function Home() {
                             className="grid gap-5 rounded-[4px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink sm:grid-cols-[1fr_auto] sm:items-center"
                           >
                             <div className="min-w-0">
-                              <h3 className="landing-copy font-landing-directory text-[clamp(1.3rem,2.5vw,2rem)] leading-tight text-ink transition group-hover:text-accent-deep">
+                              <h3 className="landing-copy font-landing-directory text-ink transition group-hover:text-accent-deep">
                                 {bidang.nama_bidang}
                               </h3>
-                              <p className="mt-2 line-clamp-2 font-sans text-sm leading-relaxed text-ink/60">
+                              <p className="landing-copy landing-body mt-2 line-clamp-2">
                                 {bidang.deskripsi || `Kenali peran dan program ${bidang.nama_bidang}.`}
                               </p>
                             </div>
-                            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-bold text-white transition group-hover:-translate-y-0.5 group-hover:bg-accent-deep">
+                            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-4 py-2.5 min-h-11 font-landing-ui text-[15px] font-semibold text-charcoal transition group-hover:-translate-y-0.5 group-hover:bg-accent-deep group-hover:text-white">
                               Lihat
                               <ArrowUpRight size={17} />
                             </span>
@@ -198,7 +197,7 @@ export default async function Home() {
                 ))}
               </div>
             ) : (
-              <div className="mt-12 rounded-[24px] border border-dashed border-line bg-white p-10 text-center font-sans text-ink/60">
+              <div className="landing-copy landing-body mt-12 rounded-[24px] border border-dashed border-line bg-white p-6 text-center sm:p-10">
                 {bidangResult.status === "rejected"
                   ? "Direktori bidang belum dapat dimuat. Silakan muat ulang halaman untuk mencoba kembali."
                   : "Direktori bidang sedang disiapkan."}
@@ -207,17 +206,16 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="berita" className="bg-white py-14 sm:py-[72px] lg:py-24">
+        <section id="berita" className="bg-white landing-section">
           <div className="landing-container">
             <Reveal>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="font-script text-4xl text-ink/70 sm:text-[2.75rem]">Berita terkini</p>
-                  <h2 className="sr-only">Berita terkini BEM UNDIP</h2>
+                  <h2 className="landing-title text-charcoal">Berita terkini</h2>
                 </div>
                 <Link
                   href="/publikasi"
-                  className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-accent-deep active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                  className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-5 py-2.5 min-h-11 font-landing-ui text-[15px] font-semibold text-charcoal transition hover:bg-accent-deep hover:text-white active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                 >
                   Semua publikasi
                   <ArrowUpRight size={18} />
@@ -228,7 +226,7 @@ export default async function Home() {
             {newsItems.length > 0 ? (
               <LandingNewsCarousel items={newsItems} />
             ) : (
-              <div className="mt-12 rounded-[28px] bg-surface p-12 text-center font-sans text-ink/60">
+              <div className="landing-copy landing-body mt-12 rounded-[28px] bg-surface p-6 text-center sm:p-10">
                 {publicationResult.status === "rejected"
                   ? "Berita terbaru belum dapat dimuat. Silakan muat ulang halaman untuk mencoba kembali."
                   : "Berita terbaru sedang disiapkan."}
@@ -237,7 +235,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden bg-white py-14 sm:py-[72px] lg:py-24">
+        <section className="relative overflow-hidden bg-white landing-section">
           <div className="absolute -left-[28%] top-[36%] h-[280px] w-[160%] -rotate-6 rounded-[50%] bg-accent sm:h-[400px]" aria-hidden="true" />
           <Image
             src="/assets/landing/company-accent.svg"
@@ -248,7 +246,7 @@ export default async function Home() {
           />
           <div className="landing-container relative z-10">
             <Reveal>
-              <h2 className="landing-title text-center text-[clamp(2.1rem,4.5vw,3.5rem)] leading-tight text-charcoal">
+              <h2 className="landing-title text-center text-charcoal">
                 Tonton company profile kami di sini
               </h2>
             </Reveal>
@@ -267,7 +265,7 @@ export default async function Home() {
                     href="https://www.youtube.com/@bemundip"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="absolute grid h-16 w-16 place-items-center rounded-full bg-accent text-white shadow-float transition hover:scale-105 hover:bg-accent-deep active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    className="absolute grid h-16 w-16 place-items-center rounded-full bg-accent text-charcoal shadow-float transition hover:scale-[1.025] hover:bg-accent-deep hover:text-white active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                     aria-label="Buka kanal YouTube BEM UNDIP di tab baru"
                   >
                     <Play size={24} fill="currentColor" className="ml-1" />
@@ -275,31 +273,33 @@ export default async function Home() {
                 </div>
               </div>
             </Reveal>
-            <Reveal delay={150}>
-              <p className="landing-copy mx-auto mt-8 max-w-3xl text-justify font-landing-copy text-base leading-8 text-charcoal sm:text-lg">
-                Sebuah langkah, tekad, dan arah gerak kini berlabuh. Kabinet Dipanegara membawa semangat kolaborasi,
-                aksi nyata, dan kebermanfaatan ke dalam satu ruang pandang. Kenali bagaimana kami merajut asa,
-                menjawab tantangan zaman, dan menjadi wadah perjuangan yang progresif bagi mahasiswa serta masyarakat.
-              </p>
+            <Reveal immediate>
+              <div className="mx-auto mt-8 max-w-3xl rounded-[24px] bg-white p-6 sm:p-8">
+                <p className="landing-copy landing-body company-profile-copy mx-auto text-left">
+                  Sebuah langkah, tekad, dan arah gerak kini berlabuh. Kabinet Dipanegara membawa semangat kolaborasi,
+                  aksi nyata, dan kebermanfaatan ke dalam satu ruang pandang. Kenali bagaimana kami merajut asa,
+                  menjawab tantangan zaman, dan menjadi wadah perjuangan yang progresif bagi mahasiswa serta masyarakat.
+                </p>
+              </div>
             </Reveal>
           </div>
         </section>
 
-        <section className="bg-white py-14 sm:py-[72px] lg:py-24">
+        <section className="bg-white landing-section">
           <div className="landing-container">
             <Reveal>
-              <h2 className="landing-title text-center text-[clamp(2.35rem,5.8vw,4.25rem)] leading-none text-charcoal">
+              <h2 className="landing-title text-center text-charcoal">
                 Beri Rasa, Lahir Makna.
               </h2>
             </Reveal>
-            <div className="mt-10 grid gap-7 sm:grid-cols-3 sm:gap-4">
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
               {[
                 { value: bidangResult.status === "fulfilled" ? bidangList.length : null, label: "Bidang/Biro/Kantor/Unit" },
                 { value: bidangResult.status === "fulfilled" ? (memberCount > 0 ? `${memberCount}+` : 0) : null, label: "Pengurus" },
                 { value: programCount, label: "Program kerja" }
               ].map((stat, index) => (
-                <Reveal key={stat.label} delay={index * 100}>
-                  <div className="border-t border-line pt-5 text-center sm:border-l sm:border-t-0 sm:first:border-l-0 sm:pt-0">
+                <Reveal key={stat.label} delay={Math.min(index * 75, 150)}>
+                  <div className="border-t border-line pt-5 text-center md:border-l md:border-t-0 md:first:border-l-0 md:pt-0">
                     <p className="font-landing-stat text-[clamp(3rem,7vw,4.5rem)] tabular-nums leading-none text-charcoal">
                       {stat.value === null ? (
                         <>
@@ -308,7 +308,7 @@ export default async function Home() {
                         </>
                       ) : stat.value}
                     </p>
-                    <p className="mt-3 font-sans text-sm font-medium text-ink/70 sm:text-base">{stat.label}</p>
+                    <p className="landing-copy mt-3 font-landing-copy text-base font-medium text-ink">{stat.label}</p>
                   </div>
                 </Reveal>
               ))}
@@ -316,25 +316,25 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="layanan" className="bg-white py-14 sm:py-[72px] lg:py-24">
+        <section id="layanan" className="bg-white landing-section">
           <div className="landing-container">
             <Reveal>
               <div className="flex items-end justify-between gap-5">
                 <div>
-                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.28em] text-accent-deep">Akses cepat</p>
-                  <h2 className="landing-title mt-3 text-[clamp(2.35rem,5.8vw,4.25rem)] leading-none text-charcoal">Layanan kami</h2>
+                  <p className="landing-eyebrow">Akses cepat</p>
+                  <h2 className="landing-title mt-3 text-charcoal">Layanan kami</h2>
                 </div>
                 <UsersRound className="hidden text-accent sm:block" size={44} strokeWidth={1.4} />
               </div>
             </Reveal>
-            <div className="mt-9 grid gap-5 md:grid-cols-3">
+            <div className="mt-9 grid grid-flow-dense gap-6 lg:grid-cols-3">
               {serviceItems.map((item, index) => {
                 const Icon = item.icon;
                 return (
-                  <Reveal key={item.title} delay={index * 100}>
+                  <Reveal key={item.title} delay={Math.min(index * 75, 150)}>
                     <Link
                       href={item.href}
-                      className="group flex min-h-[330px] flex-col rounded-[24px] bg-surface p-5 transition duration-300 hover:-translate-y-2 hover:shadow-float focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+                      className="group flex min-h-[330px] flex-col rounded-[24px] bg-surface p-5 transition duration-300 hover:-translate-y-1 hover:shadow-float focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
                     >
                       <div className="relative grid h-40 place-items-center overflow-hidden rounded-[18px] bg-[#FFF3A8]">
                         <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-accent/70" />
@@ -344,11 +344,11 @@ export default async function Home() {
                           <Image src="/assets/landing/arrow-up-right.svg" alt="" width={20} height={20} className="h-5 w-5" />
                         </span>
                       </div>
-                      <span className="mt-5 w-fit rounded-full bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-charcoal">
+                      <span className="mt-5 w-fit rounded-full bg-white px-3.5 py-1.5 font-landing-ui text-sm font-semibold text-charcoal">
                         {item.label}
                       </span>
-                      <h3 className="mt-4 text-[1.75rem] leading-none text-ink">{item.title}</h3>
-                      <p className="landing-copy mt-3 font-sans text-sm leading-relaxed text-ink/65">{item.description}</p>
+                      <h3 className="mt-4 text-ink">{item.title}</h3>
+                      <p className="landing-copy landing-body mt-3">{item.description}</p>
                     </Link>
                   </Reveal>
                 );
@@ -357,7 +357,7 @@ export default async function Home() {
           </div>
         </section>
       </main>
-      <Footer />
-    </>
+      <Footer variant="landing" />
+    </LandingMotion>
   );
 }
