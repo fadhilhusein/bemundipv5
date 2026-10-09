@@ -66,7 +66,7 @@ export function BidangFigmaPage({ bidang, numericId, programList, programError, 
           </div>
 
           <div className="bidang-poster-buildings relative z-30 -mt-[2.2%] flex w-full overflow-hidden">
-            <Image src="/assets/bidang-figma/buildings-left.svg" alt="" width={683} height={163} className="h-auto w-1/2 max-w-none" />
+            <Image src="/assets/bidang-figma/buildings-left.svg" alt="" width={683} height={163} className="h-auto w-1/2 max-w-none -scale-x-100" />
             <Image src="/assets/bidang-figma/buildings-right.svg" alt="" width={683} height={163} className="h-auto w-1/2 max-w-none" />
           </div>
         </div>

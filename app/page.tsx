@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, CalendarDays, Landmark, Newspaper, Play, UsersRound } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Landmark, Newspaper, UsersRound } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LandingNewsCarousel } from "@/components/LandingNewsCarousel";
@@ -252,24 +252,18 @@ export default async function Home() {
             </Reveal>
             <Reveal delay={100}>
               <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-[24px] bg-[#D9D9D9] p-3 shadow-[0_22px_58px_rgba(52,64,84,0.18)] sm:rounded-[32px] sm:p-5">
-                <div className="relative grid aspect-video place-items-center overflow-hidden rounded-[18px] bg-gradient-to-br from-[#E5E7EB] to-[#BFC5CC] sm:rounded-[24px]">
-                  <Image
-                    src="/assets/logo-bem.png"
-                    alt="Logo BEM UNDIP pada poster company profile"
-                    width={240}
-                    height={180}
+                <div className="relative aspect-video overflow-hidden rounded-[18px] bg-charcoal sm:rounded-[24px]">
+                  <iframe
+                    src="https://www.youtube-nocookie.com/embed/i8Ugg246ByU"
+                    title="Video company profile BEM UNDIP — Kabinet Dipanegara 2026"
+                    width={768}
+                    height={432}
                     loading="lazy"
-                    className="h-auto w-24 object-contain sm:w-36"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                    className="absolute inset-0 h-full w-full border-0"
                   />
-                  <a
-                    href="https://www.youtube.com/@bemundip"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="absolute grid h-16 w-16 place-items-center rounded-full bg-accent text-charcoal shadow-float transition hover:scale-[1.025] hover:bg-accent-deep hover:text-white active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                    aria-label="Buka kanal YouTube BEM UNDIP di tab baru"
-                  >
-                    <Play size={24} fill="currentColor" className="ml-1" />
-                  </a>
                 </div>
               </div>
             </Reveal>

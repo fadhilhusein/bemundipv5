@@ -119,8 +119,8 @@ function DefaultHeader() {
             aria-label="Identitas Kabinet Dipanegara"
           >
             <Image
-              src="/assets/bemundip.png"
-              alt="Logo Kabinet Dipanegara"
+              src="/assets/logo-bem.png"
+              alt="Logo BEM UNDIP"
               width={64}
               height={64}
               priority
@@ -153,8 +153,8 @@ function DefaultHeader() {
         >
           <div className="flex items-center justify-between">
             <Image
-              src="/assets/bemundip.png"
-              alt="Logo Kabinet Dipanegara"
+              src="/assets/logo-bem.png"
+              alt="Logo BEM UNDIP"
               width={76}
               height={76}
               className="h-[52px] w-[52px] rounded-full bg-white object-contain p-2"

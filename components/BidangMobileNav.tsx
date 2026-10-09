@@ -71,7 +71,7 @@ export function BidangMobileNav({ items, active }: BidangMobileNavProps) {
           aria-label="BEM UNDIP beranda"
           className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white p-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
-          <Image src="/assets/bemundip.png" alt="" width={44} height={44} className="h-full w-full object-contain" />
+          <Image src="/assets/logo-bem.png" alt="" width={44} height={44} className="h-full w-full object-contain" />
         </Link>
         <span className="min-w-0 flex-1 truncate text-base">{active}</span>
         <button
@@ -111,7 +111,7 @@ export function BidangMobileNav({ items, active }: BidangMobileNavProps) {
           <div className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-3">
               <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white p-1.5">
-                <Image src="/assets/bemundip.png" alt="" width={44} height={44} className="h-full w-full object-contain" />
+                <Image src="/assets/logo-bem.png" alt="" width={44} height={44} className="h-full w-full object-contain" />
               </span>
               <span className="truncate text-lg">BEM UNDIP 2026</span>
             </div>
