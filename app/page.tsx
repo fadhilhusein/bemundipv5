@@ -83,10 +83,10 @@ export default async function Home() {
             <Reveal className="w-full" immediate>
               <div className="relative mx-auto mt-5 w-full max-w-[520px] sm:mt-6 sm:max-w-[650px] lg:max-w-[760px]">
                 <Image
-                  src="/assets/hero_image.png"
-                  alt="Ilustrasi warung makan sebagai identitas visual Kabinet Dipanegara"
-                  width={755}
-                  height={627}
+                  src="/assets/hero-kabinet-dipanegara-v2.png"
+                  alt="Ilustrasi meja makan dan papan nama Kabinet Dipanegara dengan ornamen bunga"
+                  width={1440}
+                  height={856}
                   priority
                   sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 767px) min(calc(100vw - 40px), 650px), (max-width: 1023px) 650px, 760px"
                   className="h-auto w-full object-contain"
