@@ -76,21 +76,33 @@ export default async function Home() {
       <main id="main-content" className="landing-page w-full max-w-full overflow-x-clip">
         <section
           id="beranda"
-          className="landing-grain relative overflow-hidden pb-12 pt-28 md:pb-16 md:pt-32"
+          className="landing-grain landing-hero-atmosphere relative overflow-hidden pb-12 pt-28 md:pb-16 md:pt-32"
         >
-          <div className="landing-container relative flex flex-col items-center text-center">
+          <div className="landing-hero-backdrop" aria-hidden="true">
+            <Image src="/assets/landing/hero-warteg-background.png" alt="" fill priority sizes="100vw" className="landing-hero-background" />
+            <div className="landing-hero-background-wash" />
+          </div>
+          <div className="landing-hero-botanical landing-hero-botanical-left" aria-hidden="true">
+            <Image src="/assets/landing/hero-botanical-frame.png" alt="" fill sizes="(min-width: 1024px) 320px, 120px" className="landing-hero-botanical-image" draggable={false} />
+          </div>
+          <div className="landing-hero-botanical landing-hero-botanical-right" aria-hidden="true">
+            <Image src="/assets/landing/hero-botanical-frame.png" alt="" fill sizes="(min-width: 1024px) 320px, 120px" className="landing-hero-botanical-image" draggable={false} />
+          </div>
+          <div className="landing-container relative z-10 flex flex-col items-center text-center">
             <h1 className="sr-only">BEM Universitas Diponegoro 2026 — Kabinet Dipanegara</h1>
             <Reveal className="w-full" immediate>
-              <div className="relative mx-auto mt-5 w-full max-w-[520px] sm:mt-6 sm:max-w-[650px] lg:max-w-[760px]">
-                <Image
-                  src="/assets/hero-kabinet-dipanegara-v2.png"
-                  alt="Ilustrasi meja makan dan papan nama Kabinet Dipanegara dengan ornamen bunga"
-                  width={1440}
-                  height={856}
-                  priority
-                  sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 767px) min(calc(100vw - 40px), 650px), (max-width: 1023px) 650px, 760px"
-                  className="h-auto w-full object-contain"
-                />
+              <div className="landing-hero-scene relative mt-5 w-full sm:mt-6">
+                <div className="relative z-10 mx-auto w-full max-w-[520px] sm:max-w-[650px] lg:max-w-[760px]">
+                  <Image
+                    src="/assets/hero-kabinet-dipanegara-v2.png"
+                    alt="Ilustrasi meja makan dan papan nama Kabinet Dipanegara dengan ornamen bunga"
+                    width={1440}
+                    height={856}
+                    priority
+                    sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 767px) min(calc(100vw - 40px), 650px), (max-width: 1023px) 650px, 760px"
+                    className="h-auto w-full object-contain"
+                  />
+                </div>
               </div>
             </Reveal>
           </div>

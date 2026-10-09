@@ -1207,3 +1207,45 @@ html {
 }
 
 }
+
+/* Layered warteg atmosphere with leafy borders; main identity stays in front. */
+.landing-page .landing-hero-backdrop,
+.landing-page .landing-hero-background-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.landing-page .landing-hero-background {
+  object-fit: cover;
+  object-position: 65% center;
+  opacity: .5;
+}
+.landing-page .landing-hero-background-wash {
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, .72), rgba(255, 255, 255, .2) 65%, transparent 90%),
+    linear-gradient(to bottom, rgba(255, 255, 255, .25), transparent 45%, rgba(255, 255, 255, .3) 75%, white);
+}
+.landing-page .landing-hero-botanical {
+  position: absolute;
+  inset-block: 0;
+  width: clamp(48px, 14vw, 320px);
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  opacity: .55;
+}
+.landing-page .landing-hero-botanical-left {
+  left: 0;
+  mask-image: linear-gradient(to right, black 70%, transparent);
+}
+.landing-page .landing-hero-botanical-right {
+  right: 0;
+  mask-image: linear-gradient(to left, black 70%, transparent);
+}
+.landing-page .landing-hero-botanical-image { object-fit: cover; }
+.landing-page .landing-hero-botanical-left .landing-hero-botanical-image { object-position: left center; }
+.landing-page .landing-hero-botanical-right .landing-hero-botanical-image { object-position: right center; }
+@media (min-width: 768px) {
+  .landing-page .landing-hero-background { object-position: center; }
+  .landing-page .landing-hero-botanical { width: clamp(120px, 18vw, 320px); opacity: .85; }
+}
