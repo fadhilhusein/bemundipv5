@@ -30,7 +30,7 @@ Thumbs.db
 
 # temporary browser profiles / QA artifacts
 .edge-profile/
-hero-*.png
+/hero-*.png
 mobile-*.png
 desktop-*.png
 
