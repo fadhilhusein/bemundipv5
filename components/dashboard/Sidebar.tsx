@@ -39,7 +39,7 @@ export function Sidebar({ userEmail, role, onNavigate }: SidebarProps) {
     <div className="flex h-full flex-col bg-charcoal text-white">
       <div className="flex min-h-[80px] items-center gap-3 border-b border-white/10 px-6">
         <Image
-          src="/assets/logo-bem.png"
+          src="/assets/logo-bem.webp"
           alt="Logo BEM UNDIP"
           width={44}
           height={44}

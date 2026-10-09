@@ -119,7 +119,7 @@ function DefaultHeader() {
             aria-label="Identitas Kabinet Dipanegara"
           >
             <Image
-              src="/assets/logo-bem.png"
+              src="/assets/logo-bem.webp"
               alt="Logo BEM UNDIP"
               width={64}
               height={64}
@@ -153,7 +153,7 @@ function DefaultHeader() {
         >
           <div className="flex items-center justify-between">
             <Image
-              src="/assets/logo-bem.png"
+              src="/assets/logo-bem.webp"
               alt="Logo BEM UNDIP"
               width={76}
               height={76}

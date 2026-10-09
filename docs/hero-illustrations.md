@@ -4,8 +4,8 @@ Generated with the built-in image_gen tool. The existing hero was used only as a
 
 ## Final assets
 
-- public/assets/landing/hero-warteg-background.png — opaque panoramic warteg interior, softly blended behind the main hero.
-- public/assets/landing/hero-botanical-frame.png — transparent leafy and floral side borders, rendered at left and right with CSS cropping.
+- public/assets/landing/hero-warteg-background.webp — opaque panoramic warteg interior, softly blended behind the main hero.
+- public/assets/landing/hero-botanical-frame.webp — transparent leafy and floral side borders, rendered at left and right with CSS cropping.
 
 All atmosphere layers are decorative, static, ignore pointer events, and are excluded from the accessibility tree. Smaller screens use narrower, softer borders.
 
@@ -18,3 +18,9 @@ Use case: illustration-story. Asset type: panoramic background for a BEM univers
 ### Botanical border
 
 Use case: illustration-story. Asset type: wide transparent botanical side-border overlay for a website hero. Input image 1 is STYLE REFERENCE ONLY. Generate ONE wide landscape transparent illustration with climbing leafy branches, loose vines, and orange-yellow daisy flowers confined to the OUTERMOST LEFT 15% and RIGHT 15% of the canvas, like a pair of natural garden borders framing an empty center. Center 70% must be completely empty and genuinely transparent; top and bottom center must remain open. Branches grow up from lower corners and hang slightly down from upper corners, forming gentle asymmetric side borders rather than an enclosing arch. Leaves are green with dark outlines, flowers orange with golden centers, matching reference's simple bold cartoon daisy shapes and hand-drawn black contours. Friendly Indonesian courtyard greenery creating cool shade. Natural organic spacing, airy clusters, no excessive density. Fully visible motifs with margins, no crop cutoffs except stems at the outer edges. TRUE transparent background, no white rectangle, no scenery, no furniture, no text, no logo, no people, no 3D, no photorealism.
+
+## Border rendering quality
+
+The hero border uses object-fit cover on a narrow rail, so the full source illustration spans approximately 1,200 CSS pixels at desktop hero height. Its sizes hint therefore requests 1,200px on desktop and 720px on mobile, with quality 90, rather than requesting only the visible rail width. This avoids upscaling a low-resolution full-frame image after cropping.
+
+The generated PNG sources are retained. Production references now use pixel-identical lossless WebP copies; this format conversion preserves the original alpha and image dimensions.

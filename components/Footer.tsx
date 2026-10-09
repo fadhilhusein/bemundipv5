@@ -6,25 +6,25 @@ const socialLinks = [
     label: "Instagram",
     handle: "instagram.com/bemundip",
     href: "https://www.instagram.com/bemundip",
-    icon: "/assets/landing/instagram.png"
+    icon: "/assets/landing/instagram.webp"
   },
   {
     label: "X",
     handle: "x.com/bemundip",
     href: "https://x.com/bemundip",
-    icon: "/assets/landing/x.png"
+    icon: "/assets/landing/x.webp"
   },
   {
     label: "YouTube",
     handle: "youtube.com/@bemundip",
     href: "https://www.youtube.com/@bemundip",
-    icon: "/assets/landing/youtube.png"
+    icon: "/assets/landing/youtube.webp"
   },
   {
     label: "TikTok",
     handle: "tiktok.com/@bemundip",
     href: "https://www.tiktok.com/@bemundip",
-    icon: "/assets/landing/tiktok.png"
+    icon: "/assets/landing/tiktok.webp"
   }
 ];
 

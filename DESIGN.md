@@ -102,10 +102,18 @@ Use `clamp()` for display type and fluid media. Do not copy absolute Figma coord
 
 
 ## Login dan CMS
-Gaya khusus `admin-theme`: putih, surface abu-abu, teks charcoal/ink, aksen oranye dengan teks gelap. Poppins untuk UI CMS; Abhaya Libre 32–44px untuk heading login. Heading CMS 26–32px, subjudul 20–24px, teks 14–16px, helper minimal 13px. Logo `/assets/logo-bem.png`. Halaman publik tetap memakai desain sebelumnya.
+Gaya khusus `admin-theme`: putih, surface abu-abu, teks charcoal/ink, aksen oranye dengan teks gelap. Poppins untuk UI CMS; Abhaya Libre 32–44px untuk heading login. Heading CMS 26–32px, subjudul 20–24px, teks 14–16px, helper minimal 13px. Logo `/assets/logo-bem.webp`. Halaman publik tetap memakai desain sebelumnya.
 Login memiliki form maksimum 440px dan panel identitas charcoal dengan ilustrasi lokal pada desktop. Sidebar 264px mulai 1024px, topbar minimum 72px, konten maksimum 1280px dengan gutter 20/32/40px. Panel radius 16px, padding 20–28px. Tombol `appearance="admin"`; input tinggi 48px/radius 10px. Aksi minimum 44px dan focus ring jelas.
 Daftar memakai tabel desktop/kartu mobile di bawah 768px, detail lengkap untuk nilai panjang, dan status loading/kosong/gagal terpisah. CRUD memakai dialog native bersama, header/footer tetap dan isi scroll. Motion 150–200ms dengan reduced motion; Escape, penguncian/pengembalian fokus tersedia. Perlindungan perubahan belum disimpan dan busy pada bidang dipertahankan. Autentikasi, sesi, route, payload, dan hak akses tetap.
 
 
 ### Suasana hero landing
 Ilustrasi utama dari pengguna tetap menjadi fokus. Latar interior warteg berwarna krem, merah, dan hijau dipadukan dengan lapisan putih lembut agar identitas kabinet terbaca. Sulur daun dan bunga oranye membingkai tepi kiri/kanan; bukan objek lepas. Border dibuat lebih sempit dan lembut pada mobile. Seluruh lapisan dekoratif bersifat statis, pointer-events none, aria-hidden, dan alt kosong. Aset serta prompt imagegen dicatat di docs/hero-illustrations.md.
+
+
+### Border dekoratif antarsection
+Sambutan, Berita, dan Layanan memakai satu aksen pemisah bunga kecil (18px) dengan garis tipis di area padding atas. Pada layar mulai 1440px, satu sulur botani tipis ditampilkan bergantian di tepi kanan/kiri dengan opacity 24%, maksimal lebar 160px, dan hanya di luar landing-container. Tidak ada pola latar tambahan di belakang teks/kartu. Section direktori, company profile, dan statistik tetap ringan karena sudah memiliki komposisi tersendiri. Dekorasi statis, aria-hidden, alt kosong, dan tidak menerima pointer. Mobile/tablet memakai pemisah kecil saja; tidak ada animasi tambahan.
+
+
+### Format aset gambar
+Seluruh 43 aset raster lokal memiliki versi WebP lossless, dengan ukuran/dimensi, piksel, dan alpha identik dengan sumber PNG. Komponen website memakai WebP. PNG asli dipertahankan untuk kompatibilitas URL lama/sumber, termasuk favicon logo pada metadata; SVG tetap vektor. Total versi PNG 9.027.033 byte menjadi 5.257.446 byte untuk WebP (41,8% lebih kecil). Tidak ada perubahan pada URL media dari database atau alur upload. Rincian ada di docs/image-optimization.md.

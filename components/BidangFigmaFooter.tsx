@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const socialLinks = [
-  { label: "Instagram.com/bemundip", href: "https://www.instagram.com/bemundip", icon: "/assets/bidang-figma/instagram.png", width: 66, height: 65 },
-  { label: "X.com/bemundip", href: "https://x.com/bemundip", icon: "/assets/bidang-figma/x.png", width: 90, height: 76 },
-  { label: "Youtube.com/bemundip", href: "https://www.youtube.com/@bemundip", icon: "/assets/bidang-figma/youtube.png", width: 68, height: 72 },
-  { label: "Tiktok.com/bemundip", href: "https://www.tiktok.com/@bemundip", icon: "/assets/bidang-figma/tiktok.png", width: 73, height: 73 }
+  { label: "Instagram.com/bemundip", href: "https://www.instagram.com/bemundip", icon: "/assets/bidang-figma/instagram.webp", width: 66, height: 65 },
+  { label: "X.com/bemundip", href: "https://x.com/bemundip", icon: "/assets/bidang-figma/x.webp", width: 90, height: 76 },
+  { label: "Youtube.com/bemundip", href: "https://www.youtube.com/@bemundip", icon: "/assets/bidang-figma/youtube.webp", width: 68, height: 72 },
+  { label: "Tiktok.com/bemundip", href: "https://www.tiktok.com/@bemundip", icon: "/assets/bidang-figma/tiktok.webp", width: 73, height: 73 }
 ];
 
 export function BidangFigmaFooter() {

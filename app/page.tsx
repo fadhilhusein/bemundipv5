@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowUpRight, CalendarDays, Landmark, Newspaper, UsersRound } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { LandingSectionOrnament } from "@/components/LandingSectionOrnament";
 import { LandingNewsCarousel } from "@/components/LandingNewsCarousel";
 import { LandingMotion, LandingReveal as Reveal } from "@/components/LandingMotion";
 import { getBidangList, getProgramUnggulanCount } from "@/lib/bidang-public";
@@ -79,14 +80,14 @@ export default async function Home() {
           className="landing-grain landing-hero-atmosphere relative overflow-hidden pb-12 pt-28 md:pb-16 md:pt-32"
         >
           <div className="landing-hero-backdrop" aria-hidden="true">
-            <Image src="/assets/landing/hero-warteg-background.png" alt="" fill priority sizes="100vw" className="landing-hero-background" />
+            <Image src="/assets/landing/hero-warteg-background.webp" alt="" fill priority sizes="100vw" className="landing-hero-background" />
             <div className="landing-hero-background-wash" />
           </div>
           <div className="landing-hero-botanical landing-hero-botanical-left" aria-hidden="true">
-            <Image src="/assets/landing/hero-botanical-frame.png" alt="" fill sizes="(min-width: 1024px) 320px, 120px" className="landing-hero-botanical-image" draggable={false} />
+            <Image src="/assets/landing/hero-botanical-frame.webp" alt="" fill quality={90} sizes="(max-width: 767px) 720px, 1200px" className="landing-hero-botanical-image" draggable={false} />
           </div>
           <div className="landing-hero-botanical landing-hero-botanical-right" aria-hidden="true">
-            <Image src="/assets/landing/hero-botanical-frame.png" alt="" fill sizes="(min-width: 1024px) 320px, 120px" className="landing-hero-botanical-image" draggable={false} />
+            <Image src="/assets/landing/hero-botanical-frame.webp" alt="" fill quality={90} sizes="(max-width: 767px) 720px, 1200px" className="landing-hero-botanical-image" draggable={false} />
           </div>
           <div className="landing-container relative z-10 flex flex-col items-center text-center">
             <h1 className="sr-only">BEM Universitas Diponegoro 2026 — Kabinet Dipanegara</h1>
@@ -94,7 +95,7 @@ export default async function Home() {
               <div className="landing-hero-scene relative mt-5 w-full sm:mt-6">
                 <div className="relative z-10 mx-auto w-full max-w-[520px] sm:max-w-[650px] lg:max-w-[760px]">
                   <Image
-                    src="/assets/hero-kabinet-dipanegara-v2.png"
+                    src="/assets/hero-kabinet-dipanegara-v2.webp"
                     alt="Ilustrasi meja makan dan papan nama Kabinet Dipanegara dengan ornamen bunga"
                     width={1440}
                     height={856}
@@ -108,7 +109,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="sambutan" aria-labelledby="sambutan-title" className="bg-white landing-section">
+        <section id="sambutan" aria-labelledby="sambutan-title" className="bg-white landing-section landing-section-decorated">
+          <LandingSectionOrnament side="right" />
           <div className="landing-container">
             <Reveal>
               <p className="landing-eyebrow">Sambutan</p>
@@ -218,7 +220,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="berita" className="bg-white landing-section">
+        <section id="berita" className="bg-white landing-section landing-section-decorated">
+          <LandingSectionOrnament side="left" />
           <div className="landing-container">
             <Reveal>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -322,7 +325,8 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="layanan" className="bg-white landing-section">
+        <section id="layanan" className="bg-white landing-section landing-section-decorated">
+          <LandingSectionOrnament side="right" />
           <div className="landing-container">
             <Reveal>
               <div className="flex items-end justify-between gap-5">

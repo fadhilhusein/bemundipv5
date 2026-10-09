@@ -98,7 +98,7 @@ function LoginForm() {
     };
     return <main className="admin-theme admin-login">
     <section className="admin-login-form"><div className="w-full max-w-[440px]">
-      <Link href="/" className="inline-flex min-h-11 items-center gap-3" aria-label="Kembali ke beranda"><Image src="/assets/logo-bem.png" alt="Logo BEM UNDIP" width={52} height={52}/><span className="font-semibold">BEM UNDIP<span className="block admin-muted text-[13px] font-normal">Kabinet Dipanegara 2026</span></span></Link>
+      <Link href="/" className="inline-flex min-h-11 items-center gap-3" aria-label="Kembali ke beranda"><Image src="/assets/logo-bem.webp" alt="Logo BEM UNDIP" width={52} height={52}/><span className="font-semibold">BEM UNDIP<span className="block admin-muted text-[13px] font-normal">Kabinet Dipanegara 2026</span></span></Link>
       <h1 className="admin-login-heading mt-10">Masuk ke ruang pengelola</h1><p className="admin-muted mt-3">Khusus pengurus dan anggota Kabinet BEM UNDIP 2026.</p>
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5" aria-busy={isSubmitting} aria-describedby={error ? "login-error" : undefined}>
         <div><label htmlFor="email">Alamat email</label><input id="email" className="admin-input mt-2" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="nama@undip.ac.id" disabled={isSubmitting}/></div>
@@ -108,6 +108,6 @@ function LoginForm() {
       <div className="my-6 flex items-center gap-4 admin-muted text-[13px]"><span className="h-px flex-1 bg-line"/>atau<span className="h-px flex-1 bg-line"/></div>
       <Button appearance="admin" variant="secondary" type="button" onClick={handleGoogleSignIn} disabled={isSubmitting} className="w-full"><span aria-hidden="true" className="text-lg font-bold">G</span>{isSubmitting && method === "google" ? "Menghubungkan Google..." : "Masuk dengan Google"}</Button><Link href="/" className="mt-6 inline-flex min-h-11 items-center text-sm font-medium">Kembali ke beranda</Link>
     </div></section>
-    <aside className="admin-login-brand"><div className="max-w-[560px]"><p className="text-sm font-medium text-[#FDBA8C]">RUANG PENGELOLA BEM UNDIP</p><h2 className="mt-5 text-[clamp(32px,3vw,48px)] leading-tight">Beri Rasa,<br />Lahir Makna.</h2><p className="mt-5 max-w-[45ch] text-[#D0D5DD]">Kelola informasi, kegiatan, dan layanan dalam satu ruang kerja bersama.</p><Image src="/assets/hero_image.png" alt="" width={755} height={627} className="mt-10 h-auto w-full object-contain" priority/></div></aside>
+    <aside className="admin-login-brand"><div className="max-w-[560px]"><p className="text-sm font-medium text-[#FDBA8C]">RUANG PENGELOLA BEM UNDIP</p><h2 className="mt-5 text-[clamp(32px,3vw,48px)] leading-tight">Beri Rasa,<br />Lahir Makna.</h2><p className="mt-5 max-w-[45ch] text-[#D0D5DD]">Kelola informasi, kegiatan, dan layanan dalam satu ruang kerja bersama.</p><Image src="/assets/hero_image.webp" alt="" width={755} height={627} className="mt-10 h-auto w-full object-contain" priority/></div></aside>
   </main>;
 }

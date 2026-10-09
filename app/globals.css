@@ -1249,3 +1249,51 @@ html {
   .landing-page .landing-hero-background { object-position: center; }
   .landing-page .landing-hero-botanical { width: clamp(120px, 18vw, 320px); opacity: .85; }
 }
+
+/* Sparse floral accents: three sections, with full content gutters preserved. */
+.landing-page .landing-section-decorated { position: relative; isolation: isolate; }
+.landing-page .landing-section-decorated > .landing-container { position: relative; z-index: 1; }
+.landing-page .landing-section-ornament {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.landing-page .landing-section-ornament-divider {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #BB3F17;
+  opacity: .48;
+  transform: translateX(-50%);
+}
+.landing-page .landing-section-ornament-divider span {
+  width: 30px;
+  height: 1px;
+  background: #FD853A;
+}
+.landing-page .landing-section-ornament-rail { display: none; }
+@media (min-width: 768px) {
+  .landing-page .landing-section-ornament-divider { top: 28px; }
+  .landing-page .landing-section-ornament-divider span { width: 44px; }
+}
+@media (min-width: 1440px) {
+  .landing-page .landing-section-ornament-rail {
+    display: block;
+    position: absolute;
+    top: 22%;
+    width: clamp(48px, calc((100vw - 1200px) / 2 - 24px), 160px);
+    height: 280px;
+    opacity: .24;
+    mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+  }
+  .landing-page .landing-section-ornament--left .landing-section-ornament-rail { left: 0; }
+  .landing-page .landing-section-ornament--right .landing-section-ornament-rail { right: 0; }
+  .landing-page .landing-section-ornament-image { object-fit: cover; }
+  .landing-page .landing-section-ornament--left .landing-section-ornament-image { object-position: left center; }
+  .landing-page .landing-section-ornament--right .landing-section-ornament-image { object-position: right center; }
+}
